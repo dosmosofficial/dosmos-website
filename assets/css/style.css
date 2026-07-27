@@ -137,3 +137,21 @@ th{color:var(--gold2)}
   .admin-stats{grid-template-columns:repeat(2,1fr)}
   .match{grid-template-columns:1fr;text-align:center}.match strong:last-child{text-align:center}
 }
+.logout-btn {
+  min-height: 44px;
+  padding: 0 22px;
+  border: 1px solid rgba(255, 90, 90, 0.55);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #d92f2f, #8e1717);
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(217, 47, 47, 0.22);
+  transition: 0.2s ease;
+}
+
+.logout-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #ef4444, #a91d1d);
+  box-shadow: 0 12px 30px rgba(217, 47, 47, 0.35);
+}
