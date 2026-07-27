@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DOSMOS Admin V9</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+
+  <style>
+    .admin-topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:24px;
+      margin-bottom:30px;
+    }
+
+    .admin-topbar-title p{
+      color:var(--muted,#a6a6a6);
+      margin-top:4px;
+    }
+
+    .admin-user{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      margin-left:auto;
+    }
+
+    .admin-user-info{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      text-align:right;
+    }
+
+    .admin-name{
+      color:#fff;
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+
+    .admin-role{
+      color:#d4af37;
+      font-size:13px;
+      font-weight:700;
+      margin-top:2px;
+      letter-spacing:.3px;
+    }
+
+    .admin-status{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:6px;
+      margin-top:4px;
+      color:#75f29a;
+      font-size:13px;
+    }
+
+    .status-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#22c55e;
+      box-shadow:0 0 10px #22c55e;
+    }
+
+    .logout-btn{
+      min-height:44px;
+      padding:0 22px;
+      border:1px solid rgba(255,90,90,.55);
+      border-radius:10px;
+      background:linear-gradient(135deg,#d92f2f,#8e1717);
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 8px 24px rgba(217,47,47,.22);
+      transition:.2s ease;
+    }
+
+    .logout-btn:hover{
+      transform:translateY(-2px);
+      background:linear-gradient(135deg,#ef4444,#a91d1d);
+      box-shadow:0 12px 30px rgba(217,47,47,.35);
+    }
+
+    @media (max-width:720px){
+      .admin-topbar{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .admin-user{
+        width:100%;
+        justify-content:space-between;
+        margin-left:0;
+      }
+
+      .admin-user-info{
+        align-items:flex-start;
+        text-align:left;
+      }
+
+      .admin-status{
+        justify-content:flex-start;
+      }
+    }
+
+    .jesse-account-box{
+      display:flex !important;
+      align-items:center !important;
+      gap:12px !important;
+      margin-left:auto !important;
+      padding:10px 12px !important;
+      border:1px solid rgba(246,199,68,.28) !important;
+      border-radius:14px !important;
+      background:linear-gradient(145deg,#151515,#0b0b0b) !important;
+      box-shadow:0 10px 30px rgba(0,0,0,.35) !important;
+      visibility:visible !important;
+      opacity:1 !important;
+    }
+
+    .jesse-avatar{
+      width:42px !important;
+      height:42px !important;
+      display:grid !important;
+      place-items:center !important;
+      flex:0 0 42px !important;
+      border-radius:12px !important;
+      border:1px solid rgba(246,199,68,.45) !important;
+      background:linear-gradient(135deg,#f6c744,#a87412) !important;
+      color:#111 !important;
+      font:800 18px Cinzel,serif !important;
+    }
+
+    .jesse-account-text{
+      display:flex !important;
+      min-width:112px !important;
+      flex-direction:column !important;
+      align-items:flex-start !important;
+      text-align:left !important;
+      visibility:visible !important;
+      opacity:1 !important;
+    }
+
+    .jesse-account-name{
+      display:block !important;
+      color:#fff !important;
+      font-size:15px !important;
+      font-weight:800 !important;
+      line-height:1.15 !important;
+    }
+
+    .jesse-account-role{
+      display:block !important;
+      margin-top:2px !important;
+      color:#f6c744 !important;
+      font-size:11px !important;
+      font-weight:800 !important;
+      letter-spacing:.45px !important;
+    }
+
+    .jesse-account-status{
+      display:flex !important;
+      align-items:center !important;
+      gap:6px !important;
+      margin-top:4px !important;
+      color:#75f29a !important;
+      font-size:11px !important;
+    }
+
+    .jesse-online-dot{
+      width:7px !important;
+      height:7px !important;
+      display:block !important;
+      border-radius:50% !important;
+      background:#22c55e !important;
+      box-shadow:0 0 9px #22c55e !important;
+    }
+
+    @media (max-width:760px){
+      .jesse-account-box{
+        width:100% !important;
+        margin-left:0 !important;
+      }
+      .jesse-account-text{
+        flex:1 !important;
+      }
+    }
+
+  
+    /* ===== MOBILE ADMIN FIX ===== */
+    @media (max-width: 768px){
+      html, body{
+        width:100% !important;
+        max-width:100% !important;
+        overflow-x:hidden !important;
+        background:#050505 !important;
+      }
+
+      .admin-shell{
+        display:block !important;
+        width:100% !important;
+        min-height:100vh !important;
+      }
+
+      .sidebar{
+        position:relative !important;
+        top:auto !important;
+        width:100% !important;
+        height:auto !important;
+        padding:16px !important;
+        border-right:0 !important;
+        border-bottom:1px solid rgba(255,255,255,.09) !important;
+        overflow:visible !important;
+      }
+
+      .sidebar .brand{
+        margin-bottom:14px !important;
+      }
+
+      .side-nav{
+        display:grid !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:8px !important;
+        width:100% !important;
+      }
+
+      .side-nav button,
+      .side-nav a{
+        width:100% !important;
+        min-height:42px !important;
+        padding:10px 9px !important;
+        border:1px solid rgba(255,255,255,.09) !important;
+        border-radius:9px !important;
+        background:#101010 !important;
+        color:#f2f2f2 !important;
+        font-size:12px !important;
+        line-height:1.25 !important;
+        text-align:center !important;
+        white-space:normal !important;
+      }
+
+      .side-nav button.active{
+        border-color:rgba(246,199,68,.55) !important;
+        background:#18140a !important;
+        color:#f6c744 !important;
+      }
+
+      .admin-main{
+        width:100% !important;
+        max-width:none !important;
+        padding:18px 14px 28px !important;
+      }
+
+      .admin-topbar{
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:stretch !important;
+        gap:14px !important;
+        margin-bottom:18px !important;
+      }
+
+      .admin-topbar-title h1{
+        font-size:30px !important;
+        line-height:1.05 !important;
+      }
+
+      .admin-topbar-title p{
+        font-size:12px !important;
+        line-height:1.5 !important;
+      }
+
+      .jesse-account-box{
+        width:100% !important;
+        margin-left:0 !important;
+        padding:11px !important;
+        gap:10px !important;
+      }
+
+      .jesse-account-text{
+        flex:1 !important;
+        min-width:0 !important;
+      }
+
+      .logout-btn{
+        min-width:84px !important;
+        padding:0 14px !important;
+      }
+
+      .admin-stats{
+        display:grid !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:10px !important;
+      }
+
+      .admin-stat{
+        min-width:0 !important;
+        padding:14px !important;
+      }
+
+      .admin-stat strong{
+        font-size:22px !important;
+      }
+
+      .admin-stat span{
+        font-size:11px !important;
+      }
+
+      .panel{
+        width:100% !important;
+        padding:16px !important;
+        border-radius:14px !important;
+      }
+
+      .panel h3{
+        font-size:16px !important;
+      }
+
+      .form-grid{
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        gap:12px !important;
+      }
+
+      .form-full{
+        grid-column:auto !important;
+      }
+
+      input, textarea, select{
+        font-size:16px !important;
+      }
+
+      .table-wrap{
+        width:100% !important;
+        overflow-x:auto !important;
+        -webkit-overflow-scrolling:touch !important;
+      }
+
+      table{
+        min-width:760px !important;
+      }
+    }
+
+    @media (max-width: 420px){
+      .side-nav{
+        grid-template-columns:1fr 1fr !important;
+      }
+
+      .admin-topbar-title h1{
+        font-size:27px !important;
+      }
+
+      .jesse-avatar{
+        width:38px !important;
+        height:38px !important;
+        flex-basis:38px !important;
+      }
+
+      .logout-btn{
+        min-width:76px !important;
+        font-size:12px !important;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <section class="auth-wrap" id="loginView">
+    <div class="auth-card">
+      <h1>DOSMOS ADMIN</h1>
+      <p class="lead">Login memakai akun admin Supabase.</p>
+
+      <form id="loginForm" style="display:grid;gap:14px;margin-top:20px">
+        <label>
+          Email
+          <input id="loginEmail" type="email" required>
+        </label>
+
+        <label>
+          Password
+          <input id="loginPassword" type="password" required>
+        </label>
+
+        <button class="btn btn-primary" type="submit">Login</button>
+      </form>
+
+      <div id="authMessage" class="message"></div>
+    </div>
+  </section>
+
+  <section class="admin-shell hidden" id="dashboardView">
+    <aside class="sidebar">
+      <a class="brand" href="../">
+        <span class="logo-fallback">D</span>
+        DOSMOS
+      </a>
+
+      <nav class="side-nav">
+        <button class="active" data-tab="dashboardTab">Dashboard</button>
+        <button data-tab="eventsTab">Events</button>
+        <button data-tab="registrationsTab">Registrations</button>
+        <button data-tab="matchesTab">Bracket / Matches</button>
+        <button data-tab="championsTab">Champions</button>
+        <button data-tab="newsTab">News</button>
+        <button data-tab="galleryTab">Gallery</button>
+        <button data-tab="sponsorsTab">Sponsors</button>
+        <button data-tab="settingsTab">Settings</button>
+        <a href="../">Lihat Website</a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <div class="admin-topbar-title">
+          <h1>DOSMOS CMS V9</h1>
+          <p>Kelola website dan turnamen dari satu panel.</p>
+        </div>
+
+        <div class="jesse-account-box">
+          <div class="jesse-avatar">J</div>
+
+          <div class="jesse-account-text">
+            <div class="jesse-account-name">Jesse</div>
+            <div class="jesse-account-role">CEO DOSMOS</div>
+            <div class="jesse-account-status">
+              <span class="jesse-online-dot"></span>
+              Online
+            </div>
+          </div>
+
+          <button class="logout-btn" id="logoutBtn" type="button">
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <section class="tab-panel active" id="dashboardTab">
+        <div class="admin-stats">
+          <div class="admin-stat"><strong id="stat_events">0</strong><span>Events</span></div>
+          <div class="admin-stat"><strong id="stat_registrations">0</strong><span>Registrations</span></div>
+          <div class="admin-stat"><strong id="stat_matches">0</strong><span>Matches</span></div>
+          <div class="admin-stat"><strong id="stat_champions">0</strong><span>Champions</span></div>
+          <div class="admin-stat"><strong id="stat_news">0</strong><span>News</span></div>
+          <div class="admin-stat"><strong id="stat_gallery">0</strong><span>Gallery</span></div>
+          <div class="admin-stat"><strong id="stat_sponsors">0</strong><span>Sponsors</span></div>
+        </div>
+
+        <div class="panel">
+          <h3>V9 Ready</h3>
+          <p class="lead">
+            Event, pendaftaran tim, bracket, hasil pertandingan, live stream,
+            champion, berita, galeri, dan sponsor sudah terhubung.
+          </p>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="eventsTab">
+        <div class="panel">
+          <h3>Tambah / Edit Event</h3>
+
+          <form id="eventForm" class="form-grid" style="margin-top:18px">
+            <label>Judul<input id="event_title" required></label>
+
+            <label>
+              Status
+              <select id="event_status">
+                <option value="upcoming">Akan Datang</option>
+                <option value="active">Sedang Berjalan</option>
+                <option value="finished">Selesai</option>
+              </select>
+            </label>
+
+            <label class="form-full">
+              Deskripsi
+              <textarea id="event_description"></textarea>
+            </label>
+
+            <label>Upload Banner<input id="event_file" type="file" accept="image/*"></label>
+            <label>Atau URL Banner<input id="event_banner"></label>
+            <label>Mulai<input id="event_start_date" type="date"></label>
+            <label>Selesai<input id="event_end_date" type="date"></label>
+            <label>Prize Pool<input id="event_prize_pool"></label>
+            <label>Link Pendaftaran<input id="event_registration_link"></label>
+
+            <div class="form-full">
+              <button class="btn btn-primary" id="eventSubmit" type="submit">Publish</button>
+              <div id="eventMessage" class="message"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel" style="margin-top:20px">
+          <h3>Daftar Event</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Judul</th><th>Status</th><th>Mulai</th><th>Prize</th><th>Edit</th><th>Hapus</th>
+                </tr>
+              </thead>
+              <tbody id="eventRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="registrationsTab">
+        <div class="panel">
+          <h3>Pendaftaran Tim</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Event</th><th>Tim</th><th>Kapten</th><th>WhatsApp</th><th>Status</th><th>Ubah</th><th>Hapus</th>
+                </tr>
+              </thead>
+              <tbody id="registrationRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="matchesTab">
+        <div class="panel">
+          <h3>Tambah / Edit Match</h3>
+
+          <form id="matchForm" class="form-grid" style="margin-top:18px">
+            <label>Nama Event<input id="match_event_name"></label>
+            <label>Round<input id="match_round_name" placeholder="Quarter Final"></label>
+            <label>Team A<input id="match_team_a"></label>
+            <label>Team B<input id="match_team_b"></label>
+            <label>Score A<input id="match_score_a" type="number" min="0"></label>
+            <label>Score B<input id="match_score_b" type="number" min="0"></label>
+            <label>Winner<input id="match_winner"></label>
+            <label>Urutan<input id="match_sort_order" type="number" min="0"></label>
+
+            <div class="form-full">
+              <button class="btn btn-primary" id="matchSubmit" type="submit">Publish</button>
+              <div id="matchMessage" class="message"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel" style="margin-top:20px">
+          <h3>Daftar Match</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Event</th><th>Round</th><th>Team A</th><th>Score</th><th>Team B</th><th>Edit</th><th>Hapus</th>
+                </tr>
+              </thead>
+              <tbody id="matchRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="championsTab">
+        <div class="panel">
+          <h3>Tambah / Edit Champion</h3>
+
+          <form id="championForm" class="form-grid" style="margin-top:18px">
+            <label>Nama Tim<input id="champion_team_name" required></label>
+            <label>Rank<input id="champion_rank"></label>
+            <label>Nama Event<input id="champion_event_name"></label>
+            <label>MVP<input id="champion_mvp"></label>
+            <label>Hadiah<input id="champion_prize"></label>
+            <label>Upload Foto<input id="champion_file" type="file" accept="image/*"></label>
+            <label class="form-full">Atau URL Foto<input id="champion_photo"></label>
+            <label class="form-full">Cerita<textarea id="champion_story"></textarea></label>
+
+            <div class="form-full">
+              <button class="btn btn-primary" id="championSubmit" type="submit">Publish</button>
+              <div id="championMessage" class="message"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel" style="margin-top:20px">
+          <h3>Daftar Champion</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tim</th><th>Rank</th><th>Event</th><th>MVP</th><th>Edit</th><th>Hapus</th>
+                </tr>
+              </thead>
+              <tbody id="championRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="newsTab">
+        <div class="panel">
+          <h3>Tambah / Edit News</h3>
+
+          <form id="newsForm" class="form-grid" style="margin-top:18px">
+            <label class="form-full">Judul<input id="news_title" required></label>
+            <label class="form-full">Ringkasan<textarea id="news_summary"></textarea></label>
+            <label class="form-full">Isi Berita<textarea id="news_content"></textarea></label>
+            <label>Upload Cover<input id="news_file" type="file" accept="image/*"></label>
+            <label>Atau URL Cover<input id="news_cover"></label>
+
+            <div class="form-full">
+              <button class="btn btn-primary" id="newsSubmit" type="submit">Publish</button>
+              <div id="newsMessage" class="message"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel" style="margin-top:20px">
+          <h3>Daftar News</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Judul</th><th>Ringkasan</th><th>Tanggal</th><th>Edit</th><th>Hapus</th>
+                </tr>
+              </thead>
+              <tbody id="newsRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="galleryTab">
+        <div class="panel">
+          <h3>Tambah / Edit Gallery</h3>
+
+          <form id="galleryForm" class="form-grid" style="margin-top:18px">
+            <label>Caption<input id="gallery_caption"></label>
+            <label>Nama Event<input id="gallery_event_name"></label>
+            <label>Upload Foto<input id="gallery_file" type="file" accept="image/*"></label>
+            <label>Atau URL Foto<input id="gallery_image_url"></label>
+
+            <div class="form-full">
+              <button class="btn btn-primary" id="gallerySubmit" type="submit">Publish</button>
+              <div id="galleryMessage" class="message"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel" style="margin-top:20px">
+          <h3>Daftar Gallery</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Caption</th><th>Event</th><th>Foto</th><th>Edit</th><th>Hapus</th>
+                </tr>
+              </thead>
+              <tbody id="galleryRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="sponsorsTab">
+        <div class="panel">
+          <h3>Tambah / Edit Sponsor</h3>
+
+          <form id="sponsorForm" class="form-grid" style="margin-top:18px">
+            <label>Nama Sponsor<input id="sponsor_name" required></label>
+            <label>Website<input id="sponsor_website"></label>
+            <label>Upload Logo<input id="sponsor_file" type="file" accept="image/*"></label>
+            <label>Atau URL Logo<input id="sponsor_logo"></label>
+            <label>Urutan<input id="sponsor_sort_order" type="number" min="0"></label>
+
+            <div class="form-full">
+              <button class="btn btn-primary" id="sponsorSubmit" type="submit">Publish</button>
+              <div id="sponsorMessage" class="message"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel" style="margin-top:20px">
+          <h3>Daftar Sponsor</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nama</th><th>Website</th><th>Logo</th><th>Urutan</th><th>Edit</th><th>Hapus</th>
+                </tr>
+              </thead>
+              <tbody id="sponsorRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="settingsTab">
+        <div class="panel">
+          <h3>Kontak, Social Media & Live</h3>
+
+          <form id="settingsForm" class="form-grid" style="margin-top:18px">
+            <label>WhatsApp<input id="settings_whatsapp"></label>
+            <label>Email<input id="settings_email" type="email"></label>
+            <label>Instagram URL<input id="settings_instagram"></label>
+            <label>TikTok URL<input id="settings_tiktok"></label>
+            <label>Discord URL<input id="settings_discord"></label>
+            <label>YouTube Live URL<input id="settings_youtube_live_url"></label>
+
+            <div class="form-full">
+              <button class="btn btn-primary" type="submit">Simpan Settings</button>
+              <div id="settingsMessage" class="message"></div>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <script src="../assets/js/admin.js"></script>
+</body>
+</html>
