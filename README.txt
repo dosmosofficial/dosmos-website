@@ -1,38 +1,44 @@
-DOSMOS V6 — WEBSITE + ADMIN PANEL
+DOSMOS V8
 
-ISI:
-- index.html
-- admin/index.html
-- assets/css/style.css
-- assets/js/config.js
-- assets/js/app.js
-- assets/js/admin.js
-- setup.sql
+FITUR:
+- Website dinamis premium
+- Events
+- Hall of Champions
+- News
+- Gallery
+- Contact & social media
+- Admin dashboard
+- Upload gambar langsung ke Supabase Storage
+- Edit dan hapus konten
+- RLS dan akses khusus admin
+- Responsive HP/Desktop
 
 LANGKAH:
-1. Supabase > SQL Editor:
-   Paste semua isi setup.sql, lalu Run.
+1. Supabase > SQL Editor
+   Paste isi setup-v8.sql lalu Run.
 
-2. Supabase > Authentication > Users:
-   Buat user admin dengan email dan password.
-   Copy UUID user tersebut.
+2. GitHub
+   Upload seluruh isi folder ini dengan struktur tetap:
+   index.html
+   admin/index.html
+   assets/css/style.css
+   assets/js/config.js
+   assets/js/public.js
+   assets/js/admin.js
 
-3. Supabase > SQL Editor:
-   Jalankan:
-   insert into public.admin_users (user_id) values ('UUID_USER_ADMIN');
+3. Jangan upload ZIP langsung.
 
-4. GitHub:
-   Upload seluruh isi folder ini dengan struktur tetap.
-   Jangan upload ZIP langsung.
+4. Tunggu Cloudflare deploy.
 
-5. Cloudflare deploy otomatis.
+5. Buka:
+   https://dosmos.pages.dev/admin/
 
-6. Panel admin:
-   https://ALAMAT-WEBSITE-KAMU.pages.dev/admin/
+6. Login dengan akun admin Supabase.
 
-7. Login memakai email/password yang dibuat di Supabase Authentication.
+7. Upload logo DOSMOS bernama:
+   dosmos-logo.png
+   letakkan sejajar dengan index.html.
 
-CATATAN:
+KEAMANAN:
 - Publishable key boleh berada di frontend karena RLS aktif.
-- Jangan pernah masukkan Secret Key atau service_role ke file website.
-- Logo opsional: upload dosmos-logo.png sejajar dengan index.html.
+- Jangan pernah memasukkan Secret Key/service_role ke website.

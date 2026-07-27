@@ -14,7 +14,11 @@
 <body>
 <header class="topbar"><div class="container nav">
   <a class="brand" href="#home"><img class="logo" src="dosmos-logo.png" alt="DOSMOS"><span class="logo-fallback">D</span>DOSMOS</a>
-  <nav class="navlinks"><a href="#about">About</a><a href="#services">Services</a><a href="#events">Events</a><a href="#contact">Contact</a><a href="admin/">Admin</a></nav>
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <nav class="navlinks" id="navLinks">
+    <a href="#about">About</a><a href="#events">Events</a><a href="#champions">Champions</a>
+    <a href="#news">News</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a><a href="admin/">Admin</a>
+  </nav>
 </div></header>
 
 <main>
@@ -23,39 +27,56 @@
   <span class="badge">Official Gaming & Esports Company</span>
   <h1>DOSMOS</h1>
   <p class="lead">Every Gamer Deserves a Chance. Gaming, esports, community, content, event, dan business collaboration.</p>
-  <div class="actions"><a class="btn btn-primary" href="#events">Lihat Event</a><a class="btn btn-secondary" href="https://wa.me/6281288836205" target="_blank">Hubungi Bisnis</a></div>
+  <div class="actions"><a class="btn btn-primary" href="#events">Lihat Event</a><a class="btn btn-secondary" data-wa href="https://wa.me/6281288836205" target="_blank">Hubungi Bisnis</a></div>
 </div></section>
+
+<div class="container stats-strip">
+  <div class="stat-card"><strong>Events</strong><span>Turnamen & Aktivitas</span></div>
+  <div class="stat-card"><strong>Champions</strong><span>Sejarah Pemenang</span></div>
+  <div class="stat-card"><strong>Community</strong><span>Gaming Ecosystem</span></div>
+  <div class="stat-card"><strong>Business</strong><span>Partnership</span></div>
+</div>
 
 <section class="section" id="about"><div class="container">
-  <div class="section-head"><h2>More Than a Gaming Brand.</h2><p class="lead">DOSMOS membangun event, komunitas, layanan gaming, creative content, dan kerja sama bisnis dengan nilai Trust, Respect, dan Integrity.</p></div>
+  <div class="eyebrow">About DOSMOS</div>
+  <h2>More Than a Gaming Brand.</h2>
+  <p class="lead">DOSMOS membangun event, komunitas, layanan gaming, creative content, dan kerja sama bisnis dengan nilai Trust, Respect, dan Integrity.</p>
 </div></section>
 
-<section class="section" id="services"><div class="container">
-  <div class="section-head"><h2>What DOSMOS Builds</h2></div>
-  <div class="grid">
-    <article class="card"><div class="card-body"><h3>Tournament & Event</h3><p class="lead">Turnamen dengan jadwal, aturan, pendaftaran, hasil, dan dokumentasi yang tertata.</p></div></article>
-    <article class="card"><div class="card-body"><h3>Community Development</h3><p class="lead">Komunitas gaming yang aktif, positif, kompetitif, dan berkembang bersama.</p></div></article>
-    <article class="card"><div class="card-body"><h3>Business Partnership</h3><p class="lead">Sponsorship, aktivasi brand, campaign, dan kolaborasi jangka panjang.</p></div></article>
-  </div>
-</div></section>
-
-<section class="section" id="events"><div class="container">
-  <div class="section-head"><h2>DOSMOS Events</h2><p class="lead">Data di bawah ini diambil langsung dari Supabase.</p></div>
+<section class="section section-alt" id="events"><div class="container">
+  <div class="eyebrow">Current & Upcoming</div><h2>DOSMOS Events</h2>
   <div class="grid" id="eventGrid"><div class="empty">Memuat event...</div></div>
 </div></section>
 
-<section class="section" id="contact"><div class="container">
-  <div class="section-head"><h2>Let’s Build Something Together.</h2></div>
+<section class="section" id="champions"><div class="container">
+  <div class="eyebrow">Hall of Champions</div><h2>Every Victory Has a Story.</h2>
+  <div class="grid" id="championGrid"><div class="empty">Memuat champions...</div></div>
+</div></section>
+
+<section class="section section-alt" id="news"><div class="container">
+  <div class="eyebrow">Latest Update</div><h2>DOSMOS News</h2>
+  <div class="grid" id="newsGrid"><div class="empty">Memuat berita...</div></div>
+</div></section>
+
+<section class="section" id="gallery"><div class="container">
+  <div class="eyebrow">Moments</div><h2>Gallery</h2>
+  <div class="grid" id="galleryGrid"><div class="empty">Memuat galeri...</div></div>
+</div></section>
+
+<section class="section section-alt" id="contact"><div class="container">
+  <div class="eyebrow">Business Contact</div><h2>Let’s Build Something Together.</h2>
   <div class="contact-grid">
-    <div class="card"><div class="card-body"><h3>Business Contact</h3><div class="contact-list">
-      <a class="contact-item" href="https://wa.me/6281288836205" target="_blank"><span>WhatsApp</span><strong>0812-8883-6205</strong></a>
-      <a class="contact-item" href="mailto:dosmosid@gmail.com"><span>Email</span><strong>dosmosid@gmail.com</strong></a>
-      <a class="contact-item" href="https://instagram.com/dosmos.id" target="_blank"><span>Instagram</span><strong>@dosmos.id</strong></a>
+    <div class="card"><div class="card-body"><h3>Connect with DOSMOS</h3><div class="contact-list">
+      <a class="contact-item" data-wa href="https://wa.me/6281288836205" target="_blank"><span>WhatsApp</span><strong>0812-8883-6205</strong></a>
+      <a class="contact-item" data-email href="mailto:dosmosid@gmail.com"><span>Email</span><strong>dosmosid@gmail.com</strong></a>
+      <a class="contact-item" data-instagram href="https://instagram.com/dosmos.id" target="_blank"><span>Instagram</span><strong>@dosmos.id</strong></a>
+      <a class="contact-item" data-tiktok href="#" target="_blank"><span>TikTok</span><strong>@dosmos.id</strong></a>
+      <a class="contact-item" data-discord href="#" target="_blank"><span>Discord</span><strong>DOSMOS</strong></a>
     </div></div></div>
-    <div class="card"><div class="card-body"><h3>Admin Panel</h3><p class="lead">Tambah, edit, dan hapus event melalui panel admin.</p><div class="actions" style="justify-content:flex-start"><a class="btn btn-primary" href="admin/">Buka Admin</a></div></div></div>
+    <div class="card"><div class="card-body"><h3>Admin Panel</h3><p class="lead">Kelola event, champions, news, gallery, dan kontak tanpa membuka GitHub.</p><div class="actions" style="justify-content:flex-start"><a class="btn btn-primary" href="admin/">Buka Admin</a></div></div></div>
   </div>
 </div></section>
 </main>
 <footer><div class="container">© 2026 DOSMOS — Every Gamer Deserves a Chance.</div></footer>
-<script src="assets/js/app.js"></script>
+<script src="assets/js/public.js"></script>
 </body></html>
