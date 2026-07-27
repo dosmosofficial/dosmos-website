@@ -4,20 +4,18 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>DOSMOS | Gaming & Esports Company</title>
   <meta name="description" content="DOSMOS Gaming & Esports Company">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/js/config.js"></script>
 </head>
 <body>
 <header class="topbar"><div class="container nav">
   <a class="brand" href="#home"><img class="logo" src="dosmos-logo.png" alt="DOSMOS"><span class="logo-fallback">D</span>DOSMOS</a>
   <button class="menu-btn" id="menuBtn">☰</button>
   <nav class="navlinks" id="navLinks">
-    <a href="#about">About</a><a href="#events">Events</a><a href="#champions">Champions</a>
-    <a href="#news">News</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a><a href="admin/">Admin</a>
+    <a href="#events">Events</a><a href="#register">Register</a><a href="#bracket">Bracket</a><a href="#champions">Champions</a>
+    <a href="#news">News</a><a href="#gallery">Gallery</a><a href="#partners">Partners</a><a href="#contact">Contact</a><a href="admin/">Admin</a>
   </nav>
 </div></header>
 
@@ -27,40 +25,65 @@
   <span class="badge">Official Gaming & Esports Company</span>
   <h1>DOSMOS</h1>
   <p class="lead">Every Gamer Deserves a Chance. Gaming, esports, community, content, event, dan business collaboration.</p>
-  <div class="actions"><a class="btn btn-primary" href="#events">Lihat Event</a><a class="btn btn-secondary" data-wa href="https://wa.me/6281288836205" target="_blank">Hubungi Bisnis</a></div>
+  <div class="actions"><a class="btn btn-primary" href="#events">Lihat Event</a><a class="btn btn-secondary" href="#register">Daftar Tim</a></div>
 </div></section>
 
 <div class="container stats-strip">
   <div class="stat-card"><strong>Events</strong><span>Turnamen & Aktivitas</span></div>
+  <div class="stat-card"><strong>Bracket</strong><span>Hasil Pertandingan</span></div>
   <div class="stat-card"><strong>Champions</strong><span>Sejarah Pemenang</span></div>
-  <div class="stat-card"><strong>Community</strong><span>Gaming Ecosystem</span></div>
   <div class="stat-card"><strong>Business</strong><span>Partnership</span></div>
 </div>
-
-<section class="section" id="about"><div class="container">
-  <div class="eyebrow">About DOSMOS</div>
-  <h2>More Than a Gaming Brand.</h2>
-  <p class="lead">DOSMOS membangun event, komunitas, layanan gaming, creative content, dan kerja sama bisnis dengan nilai Trust, Respect, dan Integrity.</p>
-</div></section>
 
 <section class="section section-alt" id="events"><div class="container">
   <div class="eyebrow">Current & Upcoming</div><h2>DOSMOS Events</h2>
   <div class="grid" id="eventGrid"><div class="empty">Memuat event...</div></div>
 </div></section>
 
-<section class="section" id="champions"><div class="container">
+<section class="section" id="register"><div class="container">
+  <div class="eyebrow">Team Registration</div><h2>Daftar Turnamen DOSMOS</h2>
+  <div class="register-grid">
+    <div class="card"><div class="card-body"><h3>Form Pendaftaran</h3>
+      <form id="registrationForm" class="form-grid" style="margin-top:18px">
+        <label>Nama Event<input id="reg_event" required></label><label>Nama Tim<input id="reg_team" required></label>
+        <label>Nama Kapten<input id="reg_captain" required></label><label>WhatsApp<input id="reg_whatsapp" required></label>
+        <label class="form-full">Roster Pemain<textarea id="reg_roster" placeholder="Nickname 1, Nickname 2, dst." required></textarea></label>
+        <label class="form-full">Catatan<textarea id="reg_notes"></textarea></label>
+        <div class="form-full"><button class="btn btn-primary">Kirim Pendaftaran</button><div id="registrationMessage" class="message"></div></div>
+      </form>
+    </div></div>
+    <div class="card"><div class="card-body"><h3>Informasi</h3><p class="lead">Setelah form dikirim, data masuk ke panel admin DOSMOS. Panitia dapat mengubah status menjadi diterima, ditolak, atau menunggu.</p></div></div>
+  </div>
+</div></section>
+
+<section class="section section-alt" id="bracket"><div class="container">
+  <div class="eyebrow">Tournament Progress</div><h2>Bracket & Match Results</h2>
+  <div class="bracket" id="bracketWrap"><div class="empty">Memuat bracket...</div></div>
+</div></section>
+
+<section class="section" id="live"><div class="container">
+  <div class="eyebrow">Live Broadcast</div><h2>Watch DOSMOS Live</h2>
+  <div class="live-frame" id="liveFrame"><div class="empty">Link live stream belum dipasang.</div></div>
+</div></section>
+
+<section class="section section-alt" id="champions"><div class="container">
   <div class="eyebrow">Hall of Champions</div><h2>Every Victory Has a Story.</h2>
   <div class="grid" id="championGrid"><div class="empty">Memuat champions...</div></div>
 </div></section>
 
-<section class="section section-alt" id="news"><div class="container">
+<section class="section" id="news"><div class="container">
   <div class="eyebrow">Latest Update</div><h2>DOSMOS News</h2>
   <div class="grid" id="newsGrid"><div class="empty">Memuat berita...</div></div>
 </div></section>
 
-<section class="section" id="gallery"><div class="container">
+<section class="section section-alt" id="gallery"><div class="container">
   <div class="eyebrow">Moments</div><h2>Gallery</h2>
   <div class="grid" id="galleryGrid"><div class="empty">Memuat galeri...</div></div>
+</div></section>
+
+<section class="section" id="partners"><div class="container">
+  <div class="eyebrow">Partnership</div><h2>Partners & Sponsors</h2>
+  <div class="sponsor-grid" id="sponsorGrid"><div class="empty">Memuat partner...</div></div>
 </div></section>
 
 <section class="section section-alt" id="contact"><div class="container">
@@ -73,7 +96,7 @@
       <a class="contact-item" data-tiktok href="#" target="_blank"><span>TikTok</span><strong>@dosmos.id</strong></a>
       <a class="contact-item" data-discord href="#" target="_blank"><span>Discord</span><strong>DOSMOS</strong></a>
     </div></div></div>
-    <div class="card"><div class="card-body"><h3>Admin Panel</h3><p class="lead">Kelola event, champions, news, gallery, dan kontak tanpa membuka GitHub.</p><div class="actions" style="justify-content:flex-start"><a class="btn btn-primary" href="admin/">Buka Admin</a></div></div></div>
+    <div class="card"><div class="card-body"><h3>Admin Panel</h3><p class="lead">Kelola event, registrasi, bracket, champions, news, gallery, sponsor, dan kontak.</p><div class="actions" style="justify-content:flex-start"><a class="btn btn-primary" href="admin/">Buka Admin</a></div></div></div>
   </div>
 </div></section>
 </main>

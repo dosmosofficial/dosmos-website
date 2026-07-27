@@ -1,24 +1,22 @@
-DOSMOS V8
+DOSMOS V9
 
-FITUR:
-- Website dinamis premium
-- Events
-- Hall of Champions
-- News
-- Gallery
-- Contact & social media
-- Admin dashboard
-- Upload gambar langsung ke Supabase Storage
-- Edit dan hapus konten
-- RLS dan akses khusus admin
-- Responsive HP/Desktop
+FITUR BARU:
+- Registrasi tim langsung dari website
+- Admin mengelola status pendaftaran
+- Bracket dan hasil pertandingan
+- YouTube Live embed
+- Sponsor & partner management
+- Events, Champions, News, Gallery
+- Upload gambar dari panel
+- Settings kontak dan sosial media
+- Dashboard lengkap
 
 LANGKAH:
 1. Supabase > SQL Editor
-   Paste isi setup-v8.sql lalu Run.
+   Jalankan seluruh isi setup-v9.sql.
 
 2. GitHub
-   Upload seluruh isi folder ini dengan struktur tetap:
+   Upload seluruh isi folder ini:
    index.html
    admin/index.html
    assets/css/style.css
@@ -28,17 +26,15 @@ LANGKAH:
 
 3. Jangan upload ZIP langsung.
 
-4. Tunggu Cloudflare deploy.
+4. Commit changes dan tunggu Cloudflare deploy.
 
 5. Buka:
    https://dosmos.pages.dev/admin/
 
-6. Login dengan akun admin Supabase.
+6. Logo:
+   Upload dosmos-logo.png sejajar dengan index.html.
 
-7. Upload logo DOSMOS bernama:
-   dosmos-logo.png
-   letakkan sejajar dengan index.html.
-
-KEAMANAN:
-- Publishable key boleh berada di frontend karena RLS aktif.
-- Jangan pernah memasukkan Secret Key/service_role ke website.
+CATATAN:
+- Event lama tidak dihapus.
+- Akun admin lama tetap digunakan.
+- Secret key/service_role jangan dimasukkan ke website.

@@ -10,103 +10,98 @@ const statusText = v => {
   if(["finished","done","completed"].includes(s)) return "Selesai";
   return "Akan Datang";
 };
-
-async function getRows(table, orderCol="created_at", ascending=false){
+async function getRows(table,orderCol="created_at",ascending=false){
   const {data,error}=await sb.from(table).select("*").order(orderCol,{ascending});
-  if(error) throw error;
-  return data||[];
+  if(error)throw error;return data||[];
 }
-
-function renderCards(rows, type){
-  if(!rows.length) return '<div class="empty">Belum ada data.</div>';
-
-  if(type==="events"){
-    return rows.map(e=>{
-      const bg=e.banner?`linear-gradient(to top,rgba(5,5,5,.97),rgba(5,5,5,.1)),url("${esc(e.banner)}")`:"";
-      return `<article class="card">
-        <div class="cover" ${bg?`style='background:${bg} center/cover'`:""}>
-          <div><span class="status">${esc(statusText(e.status))}</span><h3>${esc(e.title)}</h3></div>
-        </div>
-        <div class="card-body">
-          <p class="lead">${esc(e.description||"Detail event segera diumumkan.")}</p>
-          <div class="meta-grid">
-            <div class="meta"><small>Mulai</small><strong>${esc(fmtDate(e.start_date))}</strong></div>
-            <div class="meta"><small>Selesai</small><strong>${esc(fmtDate(e.end_date))}</strong></div>
-            <div class="meta"><small>Prize Pool</small><strong>${esc(e.prize_pool||"Segera diumumkan")}</strong></div>
-          </div>
-          <a class="btn btn-primary" target="_blank" rel="noopener" href="${esc(e.registration_link||"https://wa.me/6281288836205")}">Daftar / Hubungi Panitia</a>
-        </div>
-      </article>`;
-    }).join("");
-  }
-
-  if(type==="champions"){
-    return rows.map(c=>`
-      <article class="card">
-        <div class="cover" ${c.photo?`style='background:linear-gradient(to top,rgba(5,5,5,.97),rgba(5,5,5,.1)),url("${esc(c.photo)}") center/cover'`:""}>
-          <div><span class="status">${esc(c.rank||"Champion")}</span><h3>${esc(c.team_name)}</h3></div>
-        </div>
-        <div class="card-body">
-          <p class="lead">${esc(c.story||"Perjalanan sang juara akan ditampilkan di sini.")}</p>
-          <div class="meta-grid">
-            <div class="meta"><small>Event</small><strong>${esc(c.event_name||"-")}</strong></div>
-            <div class="meta"><small>MVP</small><strong>${esc(c.mvp||"-")}</strong></div>
-            <div class="meta"><small>Hadiah</small><strong>${esc(c.prize||"-")}</strong></div>
-          </div>
-        </div>
-      </article>`).join("");
-  }
-
-  if(type==="news"){
-    return rows.map(n=>`
-      <article class="card">
-        <div class="cover" ${n.cover?`style='background:linear-gradient(to top,rgba(5,5,5,.97),rgba(5,5,5,.1)),url("${esc(n.cover)}") center/cover'`:""}>
-          <h3>${esc(n.title)}</h3>
-        </div>
-        <div class="card-body"><p class="lead">${esc(n.summary||n.content||"")}</p></div>
-      </article>`).join("");
-  }
-
-  return rows.map(g=>`
-    <article class="card">
-      <div class="cover" style='background:linear-gradient(to top,rgba(5,5,5,.9),rgba(5,5,5,.05)),url("${esc(g.image_url)}") center/cover'>
-        <h3>${esc(g.caption||"DOSMOS Moment")}</h3>
-      </div>
-    </article>`).join("");
+function cards(rows,type){
+  if(!rows.length)return '<div class="empty">Belum ada data.</div>';
+  if(type==="events")return rows.map(e=>{
+    const bg=e.banner?`linear-gradient(to top,rgba(5,5,5,.97),rgba(5,5,5,.1)),url("${esc(e.banner)}")`:"";
+    return `<article class="card"><div class="cover" ${bg?`style='background:${bg} center/cover'`:""}>
+      <div><span class="status">${esc(statusText(e.status))}</span><h3>${esc(e.title)}</h3></div></div>
+      <div class="card-body"><p class="lead">${esc(e.description||"Detail event segera diumumkan.")}</p>
+      <div class="meta-grid"><div class="meta"><small>Mulai</small><strong>${esc(fmtDate(e.start_date))}</strong></div>
+      <div class="meta"><small>Selesai</small><strong>${esc(fmtDate(e.end_date))}</strong></div>
+      <div class="meta"><small>Prize Pool</small><strong>${esc(e.prize_pool||"Segera diumumkan")}</strong></div></div>
+      <div class="actions" style="justify-content:flex-start"><a class="btn btn-primary" target="_blank" rel="noopener" href="${esc(e.registration_link||"#register")}">Daftar</a><a class="btn btn-secondary" href="#bracket">Bracket</a></div>
+      </div></article>`;
+  }).join("");
+  if(type==="champions")return rows.map(c=>`<article class="card"><div class="cover" ${c.photo?`style='background:linear-gradient(to top,rgba(5,5,5,.97),rgba(5,5,5,.1)),url("${esc(c.photo)}") center/cover'`:""}>
+    <div><span class="status">${esc(c.rank||"Champion")}</span><h3>${esc(c.team_name)}</h3></div></div>
+    <div class="card-body"><p class="lead">${esc(c.story||"Perjalanan sang juara akan ditampilkan di sini.")}</p>
+    <div class="meta-grid"><div class="meta"><small>Event</small><strong>${esc(c.event_name||"-")}</strong></div>
+    <div class="meta"><small>MVP</small><strong>${esc(c.mvp||"-")}</strong></div>
+    <div class="meta"><small>Hadiah</small><strong>${esc(c.prize||"-")}</strong></div></div></div></article>`).join("");
+  if(type==="news")return rows.map(n=>`<article class="card"><div class="cover" ${n.cover?`style='background:linear-gradient(to top,rgba(5,5,5,.97),rgba(5,5,5,.1)),url("${esc(n.cover)}") center/cover'`:""}><h3>${esc(n.title)}</h3></div><div class="card-body"><p class="lead">${esc(n.summary||n.content||"")}</p></div></article>`).join("");
+  return rows.map(g=>`<article class="card"><div class="cover" style='background:linear-gradient(to top,rgba(5,5,5,.9),rgba(5,5,5,.05)),url("${esc(g.image_url)}") center/cover'><h3>${esc(g.caption||"DOSMOS Moment")}</h3></div></article>`).join("");
 }
-
-async function loadAll(){
-  const targets={
-    events:["eventGrid","events","start_date",true],
-    champions:["championGrid","champions","created_at",false],
-    news:["newsGrid","news","published_at",false],
-    gallery:["galleryGrid","gallery","created_at",false],
-  };
-  for(const [type,[id,table,order,asc]] of Object.entries(targets)){
-    const el=document.getElementById(id);
-    try{ el.innerHTML=renderCards(await getRows(table,order,asc),type); }
-    catch(e){ el.innerHTML=`<div class="empty">${type} gagal dimuat.</div>`; console.error(e); }
+async function loadContent(){
+  const items=[
+    ["eventGrid","events","start_date",true,"events"],
+    ["championGrid","champions","created_at",false,"champions"],
+    ["newsGrid","news","published_at",false,"news"],
+    ["galleryGrid","gallery","created_at",false,"gallery"]
+  ];
+  for(const [id,table,order,asc,type] of items){
+    try{document.getElementById(id).innerHTML=cards(await getRows(table,order,asc),type)}
+    catch(e){document.getElementById(id).innerHTML=`<div class="empty">${type} gagal dimuat.</div>`}
   }
-
+}
+async function loadSponsors(){
+  const el=document.getElementById("sponsorGrid");
+  try{
+    const rows=await getRows("sponsors","sort_order",true);
+    el.innerHTML=rows.length?rows.map(s=>`<a class="sponsor-card" href="${esc(s.website||"#")}" target="_blank" rel="noopener">${s.logo?`<img src="${esc(s.logo)}" alt="${esc(s.name)}">`:`<strong>${esc(s.name)}</strong>`}</a>`).join(""):'<div class="empty">Partnership terbuka.</div>';
+  }catch(e){el.innerHTML='<div class="empty">Sponsor gagal dimuat.</div>'}
+}
+async function loadBracket(){
+  const el=document.getElementById("bracketWrap");
+  try{
+    const rows=await getRows("matches","sort_order",true);
+    if(!rows.length){el.innerHTML='<div class="empty">Bracket belum dipublikasikan.</div>';return}
+    const groups={};
+    rows.forEach(m=>(groups[m.round_name||"Round"]??=[]).push(m));
+    el.innerHTML=Object.entries(groups).map(([round,matches])=>`<div class="round"><h3>${esc(round)}</h3>${matches.map(m=>`<div class="match"><strong>${esc(m.team_a||"TBD")} ${m.score_a??""}</strong><span>VS</span><strong>${m.score_b??""} ${esc(m.team_b||"TBD")}</strong></div>`).join("")}</div>`).join("");
+  }catch(e){el.innerHTML='<div class="empty">Bracket gagal dimuat.</div>'}
+}
+async function loadSettings(){
   try{
     const {data}=await sb.from("site_settings").select("*").eq("id",1).maybeSingle();
-    if(data){
-      document.querySelectorAll("[data-wa]").forEach(a=>a.href=`https://wa.me/${String(data.whatsapp||"6281288836205").replace(/\D/g,"")}`);
-      document.querySelectorAll("[data-email]").forEach(a=>{a.href=`mailto:${data.email||"dosmosid@gmail.com"}`;a.querySelector("strong")&&(a.querySelector("strong").textContent=data.email||"dosmosid@gmail.com")});
-      document.querySelectorAll("[data-instagram]").forEach(a=>a.href=data.instagram||"https://instagram.com/dosmos.id");
-      document.querySelectorAll("[data-tiktok]").forEach(a=>a.href=data.tiktok||"#");
-      document.querySelectorAll("[data-discord]").forEach(a=>a.href=data.discord||"#");
+    if(!data)return;
+    document.querySelectorAll("[data-wa]").forEach(a=>a.href=`https://wa.me/${String(data.whatsapp||"6281288836205").replace(/\D/g,"")}`);
+    document.querySelectorAll("[data-email]").forEach(a=>{a.href=`mailto:${data.email||"dosmosid@gmail.com"}`;a.querySelector("strong")&&(a.querySelector("strong").textContent=data.email||"dosmosid@gmail.com")});
+    document.querySelectorAll("[data-instagram]").forEach(a=>a.href=data.instagram||"https://instagram.com/dosmos.id");
+    document.querySelectorAll("[data-tiktok]").forEach(a=>a.href=data.tiktok||"#");
+    document.querySelectorAll("[data-discord]").forEach(a=>a.href=data.discord||"#");
+    if(data.youtube_live_url){
+      const id=extractYoutubeId(data.youtube_live_url);
+      if(id)document.getElementById("liveFrame").innerHTML=`<iframe src="https://www.youtube.com/embed/${esc(id)}" allowfullscreen></iframe>`;
     }
-  }catch(e){console.error(e)}
+  }catch(e){}
 }
-
+function extractYoutubeId(url=""){
+  const m=String(url).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|live\/))([^?&/]+)/);
+  return m?m[1]:"";
+}
+document.getElementById("registrationForm").addEventListener("submit",async e=>{
+  e.preventDefault();const out=document.getElementById("registrationMessage");
+  const payload={
+    event_name:document.getElementById("reg_event").value.trim(),
+    team_name:document.getElementById("reg_team").value.trim(),
+    captain_name:document.getElementById("reg_captain").value.trim(),
+    whatsapp:document.getElementById("reg_whatsapp").value.trim(),
+    roster:document.getElementById("reg_roster").value.trim(),
+    notes:document.getElementById("reg_notes").value.trim(),
+    status:"pending"
+  };
+  const {error}=await sb.from("registrations").insert(payload);
+  if(error){out.textContent=error.message;out.className="message error";return}
+  out.textContent="Pendaftaran berhasil dikirim. Panitia akan menghubungi kamu.";out.className="message success";e.target.reset();
+});
 document.querySelectorAll(".logo").forEach(img=>{
   img.addEventListener("error",()=>{img.style.display="none";const fb=img.nextElementSibling;if(fb)fb.style.display="grid"});
   img.addEventListener("load",()=>{const fb=img.nextElementSibling;if(fb)fb.style.display="none"});
 });
-const menuBtn=document.getElementById("menuBtn");
-const navLinks=document.getElementById("navLinks");
-menuBtn?.addEventListener("click",()=>navLinks.classList.toggle("open"));
-navLinks?.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>navLinks.classList.remove("open")));
-
-loadAll();
+document.getElementById("menuBtn")?.addEventListener("click",()=>document.getElementById("navLinks").classList.toggle("open"));
+loadContent();loadSponsors();loadBracket();loadSettings();
