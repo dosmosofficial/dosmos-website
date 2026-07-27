@@ -22,7 +22,8 @@
 
 <main>
 <section class="hero" id="home"><div class="container hero-inner">
-  <img class="hero-logo logo site-hero-logo" src="dosmos-logo.png" alt="DOSMOS Logo"><span class="logo-fallback" style="margin:0 auto;width:130px;height:130px;font-size:3rem">D</span>
+  <img class="hero-logo site-hero-logo" src="dosmos-logo.png" alt="DOSMOS Logo">
+  <span class="logo-fallback hero-logo-fallback">D</span>
   <span class="badge">Official Gaming & Esports Company</span>
   <h1 data-site-name>DOSMOS</h1>
   <p class="lead"><span data-site-slogan>Every Gamer Deserves a Chance.</span> Gaming, esports, community, content, event, dan business collaboration.</p>
@@ -102,5 +103,18 @@
 </div></section>
 </main>
 <footer><div class="container">© 2026 <span data-site-name>DOSMOS</span> — <span data-site-slogan>Every Gamer Deserves a Chance.</span></div></footer>
+
+<script>
+document.querySelectorAll("img").forEach(function(img){
+  img.addEventListener("error", function(){
+    img.style.display = "none";
+    const fallback = img.nextElementSibling;
+    if (fallback && fallback.classList.contains("logo-fallback")) {
+      fallback.style.display = "grid";
+    }
+  });
+});
+</script>
+
 <script src="assets/js/public.js"></script>
 </body></html>

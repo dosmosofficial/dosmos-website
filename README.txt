@@ -1,34 +1,37 @@
-DOSMOS VIP — BRAND MANAGER
+DOSMOS VIP V14.1 FINAL
 
-FITUR BARU:
-- Menu Branding di DOSMOS VIP.
-- Upload logo utama langsung dari HP atau komputer.
-- Upload logo hero.
-- Upload favicon.
-- Nama website dan slogan dapat diganti.
-- Warna utama dan background dapat diganti.
-- Live preview sebelum disimpan.
-- Branding otomatis tampil di navbar, hero, footer, tab browser, login, dan sidebar admin.
-- Tampilan HP tetap lega dan responsif.
-- Logo DOSMOS yang diberikan sudah disertakan sebagai fallback lokal.
+URUTAN PASANG:
 
-LANGKAH PEMASANGAN:
-1. Extract ZIP.
-2. Upload seluruh file ke repository GitHub.
-3. Commit changes dan tunggu Cloudflare selesai deploy.
-4. Buka Supabase > SQL Editor.
-5. Jalankan file setup-branding.sql SATU KALI.
-6. Buka /admin lalu masuk ke menu Branding.
-7. Upload logo dan klik Simpan Branding.
+1. Supabase:
+   - Buka SQL Editor.
+   - Copy isi file supabase-v14-1.sql.
+   - Klik Run.
+   - Pastikan muncul Success.
 
-FILE UTAMA YANG DIGANTI:
-- index.html
-- admin/index.html
-- assets/css/style.css
-- assets/js/admin.js
-- assets/js/public.js
-- dosmos-logo.png
+2. GitHub:
+   Replace file berikut pada lokasi yang sama:
+   - index.html
+   - admin/index.html
+   - assets/css/style.css
+   - assets/js/admin.js
+   - assets/js/public.js
+   - assets/js/config.js
 
-PENTING:
-Menu Branding memerlukan setup-branding.sql karena ada kolom database baru.
-Tidak perlu menghapus tabel atau data lama.
+3. Commit changes.
+
+4. Tunggu Cloudflare Pages selesai deploy.
+
+5. Buka website dan tekan Ctrl + F5.
+
+6. Login Admin > Branding:
+   - Upload Hero Background
+   - Upload Hero Background Mobile
+   - Upload Background Login
+   - Upload Background Footer
+   - Atur tingkat gelap dan posisi
+   - Klik Simpan Branding
+
+CATATAN:
+- Bucket Supabase harus bernama dosmos-media dan Public.
+- Jangan ubah nama folder/file.
+- File config.js berisi publishable key, bukan service-role key.

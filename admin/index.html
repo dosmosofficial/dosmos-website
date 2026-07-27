@@ -214,6 +214,55 @@
               <input id="branding_favicon_url" placeholder="Kosongkan untuk memakai logo utama">
             </label>
 
+            <label>Upload Hero Background
+              <input id="branding_hero_bg_file" type="file" accept="image/png,image/jpeg,image/webp">
+            </label>
+
+            <label>Atau URL Hero Background
+              <input id="branding_hero_bg_url" placeholder="https://...">
+            </label>
+
+            <label>Upload Hero Background Mobile
+              <input id="branding_mobile_hero_bg_file" type="file" accept="image/png,image/jpeg,image/webp">
+            </label>
+
+            <label>Atau URL Hero Background Mobile
+              <input id="branding_mobile_hero_bg_url" placeholder="Kosongkan untuk memakai hero desktop">
+            </label>
+
+            <label>Upload Background Login
+              <input id="branding_login_bg_file" type="file" accept="image/png,image/jpeg,image/webp">
+            </label>
+
+            <label>Atau URL Background Login
+              <input id="branding_login_bg_url" placeholder="https://...">
+            </label>
+
+            <label>Upload Background Footer
+              <input id="branding_footer_bg_file" type="file" accept="image/png,image/jpeg,image/webp">
+            </label>
+
+            <label>Atau URL Background Footer
+              <input id="branding_footer_bg_url" placeholder="https://...">
+            </label>
+
+            <label>Tingkat Gelap Hero
+              <div class="range-control">
+                <input id="branding_hero_overlay" type="range" min="0" max="95" value="65">
+                <output id="branding_hero_overlay_value">65%</output>
+              </div>
+            </label>
+
+            <label>Posisi Hero Background
+              <select id="branding_hero_position">
+                <option value="center">Tengah</option>
+                <option value="top">Atas</option>
+                <option value="bottom">Bawah</option>
+                <option value="left">Kiri</option>
+                <option value="right">Kanan</option>
+              </select>
+            </label>
+
             <label>Warna Utama
               <div class="color-control">
                 <input id="branding_primary_color" type="color" value="#f6c744">
@@ -241,7 +290,7 @@
               <img id="brandingPreviewLogo" src="../dosmos-logo.png" alt="Preview logo">
               <strong id="brandingPreviewName">DOSMOS</strong>
             </div>
-            <div class="branding-preview-hero">
+            <div class="branding-preview-hero" id="brandingPreviewHeroArea">
               <img id="brandingPreviewHero" src="../dosmos-logo.png" alt="Preview hero">
               <span>Official Gaming & Esports Company</span>
               <h4 id="brandingPreviewHeroName">DOSMOS</h4>

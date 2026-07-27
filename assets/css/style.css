@@ -1252,3 +1252,82 @@ body{
   }
 }
 
+/* =========================================================
+   DOSMOS VIP V14.1 — BACKGROUND MANAGER
+========================================================= */
+:root{
+  --hero-bg-image:url("https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1800&q=88");
+  --hero-mobile-bg-image:var(--hero-bg-image);
+  --hero-overlay:.65;
+  --hero-position:center;
+  --login-bg-image:none;
+  --footer-bg-image:none;
+}
+
+.hero{
+  background-image:
+    linear-gradient(
+      rgba(5,5,5,var(--hero-overlay)),
+      rgba(5,5,5,calc(var(--hero-overlay) + .25))
+    ),
+    var(--hero-bg-image);
+  background-position:center,var(--hero-position);
+  background-size:cover,cover;
+  background-repeat:no-repeat,no-repeat;
+}
+
+.auth-wrap{
+  position:relative;
+  isolation:isolate;
+  background-image:
+    linear-gradient(rgba(5,5,5,.76),rgba(5,5,5,.92)),
+    var(--login-bg-image);
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+
+footer{
+  background-image:
+    linear-gradient(rgba(5,5,5,.82),rgba(5,5,5,.94)),
+    var(--footer-bg-image);
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+
+.range-control{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:12px;
+  min-height:48px;
+  padding:9px 12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#090909;
+}
+
+.range-control input[type="range"]{
+  min-height:auto;
+  padding:0;
+}
+
+.range-control output{
+  min-width:46px;
+  color:var(--gold);
+  font-weight:800;
+  text-align:right;
+}
+
+@media(max-width:640px){
+  .hero{
+    background-image:
+      linear-gradient(
+        rgba(5,5,5,var(--hero-overlay)),
+        rgba(5,5,5,calc(var(--hero-overlay) + .25))
+      ),
+      var(--hero-mobile-bg-image);
+  }
+}
+

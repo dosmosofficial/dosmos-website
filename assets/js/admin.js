@@ -233,7 +233,13 @@ let savedBranding = {
   hero_logo_url:"../dosmos-logo.png",
   favicon_url:"../dosmos-logo.png",
   primary_color:"#f6c744",
-  background_color:"#080808"
+  background_color:"#080808",
+  hero_background_url:"",
+  mobile_hero_background_url:"",
+  login_background_url:"",
+  footer_background_url:"",
+  hero_overlay:65,
+  hero_position:"center"
 };
 
 const validHex = value => /^#[0-9a-fA-F]{6}$/.test(String(value||"").trim());
@@ -278,6 +284,9 @@ function updateBrandingPreview(){
   const background=validHex(branding_background_color_text.value)?branding_background_color_text.value:"#080808";
   const mainUrl=branding_main_logo_url.value.trim()||savedBranding.main_logo_url||"../dosmos-logo.png";
   const heroUrl=branding_hero_logo_url.value.trim()||mainUrl;
+  const heroBg=branding_hero_bg_url.value.trim()||savedBranding.hero_background_url||"";
+  const overlay=Math.min(95,Math.max(0,Number(branding_hero_overlay.value||65)));
+  const heroPosition=branding_hero_position.value||"center";
 
   brandingPreviewName.textContent=name;
   brandingPreviewHeroName.textContent=name;
@@ -288,6 +297,18 @@ function updateBrandingPreview(){
   const card=document.querySelector(".branding-preview-card");
   card?.style.setProperty("--brand-primary",primary);
   card?.style.setProperty("--brand-background",background);
+
+  const previewArea=document.getElementById("brandingPreviewHeroArea");
+  if(previewArea){
+    const shade=(overlay/100).toFixed(2);
+    previewArea.style.backgroundImage=heroBg
+      ? `linear-gradient(rgba(5,5,5,${shade}),rgba(5,5,5,${Math.min(0.98,Number(shade)+0.18)})),url("${heroBg}")`
+      : "";
+    previewArea.style.backgroundPosition=heroPosition;
+    previewArea.style.backgroundSize="cover";
+    previewArea.style.backgroundRepeat="no-repeat";
+  }
+  branding_hero_overlay_value.textContent=`${overlay}%`;
 }
 
 function fillBrandingForm(data={}){
@@ -298,7 +319,13 @@ function fillBrandingForm(data={}){
     hero_logo_url:data.hero_logo_url||data.main_logo_url||"../dosmos-logo.png",
     favicon_url:data.favicon_url||data.main_logo_url||"../dosmos-logo.png",
     primary_color:validHex(data.primary_color)?data.primary_color:"#f6c744",
-    background_color:validHex(data.background_color)?data.background_color:"#080808"
+    background_color:validHex(data.background_color)?data.background_color:"#080808",
+    hero_background_url:data.hero_background_url||"",
+    mobile_hero_background_url:data.mobile_hero_background_url||data.hero_background_url||"",
+    login_background_url:data.login_background_url||"",
+    footer_background_url:data.footer_background_url||"",
+    hero_overlay:Number.isFinite(Number(data.hero_overlay))?Number(data.hero_overlay):65,
+    hero_position:data.hero_position||"center"
   };
 
   branding_site_name.value=savedBranding.site_name;
@@ -306,6 +333,12 @@ function fillBrandingForm(data={}){
   branding_main_logo_url.value=data.main_logo_url||"";
   branding_hero_logo_url.value=data.hero_logo_url||"";
   branding_favicon_url.value=data.favicon_url||"";
+  branding_hero_bg_url.value=data.hero_background_url||"";
+  branding_mobile_hero_bg_url.value=data.mobile_hero_background_url||"";
+  branding_login_bg_url.value=data.login_background_url||"";
+  branding_footer_bg_url.value=data.footer_background_url||"";
+  branding_hero_overlay.value=String(savedBranding.hero_overlay);
+  branding_hero_position.value=savedBranding.hero_position;
   branding_primary_color.value=savedBranding.primary_color;
   branding_primary_color_text.value=savedBranding.primary_color;
   branding_background_color.value=savedBranding.background_color;
@@ -330,6 +363,9 @@ function applyAdminBranding(data){
   if(fav)fav.href=data.favicon_url||logo;
   document.documentElement.style.setProperty("--brand-primary",data.primary_color||"#f6c744");
   document.documentElement.style.setProperty("--brand-background",data.background_color||"#080808");
+
+  const loginBg=data.login_background_url||"";
+  document.documentElement.style.setProperty("--login-bg-image",loginBg?`url("${loginBg}")`:"none");
 }
 
 async function loadBranding(){
@@ -356,8 +392,20 @@ branding_hero_logo_file?.addEventListener("change",()=>{
 });
 [
   branding_site_name,branding_slogan,branding_main_logo_url,
-  branding_hero_logo_url,branding_favicon_url
+  branding_hero_logo_url,branding_favicon_url,branding_hero_bg_url,
+  branding_mobile_hero_bg_url,branding_login_bg_url,branding_footer_bg_url,
+  branding_hero_overlay,branding_hero_position
 ].forEach(el=>el?.addEventListener("input",updateBrandingPreview));
+
+
+branding_hero_bg_file?.addEventListener("change",()=>{
+  const file=branding_hero_bg_file.files[0];
+  if(file){
+    branding_hero_bg_url.value=URL.createObjectURL(file);
+    branding_hero_bg_url.dataset.objectUrl="1";
+  }
+  updateBrandingPreview();
+});
 
 syncBrandColor("branding_primary_color","branding_primary_color_text");
 syncBrandColor("branding_background_color","branding_background_color_text");
@@ -385,6 +433,26 @@ brandingForm?.addEventListener("submit",async e=>{
       favicon=await uploadMedia(branding_favicon_file.files[0],"branding/favicon");
     }
 
+    let heroBackground=branding_hero_bg_url.value.trim()||savedBranding.hero_background_url||null;
+    if(branding_hero_bg_file.files[0]){
+      heroBackground=await uploadMedia(branding_hero_bg_file.files[0],"branding/backgrounds/hero");
+    }
+
+    let mobileHeroBackground=branding_mobile_hero_bg_url.value.trim()||heroBackground||null;
+    if(branding_mobile_hero_bg_file.files[0]){
+      mobileHeroBackground=await uploadMedia(branding_mobile_hero_bg_file.files[0],"branding/backgrounds/mobile-hero");
+    }
+
+    let loginBackground=branding_login_bg_url.value.trim()||savedBranding.login_background_url||null;
+    if(branding_login_bg_file.files[0]){
+      loginBackground=await uploadMedia(branding_login_bg_file.files[0],"branding/backgrounds/login");
+    }
+
+    let footerBackground=branding_footer_bg_url.value.trim()||savedBranding.footer_background_url||null;
+    if(branding_footer_bg_file.files[0]){
+      footerBackground=await uploadMedia(branding_footer_bg_file.files[0],"branding/backgrounds/footer");
+    }
+
     const primary=branding_primary_color_text.value.trim();
     const background=branding_background_color_text.value.trim();
     if(!validHex(primary)||!validHex(background)){
@@ -400,6 +468,12 @@ brandingForm?.addEventListener("submit",async e=>{
       favicon_url:favicon,
       primary_color:primary,
       background_color:background,
+      hero_background_url:heroBackground,
+      mobile_hero_background_url:mobileHeroBackground,
+      login_background_url:loginBackground,
+      footer_background_url:footerBackground,
+      hero_overlay:Number(branding_hero_overlay.value||65),
+      hero_position:branding_hero_position.value||"center",
       updated_at:new Date().toISOString()
     };
 

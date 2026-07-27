@@ -10,6 +10,11 @@ function applyPublicBranding(data){
   const mainLogo=data.main_logo_url||"dosmos-logo.png";
   const heroLogo=data.hero_logo_url||mainLogo;
   const favicon=data.favicon_url||mainLogo;
+  const heroBackground=data.hero_background_url||"";
+  const mobileHeroBackground=data.mobile_hero_background_url||heroBackground;
+  const footerBackground=data.footer_background_url||"";
+  const heroOverlay=Math.min(95,Math.max(0,Number(data.hero_overlay||65)));
+  const heroPosition=data.hero_position||"center";
 
   document.querySelectorAll("[data-site-name]").forEach(el=>el.textContent=siteName);
   document.querySelectorAll("[data-site-slogan]").forEach(el=>el.textContent=slogan);
@@ -31,6 +36,12 @@ function applyPublicBranding(data){
     document.documentElement.style.setProperty("--brand-background",data.background_color);
     document.documentElement.style.setProperty("--bg",data.background_color);
   }
+
+  document.documentElement.style.setProperty("--hero-bg-image",heroBackground?`url("${heroBackground}")`:"none");
+  document.documentElement.style.setProperty("--hero-mobile-bg-image",mobileHeroBackground?`url("${mobileHeroBackground}")`:"var(--hero-bg-image)");
+  document.documentElement.style.setProperty("--hero-overlay",(heroOverlay/100).toFixed(2));
+  document.documentElement.style.setProperty("--hero-position",heroPosition);
+  document.documentElement.style.setProperty("--footer-bg-image",footerBackground?`url("${footerBackground}")`:"none");
 }
 
 
