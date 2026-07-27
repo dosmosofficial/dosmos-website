@@ -1,31 +1,34 @@
-DOSMOS VIP V11
+DOSMOS VIP
 
 PERUBAHAN:
-- Semua tulisan CMS diganti menjadi DOSMOS VIP.
-- Login menjadi Exclusive Management Portal.
-- Dashboard VIP untuk Jesse — CEO DOSMOS.
-- Welcome card dan CEO Access Active.
-- Quick actions: tambah event, registrasi, bracket, gallery.
-- Search/filter pada seluruh daftar data.
-- Toast notification premium saat simpan/error.
-- Hamburger menu mobile, sidebar slide, overlay blur.
-- Semua fitur V10/V9 tetap dipertahankan.
+- Semua tulisan versi seperti V10, V11, atau V12 di tampilan sudah dihapus.
+- Nama portal hanya tampil sebagai DOSMOS VIP.
+- Tampilan HP dibuat lebih lega dan tidak sempit.
+- Header mobile tetap memakai tombol hamburger.
+- Sidebar slide dari kiri dengan overlay.
+- Form dibuat satu kolom di HP.
+- Statistik dibuat dua kolom yang lebih besar; di layar sangat kecil menjadi satu kolom.
+- Quick action rapi di HP.
+- Tabel dapat digeser horizontal tanpa merusak layout.
+- Padding dan ukuran tombol diperbesar agar mudah disentuh.
+- Semua fitur lama tetap dipertahankan.
 
 CARA PASANG:
 1. Extract ZIP.
 2. Upload ke GitHub:
-   index.html
-   admin/index.html
-   assets/css/style.css
-   assets/js/admin.js
-   assets/js/public.js
-   assets/js/config.js
+   - index.html
+   - admin/index.html
+   - assets/css/style.css
+   - assets/js/admin.js
+   - assets/js/public.js
+   - assets/js/config.js
 3. Commit changes.
 4. Tunggu Cloudflare deploy.
-5. Refresh memakai Ctrl + Shift + R.
+5. Refresh dengan Ctrl + Shift + R.
+6. Di HP pastikan Desktop Site tidak aktif.
 
 DATABASE:
-Tidak perlu menjalankan SQL baru apabila V9/V10 sudah berjalan.
+Tidak perlu menjalankan SQL baru apabila versi sebelumnya sudah berfungsi.
 
 ADMIN:
 https://dosmos.pages.dev/admin/

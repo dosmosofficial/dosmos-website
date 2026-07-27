@@ -5,7 +5,7 @@ const loginView=document.getElementById("loginView");
 const dashboardView=document.getElementById("dashboardView");
 const authMessage=document.getElementById("authMessage");
 
-// Mobile sidebar V10
+// Mobile sidebar
 const mobileMenuBtn = document.getElementById("mobileMenuBtn");
 const adminSidebar = document.getElementById("adminSidebar");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
@@ -177,7 +177,7 @@ settingsForm.addEventListener("submit",async e=>{
 checkSession();
 
 
-// DOSMOS VIP V11 enhancements
+// DOSMOS VIP enhancements
 const vipToast = document.createElement("div");
 vipToast.className = "vip-toast";
 document.body.appendChild(vipToast);
