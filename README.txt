@@ -49,3 +49,13 @@ DOSMOS VIP V14.2 — CONTENT MANAGER
 3. Commit dan tunggu Cloudflare deploy.
 4. Login Admin > Website Text.
 5. Ubah tulisan lalu klik Simpan Kata-Kata Website.
+
+
+DOSMOS VIP V14.3 — LIVE CENTER
+1. Jalankan supabase-v14-3.sql di Supabase SQL Editor.
+2. Replace index.html, admin/index.html, style.css, admin.js, dan public.js.
+3. Commit, tunggu Cloudflare deploy, lalu Ctrl+F5.
+4. Masuk Admin > Live Center.
+
+YouTube, Twitch, Facebook, dan Kick bisa dibuat embed otomatis.
+TikTok biasanya membatasi iframe; gunakan tombol Watch Now atau URL Embed resmi.

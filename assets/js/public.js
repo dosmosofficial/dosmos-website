@@ -1,4 +1,13 @@
 
+let liveCountdownTimer=null;
+function youtubeIdFromUrl(url){const m=String(url||"").match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|live\/|shorts\/))([^?&/]+)/i);return m?.[1]||"";}
+function twitchChannelFromUrl(url){try{return new URL(url).pathname.split("/").filter(Boolean)[0]||"";}catch{return "";}}
+function safeLiveUrl(url){try{const p=new URL(url,location.href);return ["http:","https:"].includes(p.protocol)?p.href:"";}catch{return "";}}
+function makeLiveEmbed(d){const custom=safeLiveUrl(d.live_embed_url);if(custom)return custom;const url=safeLiveUrl(d.live_stream_url);if(!url)return "";const p=d.live_platform||"youtube";if(p==="youtube"){const id=youtubeIdFromUrl(url);return id?`https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0`:"";}if(p==="twitch"){const c=twitchChannelFromUrl(url);return c?`https://player.twitch.tv/?channel=${encodeURIComponent(c)}&parent=${encodeURIComponent(location.hostname)}`:"";}if(p==="facebook")return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&autoplay=true`;if(p==="kick"){try{const c=new URL(url).pathname.split("/").filter(Boolean)[0];return c?`https://player.kick.com/${encodeURIComponent(c)}`:"";}catch{return "";}}return "";}
+function setLiveCountdown(startAt,enabled){if(liveCountdownTimer)clearInterval(liveCountdownTimer);const box=document.getElementById("liveCountdown");if(!box)return;const target=new Date(startAt||"").getTime();if(!enabled||!Number.isFinite(target)||target<=Date.now()){box.hidden=true;return;}box.hidden=false;const update=()=>{const r=Math.max(0,target-Date.now());countdownDays.textContent=String(Math.floor(r/86400000)).padStart(2,"0");countdownHours.textContent=String(Math.floor((r%86400000)/3600000)).padStart(2,"0");countdownMinutes.textContent=String(Math.floor((r%3600000)/60000)).padStart(2,"0");countdownSeconds.textContent=String(Math.floor((r%60000)/1000)).padStart(2,"0");if(r<=0){clearInterval(liveCountdownTimer);box.hidden=true;}};update();liveCountdownTimer=setInterval(update,1000);}
+function renderLiveCenter(d){const shell=document.getElementById("liveCenterShell");if(!shell)return;const s=d.live_status||"offline",isLive=s==="live",isSoon=s==="coming_soon",statusText=isLive?"LIVE NOW":isSoon?"COMING SOON":"OFFLINE",title=d.live_stream_title||"DOSMOS Live",offline=d.live_offline_text||"Live berikutnya segera hadir.",watch=safeLiveUrl(d.live_watch_url||d.live_stream_url),embed=makeLiveEmbed(d),thumb=safeLiveUrl(d.live_thumbnail_url);[liveStatusPill,liveStatusSide].forEach(el=>{if(el){el.textContent=statusText;el.className=`live-status-pill ${isLive?"is-live":isSoon?"is-coming":"is-offline"}`;}});livePlatformLabel.textContent=(d.live_platform||"youtube").toUpperCase();liveStreamTitle.textContent=title;liveStreamDescription.textContent=d.live_description||"Saksikan siaran langsung dan pertandingan terbaru dari DOSMOS.";liveChannelName.textContent=d.live_channel_name||"DOSMOS Official";liveViewerText.textContent=d.live_viewer_text||"";liveWatchButton.textContent=d.live_button_text||"WATCH NOW";liveWatchButton.hidden=!watch;if(watch)liveWatchButton.href=watch;const frame=document.getElementById("liveFrame");if(isLive&&embed){frame.innerHTML=`<iframe src="${embed.replace(/"/g,"&quot;")}" title="${title.replace(/"/g,"&quot;")}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>`;}else{frame.innerHTML=`<div class="live-placeholder" ${thumb?`style="background-image:linear-gradient(rgba(5,5,5,.58),rgba(5,5,5,.88)),url('${thumb.replace(/'/g,"%27")}')"`:""}><div class="live-status-pill ${isSoon?"is-coming":"is-offline"}" id="liveStatusPill">${statusText}</div><h3 id="livePlaceholderTitle">${title}</h3><p id="livePlaceholderText">${offline}</p><div class="live-countdown" id="liveCountdown" hidden><div><strong id="countdownDays">00</strong><span>Hari</span></div><div><strong id="countdownHours">00</strong><span>Jam</span></div><div><strong id="countdownMinutes">00</strong><span>Menit</span></div><div><strong id="countdownSeconds">00</strong><span>Detik</span></div></div></div>`;}setLiveCountdown(d.live_start_at,String(d.live_show_countdown)!=="false"&&!isLive);}
+
+
 
 function applyPublicContent(data){
   document.querySelectorAll("[data-content]").forEach(el=>{
@@ -132,14 +141,13 @@ async function loadSettings(){
     if(!data)return;
     applyPublicBranding(data);
     applyPublicContent(data);
+    renderLiveCenter(data);
     document.querySelectorAll("[data-wa]").forEach(a=>a.href=`https://wa.me/${String(data.whatsapp||"6281288836205").replace(/\D/g,"")}`);
     document.querySelectorAll("[data-email]").forEach(a=>{a.href=`mailto:${data.email||"dosmosid@gmail.com"}`;a.querySelector("strong")&&(a.querySelector("strong").textContent=data.email||"dosmosid@gmail.com")});
     document.querySelectorAll("[data-instagram]").forEach(a=>a.href=data.instagram||"https://instagram.com/dosmos.id");
     document.querySelectorAll("[data-tiktok]").forEach(a=>a.href=data.tiktok||"#");
     document.querySelectorAll("[data-discord]").forEach(a=>a.href=data.discord||"#");
-    if(data.youtube_live_url){
-      const id=extractYoutubeId(data.youtube_live_url);
-      if(id)document.getElementById("liveFrame").innerHTML=`<iframe src="https://www.youtube.com/embed/${esc(id)}" allowfullscreen></iframe>`;
+    " allowfullscreen></iframe>`;
     }
   }catch(e){}
 }

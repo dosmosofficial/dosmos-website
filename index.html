@@ -63,9 +63,16 @@
   <div class="bracket" id="bracketWrap"><div class="empty">Memuat bracket...</div></div>
 </div></section>
 
-<section class="section" id="live"><div class="container">
+<section class="section live-center-section" id="live"><div class="container">
   <div class="eyebrow" data-content="live_eyebrow">Live Broadcast</div><h2 data-content="live_title">Watch DOSMOS Live</h2>
-  <div class="live-frame" id="liveFrame"><div class="empty">Link live stream belum dipasang.</div></div>
+  <div class="live-center-shell" id="liveCenterShell">
+    <div class="live-player-card"><div class="live-player-frame" id="liveFrame">
+      <div class="live-placeholder"><div class="live-status-pill is-offline" id="liveStatusPill">OFFLINE</div><h3 id="livePlaceholderTitle">DOSMOS Live</h3><p id="livePlaceholderText">Live berikutnya segera hadir.</p>
+        <div class="live-countdown" id="liveCountdown" hidden><div><strong id="countdownDays">00</strong><span>Hari</span></div><div><strong id="countdownHours">00</strong><span>Jam</span></div><div><strong id="countdownMinutes">00</strong><span>Menit</span></div><div><strong id="countdownSeconds">00</strong><span>Detik</span></div></div>
+      </div>
+    </div></div>
+    <aside class="live-info-card"><div class="live-meta-row"><span class="live-status-pill is-offline" id="liveStatusSide">OFFLINE</span><span class="live-platform" id="livePlatformLabel">YOUTUBE</span></div><h3 id="liveStreamTitle">DOSMOS Live</h3><p id="liveStreamDescription">Saksikan siaran langsung dan pertandingan terbaru dari DOSMOS.</p><div class="live-channel-row"><span id="liveChannelName">DOSMOS Official</span><span id="liveViewerText"></span></div><a class="btn btn-primary live-watch-btn" id="liveWatchButton" href="#" target="_blank" rel="noopener">WATCH NOW</a></aside>
+  </div>
 </div></section>
 
 <section class="section section-alt" id="champions"><div class="container">
