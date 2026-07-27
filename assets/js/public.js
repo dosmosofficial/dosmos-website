@@ -1,4 +1,120 @@
 
+
+/* DOSMOS VIP V14.4 — ANNOUNCEMENT FRONTEND */
+function annEscape(value){
+  return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));
+}
+function annSafeUrl(value){
+  if(!value)return "";
+  if(String(value).startsWith("#"))return String(value);
+  try{
+    const url=new URL(value,location.href);
+    return ["http:","https:"].includes(url.protocol)?url.href:"";
+  }catch{return "";}
+}
+function isAnnouncementActive(item){
+  if(item.status!=="published")return false;
+  const now=Date.now();
+  if(item.start_at&&new Date(item.start_at).getTime()>now)return false;
+  if(item.end_at&&new Date(item.end_at).getTime()<now)return false;
+  return true;
+}
+function announcementDismissKey(item){return `dosmos-ann-dismissed-${item.id}`;}
+function isAnnouncementDismissed(item){return sessionStorage.getItem(announcementDismissKey(item))==="1";}
+function dismissAnnouncement(item,el){
+  sessionStorage.setItem(announcementDismissKey(item),"1");
+  el?.remove();
+}
+function announcementButton(item){
+  const url=annSafeUrl(item.button_url);
+  if(!item.button_text||!url)return "";
+  return `<a class="ann-btn" href="${annEscape(url)}" ${url.startsWith("#")?"":'target="_blank" rel="noopener"'}>${annEscape(item.button_text)}</a>`;
+}
+function announcementClose(item){
+  return item.dismissible!==false?`<button class="ann-close" type="button" aria-label="Tutup">×</button>`:"";
+}
+function announcementBaseClass(item){
+  return `dosmos-ann theme-${item.theme||"gold"} anim-${item.animation||"fade"} ${item.emergency?"is-emergency":""}`;
+}
+function bindAnnouncementElement(item,el){
+  el.querySelector(".ann-close")?.addEventListener("click",()=>dismissAnnouncement(item,el));
+  if(Number(item.auto_hide_seconds)>0){
+    setTimeout(()=>{ if(document.body.contains(el)) dismissAnnouncement(item,el); },Number(item.auto_hide_seconds)*1000);
+  }
+}
+function renderTopbar(item){
+  const root=document.getElementById("announcementTopbarRoot");
+  if(!root)return;
+  const el=document.createElement("div");
+  el.className=announcementBaseClass(item)+" ann-topbar";
+  el.innerHTML=`<div class="ann-inner">${item.badge?`<span class="ann-badge">${annEscape(item.badge)}</span>`:""}<strong>${annEscape(item.title)}</strong><span>${annEscape(item.message)}</span>${announcementButton(item)}${announcementClose(item)}</div>`;
+  root.appendChild(el); bindAnnouncementElement(item,el);
+}
+function renderTicker(items){
+  const root=document.getElementById("announcementTickerRoot");
+  if(!root||!items.length)return;
+  const wrapper=document.createElement("div");
+  wrapper.className=announcementBaseClass(items[0])+" ann-ticker";
+  const content=items.map(item=>`${item.badge?`<b>${annEscape(item.badge)}</b> `:""}${annEscape(item.title)} — ${annEscape(item.message)}`).join("　　◆　　");
+  wrapper.innerHTML=`<div class="ann-ticker-track"><span>${content}</span><span>${content}</span></div>`;
+  root.appendChild(wrapper);
+}
+function renderPopup(item){
+  const root=document.getElementById("announcementPopupRoot");
+  if(!root)return;
+  const el=document.createElement("div");
+  el.className="ann-popup-overlay";
+  el.innerHTML=`<div class="${announcementBaseClass(item)} ann-popup-card">${announcementClose(item)}${item.badge?`<span class="ann-badge">${annEscape(item.badge)}</span>`:""}<h3>${annEscape(item.title)}</h3><p>${annEscape(item.message)}</p>${announcementButton(item)}</div>`;
+  root.appendChild(el);
+  bindAnnouncementElement(item,el);
+  el.querySelector(".ann-close")?.addEventListener("click",()=>dismissAnnouncement(item,el));
+}
+function renderFloating(item){
+  const root=document.getElementById("announcementFloatingRoot");
+  if(!root)return;
+  const el=document.createElement("div");
+  el.className=announcementBaseClass(item)+" ann-floating";
+  el.innerHTML=`${announcementClose(item)}${item.badge?`<span class="ann-badge">${annEscape(item.badge)}</span>`:""}<strong>${annEscape(item.title)}</strong><p>${annEscape(item.message)}</p>${announcementButton(item)}`;
+  root.appendChild(el); bindAnnouncementElement(item,el);
+}
+function renderToast(item){
+  const root=document.getElementById("announcementToastRoot");
+  if(!root)return;
+  const el=document.createElement("div");
+  el.className=announcementBaseClass(item)+" ann-toast";
+  el.innerHTML=`${announcementClose(item)}${item.badge?`<span class="ann-badge">${annEscape(item.badge)}</span>`:""}<strong>${annEscape(item.title)}</strong><p>${annEscape(item.message)}</p>${announcementButton(item)}`;
+  root.appendChild(el); bindAnnouncementElement(item,el);
+}
+async function loadPublicAnnouncements(){
+  try{
+    const {data,error}=await sb.from("announcements").select("*").eq("status","published").order("priority",{ascending:false}).order("created_at",{ascending:false});
+    if(error)throw error;
+    const active=(data||[]).filter(isAnnouncementActive).filter(item=>!isAnnouncementDismissed(item));
+    if(!active.length)return;
+
+    const emergency=active.find(item=>item.emergency);
+    if(emergency){
+      renderPopup(emergency);
+      return;
+    }
+
+    const topbars=active.filter(x=>x.type==="topbar");
+    const tickers=active.filter(x=>x.type==="ticker");
+    const popups=active.filter(x=>x.type==="popup");
+    const floating=active.filter(x=>x.type==="floating");
+    const toasts=active.filter(x=>x.type==="toast");
+
+    if(topbars[0])renderTopbar(topbars[0]);
+    if(tickers.length)renderTicker(tickers);
+    if(popups[0])renderPopup(popups[0]);
+    if(floating[0])renderFloating(floating[0]);
+    toasts.slice(0,3).forEach(renderToast);
+  }catch(err){
+    console.warn("Announcement Center:",err.message);
+  }
+}
+
+
 let liveCountdownTimer=null;
 function youtubeIdFromUrl(url){const m=String(url||"").match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|live\/|shorts\/))([^?&/]+)/i);return m?.[1]||"";}
 function twitchChannelFromUrl(url){try{return new URL(url).pathname.split("/").filter(Boolean)[0]||"";}catch{return "";}}
@@ -176,3 +292,5 @@ document.querySelectorAll(".logo").forEach(img=>{
 });
 document.getElementById("menuBtn")?.addEventListener("click",()=>document.getElementById("navLinks").classList.toggle("open"));
 loadContent();loadSponsors();loadBracket();loadSettings();
+
+document.addEventListener('DOMContentLoaded',loadPublicAnnouncements);

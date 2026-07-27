@@ -79,7 +79,7 @@ async function rows(table,order="created_at",asc=false){
 function showTab(id){document.querySelector(`[data-tab="${id}"]`)?.click();window.scrollTo({top:0,behavior:"smooth"})}
 window.deleteRow=async(table,id)=>{if(!confirm("Hapus data ini?"))return;const {error}=await sb.from(table).delete().eq("id",id);if(error){alert(error.message);return}await refreshAll()};
 async function refreshAll(){
-  await Promise.all([loadEvents(),loadRegistrations(),loadMatches(),loadChampions(),loadNews(),loadGallery(),loadSponsors(),loadSettings(),loadBranding(),loadWebsiteContent(),loadLiveCenter()]);
+  await Promise.all([loadEvents(),loadRegistrations(),loadMatches(),loadChampions(),loadNews(),loadGallery(),loadSponsors(),loadSettings(),loadBranding(),loadWebsiteContent(),loadLiveCenter(),loadAnnouncements()]);
   const tables=["events","registrations","matches","champions","news","gallery","sponsors"];
   for(const t of tables)document.getElementById("stat_"+t).textContent=(await rows(t)).length;
 }
@@ -562,3 +562,181 @@ function setLivePreview(){const s=live_status.value||"offline";livePreviewStatus
 async function loadLiveCenter(){const {data,error}=await sb.from("site_settings").select("*").eq("id",1).maybeSingle();if(error)throw error;liveKeys.forEach(key=>{const el=document.getElementById(key);if(!el)return;let value=data?.[key];if(value===null||value===undefined||value==="")value=liveDefaults[key];if(key==="live_show_countdown")value=String(value)!=="false"?"true":"false";if(key==="live_start_at"&&value){const d=new Date(value);if(!Number.isNaN(d.getTime())){const local=new Date(d.getTime()-d.getTimezoneOffset()*60000);value=local.toISOString().slice(0,16);}}el.value=String(value??"");});setLivePreview();}
 [live_status,live_platform,live_stream_title,live_channel_name,live_description,live_stream_url,live_embed_url,live_watch_url,live_button_text,live_thumbnail_url,live_viewer_text,live_start_at,live_offline_text,live_show_countdown].forEach(el=>el?.addEventListener("input",setLivePreview));
 liveCenterForm?.addEventListener("submit",async e=>{e.preventDefault();msg(liveCenterMessage,"Menyimpan Live Center...");liveCenterSubmit.disabled=true;try{let thumbnail=live_thumbnail_url.value.trim()||null;if(live_thumbnail_file.files[0])thumbnail=await uploadMedia(live_thumbnail_file.files[0],"live-center/thumbnails");let startAt=null;if(live_start_at.value){const d=new Date(live_start_at.value);if(!Number.isNaN(d.getTime()))startAt=d.toISOString();}const payload={id:1,live_status:live_status.value,live_platform:live_platform.value,live_stream_title:live_stream_title.value.trim()||liveDefaults.live_stream_title,live_channel_name:live_channel_name.value.trim()||liveDefaults.live_channel_name,live_description:live_description.value.trim()||liveDefaults.live_description,live_stream_url:live_stream_url.value.trim()||null,live_embed_url:live_embed_url.value.trim()||null,live_watch_url:live_watch_url.value.trim()||live_stream_url.value.trim()||null,live_button_text:live_button_text.value.trim()||"WATCH NOW",live_thumbnail_url:thumbnail,live_viewer_text:live_viewer_text.value.trim()||null,live_start_at:startAt,live_offline_text:live_offline_text.value.trim()||liveDefaults.live_offline_text,live_show_countdown:live_show_countdown.value==="true",youtube_live_url:live_platform.value==="youtube"?live_stream_url.value.trim()||null:null,updated_at:new Date().toISOString()};const {error}=await sb.from("site_settings").upsert(payload);if(error)throw error;live_thumbnail_url.value=thumbnail||"";msg(liveCenterMessage,"Live Center berhasil disimpan dan langsung aktif.","success");setLivePreview();}catch(err){msg(liveCenterMessage,err.message,"error");}finally{liveCenterSubmit.disabled=false;}});
+
+
+/* DOSMOS VIP V14.4 — ANNOUNCEMENT CENTER */
+let announcementCache=[];
+
+function announcementToLocalInput(value){
+  if(!value)return "";
+  const d=new Date(value);
+  if(Number.isNaN(d.getTime()))return "";
+  const local=new Date(d.getTime()-d.getTimezoneOffset()*60000);
+  return local.toISOString().slice(0,16);
+}
+
+function announcementToIso(value){
+  if(!value)return null;
+  const d=new Date(value);
+  return Number.isNaN(d.getTime())?null:d.toISOString();
+}
+
+function setAnnouncementPreview(){
+  const badge=announcement_badge.value||"";
+  announcementPreviewBadge.textContent=badge||"INFO";
+  announcementPreviewBadge.style.display=badge?"inline-flex":"none";
+  announcementPreviewTitle.textContent=announcement_title.value.trim()||"Judul Pengumuman";
+  announcementPreviewMessage.textContent=announcement_message.value.trim()||"Preview pengumuman akan tampil di sini.";
+  announcementPreviewButton.textContent=announcement_button_text.value.trim()||"JOIN NOW";
+  announcementPreviewButton.style.display=announcement_button_text.value.trim()?"inline-flex":"none";
+  announcementPreview.className=`form-full announcement-preview-box theme-${announcement_theme.value} anim-${announcement_animation.value}`;
+}
+
+function resetAnnouncementForm(){
+  announcement_id.value="";
+  announcementForm.reset();
+  announcement_priority.value="10";
+  announcement_auto_hide.value="0";
+  announcement_status.value="draft";
+  announcement_type.value="topbar";
+  announcement_theme.value="gold";
+  announcement_animation.value="fade";
+  announcement_dismissible.value="true";
+  announcement_emergency.value="false";
+  setAnnouncementPreview();
+}
+
+async function loadAnnouncements(){
+  const {data,error}=await sb.from("announcements").select("*").order("priority",{ascending:false}).order("created_at",{ascending:false});
+  if(error)throw error;
+  announcementCache=data||[];
+  renderAnnouncementAdminList();
+}
+
+function renderAnnouncementAdminList(){
+  if(!announcementCache.length){
+    announcementList.innerHTML='<div class="empty-state">Belum ada pengumuman.</div>';
+    return;
+  }
+  announcementList.innerHTML=announcementCache.map(item=>{
+    const start=item.start_at?new Date(item.start_at).toLocaleString():"Langsung";
+    const end=item.end_at?new Date(item.end_at).toLocaleString():"Tanpa batas";
+    return `<article class="announcement-admin-card">
+      <div>
+        <div class="announcement-admin-meta">
+          <span>${item.badge||"INFO"}</span>
+          <span>${item.type}</span>
+          <span>${item.status}</span>
+          ${item.emergency?'<span>EMERGENCY</span>':""}
+        </div>
+        <h4>${escapeHtml(item.title||"Tanpa Judul")}</h4>
+        <p>${escapeHtml(item.message||"")}</p>
+        <small>${start} — ${end} · Priority ${item.priority||0}</small>
+      </div>
+      <div class="announcement-admin-buttons">
+        <button class="btn btn-secondary" type="button" data-ann-edit="${item.id}">Edit</button>
+        <button class="btn btn-secondary" type="button" data-ann-toggle="${item.id}">${item.status==="published"?"Jadikan Draft":"Publish"}</button>
+        <button class="btn btn-danger" type="button" data-ann-delete="${item.id}">Hapus</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+announcementList?.addEventListener("click",async e=>{
+  const edit=e.target.closest("[data-ann-edit]");
+  const toggle=e.target.closest("[data-ann-toggle]");
+  const del=e.target.closest("[data-ann-delete]");
+
+  if(edit){
+    const item=announcementCache.find(x=>String(x.id)===String(edit.dataset.annEdit));
+    if(!item)return;
+    announcement_id.value=item.id;
+    announcement_title.value=item.title||"";
+    announcement_message.value=item.message||"";
+    announcement_badge.value=item.badge||"";
+    announcement_type.value=item.type||"topbar";
+    announcement_status.value=item.status||"draft";
+    announcement_theme.value=item.theme||"gold";
+    announcement_animation.value=item.animation||"fade";
+    announcement_button_text.value=item.button_text||"";
+    announcement_button_url.value=item.button_url||"";
+    announcement_priority.value=item.priority??10;
+    announcement_auto_hide.value=item.auto_hide_seconds??0;
+    announcement_start_at.value=announcementToLocalInput(item.start_at);
+    announcement_end_at.value=announcementToLocalInput(item.end_at);
+    announcement_dismissible.value=String(item.dismissible)!=="false"?"true":"false";
+    announcement_emergency.value=String(item.emergency)==="true"?"true":"false";
+    setAnnouncementPreview();
+    document.querySelector('[data-tab="announcementTab"]')?.click();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  if(toggle){
+    const item=announcementCache.find(x=>String(x.id)===String(toggle.dataset.annToggle));
+    if(!item)return;
+    const {error}=await sb.from("announcements").update({
+      status:item.status==="published"?"draft":"published",
+      updated_at:new Date().toISOString()
+    }).eq("id",item.id);
+    if(error)return alert(error.message);
+    await loadAnnouncements();
+  }
+
+  if(del){
+    if(!confirm("Hapus pengumuman ini?"))return;
+    const {error}=await sb.from("announcements").delete().eq("id",del.dataset.annDelete);
+    if(error)return alert(error.message);
+    await loadAnnouncements();
+  }
+});
+
+announcementForm?.addEventListener("submit",async e=>{
+  e.preventDefault();
+  msg(announcementMessage,"Menyimpan pengumuman...");
+  announcementSubmit.disabled=true;
+  try{
+    const payload={
+      title:announcement_title.value.trim(),
+      message:announcement_message.value.trim(),
+      badge:announcement_badge.value||null,
+      type:announcement_type.value,
+      status:announcement_status.value,
+      theme:announcement_theme.value,
+      animation:announcement_animation.value,
+      button_text:announcement_button_text.value.trim()||null,
+      button_url:announcement_button_url.value.trim()||null,
+      priority:Number(announcement_priority.value||0),
+      auto_hide_seconds:Number(announcement_auto_hide.value||0),
+      start_at:announcementToIso(announcement_start_at.value),
+      end_at:announcementToIso(announcement_end_at.value),
+      dismissible:announcement_dismissible.value==="true",
+      emergency:announcement_emergency.value==="true",
+      updated_at:new Date().toISOString()
+    };
+    if(!payload.title||!payload.message)throw new Error("Judul dan isi pengumuman wajib diisi.");
+
+    let error;
+    if(announcement_id.value){
+      ({error}=await sb.from("announcements").update(payload).eq("id",announcement_id.value));
+    }else{
+      ({error}=await sb.from("announcements").insert(payload));
+    }
+    if(error)throw error;
+
+    msg(announcementMessage,"Pengumuman berhasil disimpan.","success");
+    resetAnnouncementForm();
+    await loadAnnouncements();
+  }catch(err){
+    msg(announcementMessage,err.message,"error");
+  }finally{
+    announcementSubmit.disabled=false;
+  }
+});
+
+[
+  announcement_title,announcement_message,announcement_badge,announcement_type,
+  announcement_theme,announcement_animation,announcement_button_text
+].forEach(el=>el?.addEventListener("input",setAnnouncementPreview));
+
+announcementReset?.addEventListener("click",resetAnnouncementForm);
+announcementRefresh?.addEventListener("click",loadAnnouncements);

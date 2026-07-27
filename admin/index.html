@@ -57,6 +57,7 @@
       <button data-tab="brandingTab">Branding</button>
       <button data-tab="contentTab">Website Text</button>
       <button data-tab="liveCenterTab">Live Center</button>
+      <button data-tab="announcementTab">Announcement</button>
       <button data-tab="settingsTab">Settings</button>
       <a href="../">Lihat Website</a>
       <button class="sidebar-logout-btn" id="sidebarLogoutBtn" type="button">Logout</button>
@@ -385,6 +386,141 @@
           <div class="form-full live-admin-preview" id="liveAdminPreview"><div class="live-admin-preview-badge offline" id="livePreviewStatus">OFFLINE</div><strong id="livePreviewTitle">DOSMOS Live</strong><span id="livePreviewPlatform">YouTube</span></div>
           <div class="form-full"><button class="btn btn-primary" id="liveCenterSubmit" type="submit">Simpan Live Center</button><div id="liveCenterMessage" class="message"></div></div>
         </form>
+      </div>
+    </section>
+
+
+    <section class="tab-panel" id="announcementTab">
+      <div class="panel">
+        <div class="vip-panel-head">
+          <div>
+            <div class="eyebrow">DOSMOS ANNOUNCEMENT CENTER</div>
+            <h3>Kelola Pengumuman Website</h3>
+          </div>
+          <span class="branding-status">Smart Scheduler</span>
+        </div>
+
+        <form id="announcementForm" class="form-grid" style="margin-top:20px">
+          <input id="announcement_id" type="hidden">
+
+          <label>Judul
+            <input id="announcement_title" placeholder="Contoh: Registration Open">
+          </label>
+
+          <label>Badge
+            <select id="announcement_badge">
+              <option value="">Tanpa Badge</option>
+              <option value="HOT">HOT</option>
+              <option value="NEW">NEW</option>
+              <option value="LIVE">LIVE</option>
+              <option value="IMPORTANT">IMPORTANT</option>
+              <option value="UPDATE">UPDATE</option>
+              <option value="MAINTENANCE">MAINTENANCE</option>
+            </select>
+          </label>
+
+          <label class="form-full">Isi Pengumuman
+            <textarea id="announcement_message" placeholder="Tulis isi pengumuman..."></textarea>
+          </label>
+
+          <label>Mode Tampilan
+            <select id="announcement_type">
+              <option value="topbar">Top Bar</option>
+              <option value="popup">Popup</option>
+              <option value="floating">Floating Banner</option>
+              <option value="ticker">Running Text</option>
+              <option value="toast">Side Notification</option>
+            </select>
+          </label>
+
+          <label>Status
+            <select id="announcement_status">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+          </label>
+
+          <label>Tema
+            <select id="announcement_theme">
+              <option value="gold">Gold</option>
+              <option value="red">Red</option>
+              <option value="blue">Blue</option>
+              <option value="green">Green</option>
+              <option value="purple">Purple</option>
+            </select>
+          </label>
+
+          <label>Animasi
+            <select id="announcement_animation">
+              <option value="fade">Fade</option>
+              <option value="slide">Slide</option>
+              <option value="zoom">Zoom</option>
+              <option value="glow">Glow</option>
+            </select>
+          </label>
+
+          <label>Teks Tombol
+            <input id="announcement_button_text" placeholder="JOIN NOW">
+          </label>
+
+          <label>Link Tombol
+            <input id="announcement_button_url" placeholder="https://... atau #events">
+          </label>
+
+          <label>Prioritas
+            <input id="announcement_priority" type="number" min="1" max="999" value="10">
+          </label>
+
+          <label>Auto Hide (detik)
+            <input id="announcement_auto_hide" type="number" min="0" value="0" placeholder="0 = tidak otomatis">
+          </label>
+
+          <label>Mulai Tampil
+            <input id="announcement_start_at" type="datetime-local">
+          </label>
+
+          <label>Selesai Tampil
+            <input id="announcement_end_at" type="datetime-local">
+          </label>
+
+          <label>Tombol Tutup
+            <select id="announcement_dismissible">
+              <option value="true">Aktif</option>
+              <option value="false">Nonaktif</option>
+            </select>
+          </label>
+
+          <label>Emergency Mode
+            <select id="announcement_emergency">
+              <option value="false">Tidak</option>
+              <option value="true">Ya</option>
+            </select>
+          </label>
+
+          <div class="form-full announcement-preview-box" id="announcementPreview">
+            <div class="announcement-preview-badge" id="announcementPreviewBadge">NEW</div>
+            <strong id="announcementPreviewTitle">Judul Pengumuman</strong>
+            <p id="announcementPreviewMessage">Preview pengumuman akan tampil di sini.</p>
+            <button class="btn btn-primary" type="button" id="announcementPreviewButton">JOIN NOW</button>
+          </div>
+
+          <div class="form-full announcement-actions">
+            <button class="btn btn-primary" id="announcementSubmit" type="submit">Simpan Pengumuman</button>
+            <button class="btn btn-secondary" id="announcementReset" type="button">Buat Baru</button>
+            <div id="announcementMessage" class="message"></div>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel" style="margin-top:20px">
+        <div class="vip-panel-head">
+          <div>
+            <div class="eyebrow">PUBLISHED & DRAFT</div>
+            <h3>Daftar Pengumuman</h3>
+          </div>
+          <button class="btn btn-secondary" type="button" id="announcementRefresh">Refresh</button>
+        </div>
+        <div id="announcementList" class="announcement-admin-list" style="margin-top:18px"></div>
       </div>
     </section>
 

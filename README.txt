@@ -59,3 +59,42 @@ DOSMOS VIP V14.3 — LIVE CENTER
 
 YouTube, Twitch, Facebook, dan Kick bisa dibuat embed otomatis.
 TikTok biasanya membatasi iframe; gunakan tombol Watch Now atau URL Embed resmi.
+
+
+DOSMOS VIP V14.4 — ANNOUNCEMENT CENTER
+
+FITUR:
+- Top Bar
+- Popup
+- Floating Banner
+- Running Text
+- Side Notification
+- Publish / Draft
+- Smart Scheduler tanggal mulai dan selesai
+- Priority
+- Auto Hide
+- Tombol dan link
+- Tema Gold, Red, Blue, Green, Purple
+- Animasi Fade, Slide, Zoom, Glow
+- Dismiss per session
+- Emergency Mode
+- Preview langsung di admin
+- Multi announcement untuk ticker dan toast
+
+CARA PASANG:
+1. Jalankan supabase-v14-4.sql di Supabase SQL Editor.
+2. Replace file:
+   - index.html
+   - admin/index.html
+   - assets/css/style.css
+   - assets/js/admin.js
+   - assets/js/public.js
+3. Commit ke GitHub.
+4. Tunggu Cloudflare deploy.
+5. Tekan Ctrl + F5.
+6. Login Admin > Announcement.
+
+CATATAN:
+- Emergency Mode akan mengambil prioritas dan tampil sebagai popup utama.
+- Tanggal memakai timezone browser admin, lalu disimpan sebagai UTC di Supabase.
+- Pengumuman yang ditutup pengunjung disembunyikan selama sesi browser tersebut.
