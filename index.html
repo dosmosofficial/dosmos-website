@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="DOSMOS — Gaming, Esports, Tournament, Community, Content, dan Business Collaboration.">
   <meta name="theme-color" content="#070707">
-  <title>DOSMOS V3 | Gaming & Esports Company</title>
+  <title>DOSMOS V5 | Gaming & Esports Company</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -372,6 +372,7 @@
       .event-actions{flex-direction:column}.btn-small{width:100%}
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -491,62 +492,14 @@
           <button class="filter" data-filter="finished">Selesai</button>
         </div>
 
-        <div class="event-grid">
-          <article class="event-card reveal" data-category="active">
-            <div class="event-cover">
-              <span class="status">Registration Open</span>
-              <h3>DOSMOS Merdeka Cup 2026</h3>
-            </div>
+        <div class="event-grid" id="eventGrid">
+          <article class="event-card reveal" id="eventLoadingCard">
             <div class="event-body">
-              <p>Turnamen Mobile Legends komunitas dengan sistem pertandingan yang terstruktur dan dokumentasi resmi.</p>
-              <div class="event-meta">
-                <div class="meta"><span>Tanggal</span><strong>Segera diisi</strong></div>
-                <div class="meta"><span>Prize Pool</span><strong>Segera diisi</strong></div>
-                <div class="meta"><span>Slot</span><strong>Segera diisi</strong></div>
-              </div>
-              <div class="event-actions">
-                <button class="btn-small" onclick="openModal('event1')">Detail Event</button>
-                <a class="btn-small" href="https://wa.me/6281288836205" target="_blank" rel="noopener">Hubungi Panitia</a>
-              </div>
+              <h3 style="color:var(--gold);margin-bottom:10px">Memuat Event DOSMOS...</h3>
+              <p>Website sedang mengambil event terbaru dari database.</p>
             </div>
           </article>
-
-          <article class="event-card reveal" data-category="upcoming">
-            <div class="event-cover">
-              <span class="status soon">Coming Soon</span>
-              <h3>DOSMOS Weekly Cup</h3>
-            </div>
-            <div class="event-body">
-              <p>Kompetisi rutin untuk menjaga komunitas tetap aktif dan menambah pengalaman bertanding.</p>
-              <div class="event-meta">
-                <div class="meta"><span>Tanggal</span><strong>Coming Soon</strong></div>
-                <div class="meta"><span>Prize Pool</span><strong>Coming Soon</strong></div>
-                <div class="meta"><span>Status</span><strong>Preparation</strong></div>
-              </div>
-              <div class="event-actions">
-                <button class="btn-small" onclick="openModal('event2')">Lihat Rencana</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="event-card reveal" data-category="finished">
-            <div class="event-cover">
-              <span class="status done">Event Archive</span>
-              <h3>Event Sebelumnya</h3>
-            </div>
-            <div class="event-body">
-              <p>Tempat menyimpan event yang sudah selesai, lengkap dengan pemenang, hasil, dan galeri.</p>
-              <div class="event-meta">
-                <div class="meta"><span>Status</span><strong>Finished</strong></div>
-                <div class="meta"><span>Winner</span><strong>Akan diisi</strong></div>
-                <div class="meta"><span>Gallery</span><strong>Akan diisi</strong></div>
-              </div>
-              <div class="event-actions">
-                <a class="btn-small" href="#champions">Lihat Sejarah</a>
-              </div>
-            </div>
-          </article>
-        </div>
+        </div></div>
       </div>
     </section>
 
@@ -672,16 +625,108 @@
     },{threshold:.1});
     document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
 
-    document.querySelectorAll(".filter").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
-        btn.classList.add("active");
-        const target=btn.dataset.filter;
-        document.querySelectorAll(".event-card").forEach(card=>{
-          card.classList.toggle("hidden",target!=="all"&&card.dataset.category!==target);
-        });
-      });
-    });
+    
+    const SUPABASE_URL = "https://qtwllrwbttjpocxgkzn.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_IJdLg2CqqlZTCOog7cORXQ_gNWMfAiV";
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    function escapeHtml(value = ""){
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[char]));
+    }
+
+    function formatDate(value){
+      if(!value) return "Segera diumumkan";
+      return new Intl.DateTimeFormat("id-ID", {
+        day:"2-digit", month:"long", year:"numeric"
+      }).format(new Date(value + "T00:00:00"));
+    }
+
+    function statusLabel(status){
+      const normalized = String(status || "upcoming").toLowerCase();
+      if(["active","ongoing","open"].includes(normalized)) return ["Registration Open", ""];
+      if(["finished","done","completed"].includes(normalized)) return ["Event Selesai", "done"];
+      return ["Coming Soon", "soon"];
+    }
+
+    async function loadEvents(){
+      const eventGrid = document.getElementById("eventGrid");
+
+      try{
+        const { data, error } = await db
+          .from("events")
+          .select("*")
+          .order("start_date", { ascending: true });
+
+        if(error) throw error;
+
+        if(!data || data.length === 0){
+          eventGrid.innerHTML = `
+            <article class="event-card reveal show">
+              <div class="event-body">
+                <h3 style="color:var(--gold);margin-bottom:10px">Belum Ada Event</h3>
+                <p>Event DOSMOS terbaru akan ditampilkan di sini.</p>
+              </div>
+            </article>`;
+          return;
+        }
+
+        eventGrid.innerHTML = data.map(event => {
+          const [label, statusClass] = statusLabel(event.status);
+          const banner = event.banner
+            ? `linear-gradient(to top,rgba(5,5,5,.97),rgba(5,5,5,.15)),url("${escapeHtml(event.banner)}")`
+            : `linear-gradient(to top,rgba(5,5,5,.97),rgba(5,5,5,.15)),url("https://images.unsplash.com/photo-1560253023-3ec5d502959f?auto=format&fit=crop&w=1400&q=90")`;
+
+          const registerUrl = event.registration_link || "https://wa.me/6281288836205";
+          const description = event.description || "Detail event akan segera diumumkan.";
+
+          return `
+            <article class="event-card reveal show">
+              <div class="event-cover" style='background:${banner} center/cover'>
+                <span class="status ${statusClass}">${escapeHtml(label)}</span>
+                <h3>${escapeHtml(event.title)}</h3>
+              </div>
+
+              <div class="event-body">
+                <p>${escapeHtml(description)}</p>
+
+                <div class="event-meta">
+                  <div class="meta">
+                    <span>Mulai</span>
+                    <strong>${escapeHtml(formatDate(event.start_date))}</strong>
+                  </div>
+                  <div class="meta">
+                    <span>Selesai</span>
+                    <strong>${escapeHtml(formatDate(event.end_date))}</strong>
+                  </div>
+                  <div class="meta">
+                    <span>Prize Pool</span>
+                    <strong>${escapeHtml(event.prize_pool || "Segera diumumkan")}</strong>
+                  </div>
+                </div>
+
+                <div class="event-actions">
+                  <a class="btn-small" href="${escapeHtml(registerUrl)}" target="_blank" rel="noopener">
+                    Daftar / Hubungi Panitia
+                  </a>
+                </div>
+              </div>
+            </article>`;
+        }).join("");
+      }catch(error){
+        console.error("Gagal memuat event:", error);
+        eventGrid.innerHTML = `
+          <article class="event-card reveal show">
+            <div class="event-body">
+              <h3 style="color:#ff8f8f;margin-bottom:10px">Event Belum Bisa Dimuat</h3>
+              <p>Periksa koneksi Supabase dan policy SELECT pada tabel events.</p>
+            </div>
+          </article>`;
+      }
+    }
+
+    loadEvents();
 
     const modalData={
       event1:{
