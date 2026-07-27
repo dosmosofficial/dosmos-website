@@ -33,7 +33,11 @@ h2{font-size:clamp(2.1rem,4vw,3.4rem);line-height:1.1;margin-bottom:14px}
 }
 .nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .brand{display:flex;align-items:center;gap:12px;color:var(--gold);font:800 1.25rem Cinzel,serif}
-.logo{width:46px;height:46px;object-fit:contain}
+.logo{
+    width:42px;
+    height:42px;
+    object-fit:contain;
+}
 .logo-fallback{width:44px;height:44px;display:grid;place-items:center;border-radius:13px;border:1px solid var(--goldline);background:#17130a;color:var(--gold);font:800 1.3rem Cinzel,serif}
 .navlinks{display:flex;align-items:center;gap:18px;color:#ddd;font-size:.88rem}
 .navlinks a:hover{color:var(--gold)}
@@ -47,7 +51,50 @@ h2{font-size:clamp(2.1rem,4vw,3.4rem);line-height:1.1;margin-bottom:14px}
 }
 .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at center,rgba(246,199,68,.14),transparent 42%);pointer-events:none}
 .hero-inner{max-width:920px;position:relative;z-index:1}
-.hero-logo{width:min(220px,54vw);max-height:190px;object-fit:contain;margin:0 auto 18px}
+.vip-login-logo{
+  display:block;
+  width:96px;
+  height:96px;
+  margin:0 auto 18px;
+  object-fit:contain;
+  border:1px solid var(--goldline);
+  border-radius:22px;
+  box-shadow:0 12px 35px rgba(0,0,0,.45),0 0 24px color-mix(in srgb,var(--brand-primary) 22%,transparent);
+}
+
+.admin-brand-logo{
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
+  object-fit:contain;
+  border:1px solid color-mix(in srgb,var(--brand-primary) 50%,transparent);
+  border-radius:10px;
+  background:#080808;
+}
+
+.branding-preview-top img{
+  width:34px;
+  height:34px;
+  object-fit:contain;
+  border-radius:9px;
+}
+
+.branding-preview-hero img{
+  width:118px;
+  height:118px;
+  object-fit:contain;
+  border:1px solid color-mix(in srgb,var(--brand-primary) 55%,transparent);
+  border-radius:25px;
+  box-shadow:0 0 38px color-mix(in srgb,var(--brand-primary) 17%,transparent);
+}
+
+.site-main-logo{
+  object-fit:contain;
+}
+
+.site-hero-logo{
+  object-fit:contain;
+}
 .badge{display:inline-block;padding:9px 15px;border:1px solid var(--goldline);border-radius:999px;color:var(--gold2);background:rgba(0,0,0,.4);font-size:.8rem;font-weight:800}
 h1{font-size:clamp(3.2rem,8vw,7rem);color:var(--gold);margin:18px 0 12px}
 .actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}
@@ -962,7 +1009,7 @@ body{
   width:96px;
   height:96px;
   margin:0 auto 18px;
-  object-fit:cover;
+  object-fit:contain;
   border:1px solid var(--goldline);
   border-radius:22px;
   box-shadow:0 12px 35px rgba(0,0,0,.45),0 0 24px color-mix(in srgb,var(--brand-primary) 22%,transparent);
@@ -971,7 +1018,7 @@ body{
   width:38px;
   height:38px;
   flex:0 0 38px;
-  object-fit:cover;
+  object-fit:contain;
   border:1px solid color-mix(in srgb,var(--brand-primary) 50%,transparent);
   border-radius:10px;
   background:#080808;
@@ -1047,7 +1094,7 @@ body{
 .branding-preview-top img{
   width:34px;
   height:34px;
-  object-fit:cover;
+  object-fit:contain;
   border-radius:9px;
 }
 .branding-preview-top strong{
@@ -1069,7 +1116,7 @@ body{
 .branding-preview-hero img{
   width:118px;
   height:118px;
-  object-fit:cover;
+  object-fit:contain;
   border:1px solid color-mix(in srgb,var(--brand-primary) 55%,transparent);
   border-radius:25px;
   box-shadow:0 0 38px color-mix(in srgb,var(--brand-primary) 17%,transparent);
@@ -1110,10 +1157,11 @@ body{
   line-height:1.45;
 }
 .site-main-logo{
-  object-fit:cover;
+    object-fit:contain;
 }
+
 .site-hero-logo{
-  object-fit:cover;
+    object-fit:contain;
 }
 
 @media(max-width:980px){
@@ -1148,3 +1196,59 @@ body{
     width:100%;
   }
 }
+
+/* =========================================================
+   FINAL LOGO FIX — DOSMOS
+========================================================= */
+
+/* Navbar logo */
+.logo,
+.site-main-logo{
+  width:42px;
+  height:42px;
+  object-fit:contain !important;
+  background:transparent;
+  flex:0 0 42px;
+}
+
+/* Hero logo — sengaja tidak mengikuti ukuran logo navbar */
+.hero-logo,
+.site-hero-logo{
+  display:block;
+  width:160px;
+  height:160px;
+  max-width:160px;
+  margin:0 auto 14px;
+  object-fit:contain !important;
+  background:transparent;
+}
+
+/* Admin, login, dan preview */
+.admin-brand-logo,
+.vip-login-logo,
+.branding-preview-top img,
+.branding-preview-hero img{
+  object-fit:contain !important;
+  background:transparent;
+}
+
+/* Fallback hanya muncul bila gambar gagal dimuat */
+.brand img + .logo-fallback,
+.hero-logo + .logo-fallback{
+  display:none;
+}
+
+.brand img[style*="display: none"] + .logo-fallback,
+.hero-logo[style*="display: none"] + .logo-fallback{
+  display:grid;
+}
+
+@media(max-width:640px){
+  .hero-logo,
+  .site-hero-logo{
+    width:125px;
+    height:125px;
+    max-width:125px;
+  }
+}
+
