@@ -55,6 +55,7 @@
       <button data-tab="championsTab">Champions</button><button data-tab="newsTab">News</button>
       <button data-tab="galleryTab">Gallery</button><button data-tab="sponsorsTab">Sponsors</button>
       <button data-tab="brandingTab">Branding</button>
+      <button data-tab="contentTab">Website Text</button>
       <button data-tab="settingsTab">Settings</button>
       <a href="../">Lihat Website</a>
       <button class="sidebar-logout-btn" id="sidebarLogoutBtn" type="button">Logout</button>
@@ -300,6 +301,60 @@
             <small>Perubahan akan langsung tampil di website setelah disimpan.</small>
           </aside>
         </div>
+      </div>
+    </section>
+
+
+    <section class="tab-panel" id="contentTab">
+      <div class="panel">
+        <div class="vip-panel-head">
+          <div>
+            <div class="eyebrow">CONTENT MANAGER</div>
+            <h3>Ubah Kata-Kata Website</h3>
+          </div>
+          <span class="branding-status">Langsung Aktif</span>
+        </div>
+
+        <form id="contentForm" class="form-grid content-manager-form" style="margin-top:20px">
+          <div class="form-full content-group-title">Hero Utama</div>
+          <label>Badge Hero<input id="content_hero_badge"></label>
+          <label>Judul Hero<input id="content_hero_title"></label>
+          <label class="form-full">Deskripsi Hero<textarea id="content_hero_description"></textarea></label>
+          <label>Teks Tombol Utama<input id="content_hero_primary_button_text"></label>
+          <label>Link Tombol Utama<input id="content_hero_primary_button_link" placeholder="#events atau https://..."></label>
+          <label>Teks Tombol Kedua<input id="content_hero_secondary_button_text"></label>
+          <label>Link Tombol Kedua<input id="content_hero_secondary_button_link" placeholder="#register atau https://..."></label>
+
+          <div class="form-full content-group-title">Judul Setiap Bagian</div>
+          <label>Eyebrow Events<input id="content_events_eyebrow"></label>
+          <label>Judul Events<input id="content_events_title"></label>
+          <label>Eyebrow Register<input id="content_register_eyebrow"></label>
+          <label>Judul Register<input id="content_register_title"></label>
+          <label>Eyebrow Bracket<input id="content_bracket_eyebrow"></label>
+          <label>Judul Bracket<input id="content_bracket_title"></label>
+          <label>Eyebrow Live<input id="content_live_eyebrow"></label>
+          <label>Judul Live<input id="content_live_title"></label>
+          <label>Eyebrow Champions<input id="content_champions_eyebrow"></label>
+          <label>Judul Champions<input id="content_champions_title"></label>
+          <label>Eyebrow News<input id="content_news_eyebrow"></label>
+          <label>Judul News<input id="content_news_title"></label>
+          <label>Eyebrow Gallery<input id="content_gallery_eyebrow"></label>
+          <label>Judul Gallery<input id="content_gallery_title"></label>
+          <label>Eyebrow Partners<input id="content_partners_eyebrow"></label>
+          <label>Judul Partners<input id="content_partners_title"></label>
+          <label>Eyebrow Contact<input id="content_contact_eyebrow"></label>
+          <label>Judul Contact<input id="content_contact_title"></label>
+
+          <div class="form-full content-group-title">Partnership Business</div>
+          <label>Judul Partnership<input id="content_partnership_title"></label>
+          <label>Teks Tombol WhatsApp<input id="content_partnership_button_text"></label>
+          <label class="form-full">Deskripsi Partnership<textarea id="content_partnership_description"></textarea></label>
+
+          <div class="form-full">
+            <button class="btn btn-primary" id="contentSubmit" type="submit">Simpan Kata-Kata Website</button>
+            <div id="contentMessage" class="message"></div>
+          </div>
+        </form>
       </div>
     </section>
 

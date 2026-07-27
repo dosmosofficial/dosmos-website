@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="id">
 <head>
@@ -25,10 +24,10 @@
 <section class="hero" id="home"><div class="container hero-inner">
   <img class="hero-logo site-hero-logo" src="dosmos-logo.png" alt="DOSMOS Logo">
   <span class="logo-fallback hero-logo-fallback">D</span>
-  <span class="badge">Official Gaming & Esports Company</span>
-  <h1 data-site-name>DOSMOS</h1>
-  <p class="lead"><span data-site-slogan>Every Gamer Deserves a Chance.</span> Gaming, esports, community, content, event, dan business collaboration.</p>
-  <div class="actions"><a class="btn btn-primary" href="#events">Lihat Event</a><a class="btn btn-secondary" href="#register">Daftar Tim</a></div>
+  <span class="badge" data-content="hero_badge">Official Gaming & Esports Company</span>
+  <h1 data-content="hero_title">DOSMOS</h1>
+  <p class="lead" data-content="hero_description">Every Gamer Deserves a Chance. Gaming, esports, community, content, event, dan business collaboration.</p>
+  <div class="actions"><a class="btn btn-primary" data-content="hero_primary_button_text" data-content-href="hero_primary_button_link" href="#events">Lihat Event</a><a class="btn btn-secondary" data-content="hero_secondary_button_text" data-content-href="hero_secondary_button_link" href="#register">Daftar Tim</a></div>
 </div></section>
 
 <div class="container stats-strip">
@@ -39,12 +38,12 @@
 </div>
 
 <section class="section section-alt" id="events"><div class="container">
-  <div class="eyebrow">Current & Upcoming</div><h2>DOSMOS Events</h2>
+  <div class="eyebrow" data-content="events_eyebrow">Current & Upcoming</div><h2 data-content="events_title">DOSMOS Events</h2>
   <div class="grid" id="eventGrid"><div class="empty">Memuat event...</div></div>
 </div></section>
 
 <section class="section" id="register"><div class="container">
-  <div class="eyebrow">Team Registration</div><h2>Daftar Turnamen DOSMOS</h2>
+  <div class="eyebrow" data-content="register_eyebrow">Team Registration</div><h2 data-content="register_title">Daftar Turnamen DOSMOS</h2>
   <div class="register-grid">
     <div class="card"><div class="card-body"><h3>Form Pendaftaran</h3>
       <form id="registrationForm" class="form-grid" style="margin-top:18px">
@@ -60,37 +59,37 @@
 </div></section>
 
 <section class="section section-alt" id="bracket"><div class="container">
-  <div class="eyebrow">Tournament Progress</div><h2>Bracket & Match Results</h2>
+  <div class="eyebrow" data-content="bracket_eyebrow">Tournament Progress</div><h2 data-content="bracket_title">Bracket & Match Results</h2>
   <div class="bracket" id="bracketWrap"><div class="empty">Memuat bracket...</div></div>
 </div></section>
 
 <section class="section" id="live"><div class="container">
-  <div class="eyebrow">Live Broadcast</div><h2>Watch DOSMOS Live</h2>
+  <div class="eyebrow" data-content="live_eyebrow">Live Broadcast</div><h2 data-content="live_title">Watch DOSMOS Live</h2>
   <div class="live-frame" id="liveFrame"><div class="empty">Link live stream belum dipasang.</div></div>
 </div></section>
 
 <section class="section section-alt" id="champions"><div class="container">
-  <div class="eyebrow">Hall of Champions</div><h2>Every Victory Has a Story.</h2>
+  <div class="eyebrow" data-content="champions_eyebrow">Hall of Champions</div><h2 data-content="champions_title">Every Victory Has a Story.</h2>
   <div class="grid" id="championGrid"><div class="empty">Memuat champions...</div></div>
 </div></section>
 
 <section class="section" id="news"><div class="container">
-  <div class="eyebrow">Latest Update</div><h2>DOSMOS News</h2>
+  <div class="eyebrow" data-content="news_eyebrow">Latest Update</div><h2 data-content="news_title">DOSMOS News</h2>
   <div class="grid" id="newsGrid"><div class="empty">Memuat berita...</div></div>
 </div></section>
 
 <section class="section section-alt" id="gallery"><div class="container">
-  <div class="eyebrow">Moments</div><h2>Gallery</h2>
+  <div class="eyebrow" data-content="gallery_eyebrow">Moments</div><h2 data-content="gallery_title">Gallery</h2>
   <div class="grid" id="galleryGrid"><div class="empty">Memuat galeri...</div></div>
 </div></section>
 
 <section class="section" id="partners"><div class="container">
-  <div class="eyebrow">Partnership</div><h2>Partners & Sponsors</h2>
+  <div class="eyebrow" data-content="partners_eyebrow">Partnership</div><h2 data-content="partners_title">Partners & Sponsors</h2>
   <div class="sponsor-grid" id="sponsorGrid"><div class="empty">Memuat partner...</div></div>
 </div></section>
 
 <section class="section section-alt" id="contact"><div class="container">
-  <div class="eyebrow">Business Contact</div><h2>Let’s Build Something Together.</h2>
+  <div class="eyebrow" data-content="contact_eyebrow">Business Contact</div><h2 data-content="contact_title">Let’s Build Something Together.</h2>
   <div class="contact-grid">
     <div class="card"><div class="card-body"><h3>Connect with DOSMOS</h3><div class="contact-list">
       <a class="contact-item" data-wa href="https://wa.me/6281288836205" target="_blank"><span>WhatsApp</span><strong>0812-8883-6205</strong></a>
@@ -99,7 +98,7 @@
       <a class="contact-item" data-tiktok href="#" target="_blank"><span>TikTok</span><strong>@dosmos.id</strong></a>
       <a class="contact-item" data-discord href="#" target="_blank"><span>Discord</span><strong>DOSMOS</strong></a>
     </div></div></div>
-    <div class="card"><div class="card-body"><h3>Partnership Business</h3><p class="lead">Tertarik bekerja sama dengan DOSMOS untuk event, sponsorship, komunitas, media, atau kolaborasi bisnis? Hubungi kami langsung melalui WhatsApp.</p><div class="actions" style="justify-content:flex-start"><a class="btn btn-primary" href="https://wa.me/6281288836205?text=Halo%20DOSMOS%2C%20saya%20tertarik%20membahas%20Partnership%20Business." target="_blank" rel="noopener">Hubungi via WhatsApp</a></div></div></div>
+    <div class="card"><div class="card-body"><h3 data-content="partnership_title">Partnership Business</h3><p class="lead" data-content="partnership_description">Tertarik bekerja sama dengan DOSMOS untuk event, sponsorship, komunitas, media, atau kolaborasi bisnis? Hubungi kami langsung melalui WhatsApp.</p><div class="actions" style="justify-content:flex-start"><a class="btn btn-primary" href="https://wa.me/6281288836205?text=Halo%20DOSMOS%2C%20saya%20tertarik%20membahas%20Partnership%20Business." target="_blank" rel="noopener" data-content="partnership_button_text">Hubungi via WhatsApp</a></div></div></div>
   </div>
 </div></section>
 </main>

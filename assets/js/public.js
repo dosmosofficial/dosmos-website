@@ -1,5 +1,20 @@
 
 
+function applyPublicContent(data){
+  document.querySelectorAll("[data-content]").forEach(el=>{
+    const key=el.dataset.content;
+    const value=data?.[key];
+    if(value)el.textContent=value;
+  });
+  document.querySelectorAll("[data-content-href]").forEach(el=>{
+    const key=el.dataset.contentHref;
+    const value=data?.[key];
+    if(value)el.setAttribute("href",value);
+  });
+}
+
+
+
 function validBrandHex(value){
   return /^#[0-9a-fA-F]{6}$/.test(String(value||"").trim());
 }
@@ -116,6 +131,7 @@ async function loadSettings(){
     const {data}=await sb.from("site_settings").select("*").eq("id",1).maybeSingle();
     if(!data)return;
     applyPublicBranding(data);
+    applyPublicContent(data);
     document.querySelectorAll("[data-wa]").forEach(a=>a.href=`https://wa.me/${String(data.whatsapp||"6281288836205").replace(/\D/g,"")}`);
     document.querySelectorAll("[data-email]").forEach(a=>{a.href=`mailto:${data.email||"dosmosid@gmail.com"}`;a.querySelector("strong")&&(a.querySelector("strong").textContent=data.email||"dosmosid@gmail.com")});
     document.querySelectorAll("[data-instagram]").forEach(a=>a.href=data.instagram||"https://instagram.com/dosmos.id");

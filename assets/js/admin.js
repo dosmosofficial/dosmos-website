@@ -79,7 +79,7 @@ async function rows(table,order="created_at",asc=false){
 function showTab(id){document.querySelector(`[data-tab="${id}"]`)?.click();window.scrollTo({top:0,behavior:"smooth"})}
 window.deleteRow=async(table,id)=>{if(!confirm("Hapus data ini?"))return;const {error}=await sb.from(table).delete().eq("id",id);if(error){alert(error.message);return}await refreshAll()};
 async function refreshAll(){
-  await Promise.all([loadEvents(),loadRegistrations(),loadMatches(),loadChampions(),loadNews(),loadGallery(),loadSponsors(),loadSettings(),loadBranding()]);
+  await Promise.all([loadEvents(),loadRegistrations(),loadMatches(),loadChampions(),loadNews(),loadGallery(),loadSponsors(),loadSettings(),loadBranding(),loadWebsiteContent()]);
   const tables=["events","registrations","matches","champions","news","gallery","sponsors"];
   for(const t of tables)document.getElementById("stat_"+t).textContent=(await rows(t)).length;
 }
@@ -487,5 +487,69 @@ brandingForm?.addEventListener("submit",async e=>{
     msg(brandingMessage,err.message,"error");
   }finally{
     brandingSubmit.disabled=false;
+  }
+});
+
+
+/* Website Content Manager */
+const contentDefaults={
+  hero_badge:"Official Gaming & Esports Company",
+  hero_title:"DOSMOS",
+  hero_description:"Every Gamer Deserves a Chance. Gaming, esports, community, content, event, dan business collaboration.",
+  hero_primary_button_text:"Lihat Event",
+  hero_primary_button_link:"#events",
+  hero_secondary_button_text:"Daftar Tim",
+  hero_secondary_button_link:"#register",
+  events_eyebrow:"Current & Upcoming",
+  events_title:"DOSMOS Events",
+  register_eyebrow:"Team Registration",
+  register_title:"Daftar Turnamen DOSMOS",
+  bracket_eyebrow:"Tournament Progress",
+  bracket_title:"Bracket & Match Results",
+  live_eyebrow:"Live Broadcast",
+  live_title:"Watch DOSMOS Live",
+  champions_eyebrow:"Hall of Champions",
+  champions_title:"Every Victory Has a Story.",
+  news_eyebrow:"Latest Update",
+  news_title:"DOSMOS News",
+  gallery_eyebrow:"Moments",
+  gallery_title:"Gallery",
+  partners_eyebrow:"Partnership",
+  partners_title:"Partners & Sponsors",
+  contact_eyebrow:"Business Contact",
+  contact_title:"Let’s Build Something Together.",
+  partnership_title:"Partnership Business",
+  partnership_description:"Tertarik bekerja sama dengan DOSMOS untuk event, sponsorship, komunitas, media, atau kolaborasi bisnis? Hubungi kami langsung melalui WhatsApp.",
+  partnership_button_text:"Hubungi via WhatsApp"
+};
+
+const contentKeys=Object.keys(contentDefaults);
+
+async function loadWebsiteContent(){
+  const {data,error}=await sb.from("site_settings").select("*").eq("id",1).maybeSingle();
+  if(error)throw error;
+  contentKeys.forEach(key=>{
+    const input=document.getElementById("content_"+key);
+    if(input)input.value=data?.[key]||contentDefaults[key];
+  });
+}
+
+contentForm?.addEventListener("submit",async e=>{
+  e.preventDefault();
+  msg(contentMessage,"Menyimpan kata-kata website...");
+  contentSubmit.disabled=true;
+  try{
+    const payload={id:1,updated_at:new Date().toISOString()};
+    contentKeys.forEach(key=>{
+      const input=document.getElementById("content_"+key);
+      payload[key]=input?.value.trim()||contentDefaults[key];
+    });
+    const {error}=await sb.from("site_settings").upsert(payload);
+    if(error)throw error;
+    msg(contentMessage,"Kata-kata website berhasil disimpan dan langsung aktif.","success");
+  }catch(err){
+    msg(contentMessage,err.message,"error");
+  }finally{
+    contentSubmit.disabled=false;
   }
 });

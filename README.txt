@@ -35,3 +35,17 @@ CATATAN:
 - Bucket Supabase harus bernama dosmos-media dan Public.
 - Jangan ubah nama folder/file.
 - File config.js berisi publishable key, bukan service-role key.
+
+
+DOSMOS VIP V14.2 — CONTENT MANAGER
+
+1. Jalankan supabase-v14-2.sql di Supabase SQL Editor.
+2. Replace file:
+   - index.html
+   - admin/index.html
+   - assets/css/style.css
+   - assets/js/admin.js
+   - assets/js/public.js
+3. Commit dan tunggu Cloudflare deploy.
+4. Login Admin > Website Text.
+5. Ubah tulisan lalu klik Simpan Kata-Kata Website.
