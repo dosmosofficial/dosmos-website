@@ -175,3 +175,51 @@ settingsForm.addEventListener("submit",async e=>{
   const {error}=await sb.from("site_settings").upsert(payload);if(error){msg(settingsMessage,error.message,"error");return}msg(settingsMessage,"Settings berhasil disimpan.","success");
 });
 checkSession();
+
+
+// DOSMOS VIP V11 enhancements
+const vipToast = document.createElement("div");
+vipToast.className = "vip-toast";
+document.body.appendChild(vipToast);
+
+function showVipToast(text,type="success"){
+  vipToast.textContent = text;
+  vipToast.className = `vip-toast ${type} show`;
+  clearTimeout(window.__vipToastTimer);
+  window.__vipToastTimer = setTimeout(()=>{
+    vipToast.classList.remove("show");
+  },2800);
+}
+
+document.querySelectorAll("[data-tab-jump]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const id=btn.dataset.tabJump;
+    document.querySelector(`[data-tab="${id}"]`)?.click();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+});
+
+document.querySelectorAll(".vip-table-search").forEach(input=>{
+  input.addEventListener("input",()=>{
+    const body=document.getElementById(input.dataset.target);
+    const term=input.value.trim().toLowerCase();
+    body?.querySelectorAll("tr").forEach(row=>{
+      row.style.display=row.textContent.toLowerCase().includes(term)?"":"none";
+    });
+  });
+});
+
+// Convert visible success/error messages into premium toast notifications.
+const vipObserver = new MutationObserver(mutations=>{
+  for(const mutation of mutations){
+    const el=mutation.target;
+    if(!(el instanceof HTMLElement))continue;
+    const text=el.textContent.trim();
+    if(!text)continue;
+    if(el.classList.contains("message")){
+      const type=el.classList.contains("error")?"error":"success";
+      showVipToast(text,type);
+    }
+  }
+});
+document.querySelectorAll(".message").forEach(el=>vipObserver.observe(el,{childList:true,subtree:true,characterData:true}));

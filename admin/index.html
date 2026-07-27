@@ -2,14 +2,14 @@
 <html lang="id">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>DOSMOS Admin V10</title>
+  <title>DOSMOS VIP</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../assets/js/config.js"></script>
 </head>
 <body>
 <section class="auth-wrap" id="loginView"><div class="auth-card">
-  <h1>DOSMOS ADMIN</h1><p class="lead">Login memakai akun admin Supabase.</p>
+  <h1>DOSMOS VIP</h1><p class="lead">Exclusive Management Portal untuk tim internal DOSMOS.</p>
   <form id="loginForm" style="display:grid;gap:14px;margin-top:20px"><label>Email<input id="loginEmail" type="email" required></label><label>Password<input id="loginPassword" type="password" required></label><button class="btn btn-primary">Login</button></form><div id="authMessage" class="message"></div>
 </div></section>
 
@@ -21,7 +21,7 @@
 
     <a class="mobile-admin-brand" href="../">
       <span class="logo-fallback">D</span>
-      <span>DOSMOS CMS</span>
+      <span>DOSMOS VIP</span>
     </a>
 
     <div class="mobile-online">
@@ -60,8 +60,8 @@
   <main class="admin-main">
     <div class="admin-top">
       <div>
-        <div class="eyebrow">ADMIN CONTROL CENTER</div>
-        <h2>DOSMOS CMS V10</h2>
+        <div class="eyebrow">EXCLUSIVE MANAGEMENT PORTAL</div>
+        <h2>DOSMOS VIP V10</h2>
         <p class="lead">Kelola website dan turnamen dari satu panel.</p>
       </div>
 
@@ -83,7 +83,25 @@
         <div class="admin-stat"><strong id="stat_news">0</strong><span>News</span></div><div class="admin-stat"><strong id="stat_gallery">0</strong><span>Gallery</span></div>
         <div class="admin-stat"><strong id="stat_sponsors">0</strong><span>Sponsors</span></div>
       </div>
-      <div class="panel"><h3>V10 Ready</h3><p class="lead">Event, pendaftaran tim, bracket, hasil pertandingan, live stream, champion, berita, galeri, dan sponsor sudah terhubung.</p></div>
+      <div class="vip-welcome-card">
+        <div>
+          <div class="eyebrow">WELCOME BACK</div>
+          <h3>Halo, Jesse.</h3>
+          <p class="lead">Semua sistem DOSMOS siap dikelola dari satu portal eksklusif.</p>
+        </div>
+
+        <div class="vip-welcome-badge">
+          <span class="vip-live-dot"></span>
+          CEO Access Active
+        </div>
+      </div>
+
+      <div class="vip-quick-grid">
+        <button type="button" data-tab-jump="eventsTab">+ Tambah Event</button>
+        <button type="button" data-tab-jump="registrationsTab">Lihat Registrasi</button>
+        <button type="button" data-tab-jump="matchesTab">Kelola Bracket</button>
+        <button type="button" data-tab-jump="galleryTab">Upload Gallery</button>
+      </div>
     </section>
 
     <section class="tab-panel" id="eventsTab"><div class="panel"><h3>Tambah / Edit Event</h3>
@@ -93,10 +111,10 @@
         <label>Mulai<input id="event_start_date" type="date"></label><label>Selesai<input id="event_end_date" type="date"></label><label>Prize Pool<input id="event_prize_pool"></label><label>Link Pendaftaran<input id="event_registration_link"></label>
         <div class="form-full"><button class="btn btn-primary" id="eventSubmit">Publish</button><div id="eventMessage" class="message"></div></div>
       </form></div>
-      <div class="panel" style="margin-top:20px"><h3>Daftar Event</h3><div class="table-wrap"><table><thead><tr><th>Judul</th><th>Status</th><th>Mulai</th><th>Prize</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="eventRows"></tbody></table></div></div>
+      <div class="panel" style="margin-top:20px"><div class="vip-panel-head"><h3>Daftar Event</h3><input class="vip-table-search" data-target="eventRows" placeholder="Cari event..."></div><div class="table-wrap"><table><thead><tr><th>Judul</th><th>Status</th><th>Mulai</th><th>Prize</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="eventRows"></tbody></table></div></div>
     </section>
 
-    <section class="tab-panel" id="registrationsTab"><div class="panel"><h3>Pendaftaran Tim</h3><div class="table-wrap"><table><thead><tr><th>Event</th><th>Tim</th><th>Kapten</th><th>WhatsApp</th><th>Status</th><th>Ubah</th><th>Hapus</th></tr></thead><tbody id="registrationRows"></tbody></table></div></div></section>
+    <section class="tab-panel" id="registrationsTab"><div class="panel"><div class="vip-panel-head"><h3>Pendaftaran Tim</h3><input class="vip-table-search" data-target="registrationRows" placeholder="Cari tim..."></div><div class="table-wrap"><table><thead><tr><th>Event</th><th>Tim</th><th>Kapten</th><th>WhatsApp</th><th>Status</th><th>Ubah</th><th>Hapus</th></tr></thead><tbody id="registrationRows"></tbody></table></div></div></section>
 
     <section class="tab-panel" id="matchesTab"><div class="panel"><h3>Tambah / Edit Match</h3>
       <form id="matchForm" class="form-grid" style="margin-top:18px">
@@ -106,7 +124,7 @@
         <label>Winner<input id="match_winner"></label><label>Urutan<input id="match_sort_order" type="number" min="0"></label>
         <div class="form-full"><button class="btn btn-primary" id="matchSubmit">Publish</button><div id="matchMessage" class="message"></div></div>
       </form></div>
-      <div class="panel" style="margin-top:20px"><h3>Daftar Match</h3><div class="table-wrap"><table><thead><tr><th>Event</th><th>Round</th><th>Team A</th><th>Score</th><th>Team B</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="matchRows"></tbody></table></div></div>
+      <div class="panel" style="margin-top:20px"><div class="vip-panel-head"><h3>Daftar Match</h3><input class="vip-table-search" data-target="matchRows" placeholder="Cari match..."></div><div class="table-wrap"><table><thead><tr><th>Event</th><th>Round</th><th>Team A</th><th>Score</th><th>Team B</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="matchRows"></tbody></table></div></div>
     </section>
 
     <section class="tab-panel" id="championsTab"><div class="panel"><h3>Tambah / Edit Champion</h3>
@@ -115,7 +133,7 @@
         <label>Hadiah<input id="champion_prize"></label><label>Upload Foto<input id="champion_file" type="file" accept="image/*"></label><label class="form-full">Atau URL Foto<input id="champion_photo"></label><label class="form-full">Cerita<textarea id="champion_story"></textarea></label>
         <div class="form-full"><button class="btn btn-primary" id="championSubmit">Publish</button><div id="championMessage" class="message"></div></div>
       </form></div>
-      <div class="panel" style="margin-top:20px"><h3>Daftar Champion</h3><div class="table-wrap"><table><thead><tr><th>Tim</th><th>Rank</th><th>Event</th><th>MVP</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="championRows"></tbody></table></div></div>
+      <div class="panel" style="margin-top:20px"><div class="vip-panel-head"><h3>Daftar Champion</h3><input class="vip-table-search" data-target="championRows" placeholder="Cari champion..."></div><div class="table-wrap"><table><thead><tr><th>Tim</th><th>Rank</th><th>Event</th><th>MVP</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="championRows"></tbody></table></div></div>
     </section>
 
     <section class="tab-panel" id="newsTab"><div class="panel"><h3>Tambah / Edit News</h3>
@@ -124,7 +142,7 @@
         <label>Upload Cover<input id="news_file" type="file" accept="image/*"></label><label>Atau URL Cover<input id="news_cover"></label>
         <div class="form-full"><button class="btn btn-primary" id="newsSubmit">Publish</button><div id="newsMessage" class="message"></div></div>
       </form></div>
-      <div class="panel" style="margin-top:20px"><h3>Daftar News</h3><div class="table-wrap"><table><thead><tr><th>Judul</th><th>Ringkasan</th><th>Tanggal</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="newsRows"></tbody></table></div></div>
+      <div class="panel" style="margin-top:20px"><div class="vip-panel-head"><h3>Daftar News</h3><input class="vip-table-search" data-target="newsRows" placeholder="Cari berita..."></div><div class="table-wrap"><table><thead><tr><th>Judul</th><th>Ringkasan</th><th>Tanggal</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="newsRows"></tbody></table></div></div>
     </section>
 
     <section class="tab-panel" id="galleryTab"><div class="panel"><h3>Tambah / Edit Gallery</h3>
@@ -132,7 +150,7 @@
         <label>Caption<input id="gallery_caption"></label><label>Nama Event<input id="gallery_event_name"></label><label>Upload Foto<input id="gallery_file" type="file" accept="image/*"></label><label>Atau URL Foto<input id="gallery_image_url"></label>
         <div class="form-full"><button class="btn btn-primary" id="gallerySubmit">Publish</button><div id="galleryMessage" class="message"></div></div>
       </form></div>
-      <div class="panel" style="margin-top:20px"><h3>Daftar Gallery</h3><div class="table-wrap"><table><thead><tr><th>Caption</th><th>Event</th><th>Foto</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="galleryRows"></tbody></table></div></div>
+      <div class="panel" style="margin-top:20px"><div class="vip-panel-head"><h3>Daftar Gallery</h3><input class="vip-table-search" data-target="galleryRows" placeholder="Cari gallery..."></div><div class="table-wrap"><table><thead><tr><th>Caption</th><th>Event</th><th>Foto</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="galleryRows"></tbody></table></div></div>
     </section>
 
     <section class="tab-panel" id="sponsorsTab"><div class="panel"><h3>Tambah / Edit Sponsor</h3>
@@ -140,7 +158,7 @@
         <label>Nama Sponsor<input id="sponsor_name" required></label><label>Website<input id="sponsor_website"></label><label>Upload Logo<input id="sponsor_file" type="file" accept="image/*"></label><label>Atau URL Logo<input id="sponsor_logo"></label><label>Urutan<input id="sponsor_sort_order" type="number" min="0"></label>
         <div class="form-full"><button class="btn btn-primary" id="sponsorSubmit">Publish</button><div id="sponsorMessage" class="message"></div></div>
       </form></div>
-      <div class="panel" style="margin-top:20px"><h3>Daftar Sponsor</h3><div class="table-wrap"><table><thead><tr><th>Nama</th><th>Website</th><th>Logo</th><th>Urutan</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="sponsorRows"></tbody></table></div></div>
+      <div class="panel" style="margin-top:20px"><div class="vip-panel-head"><h3>Daftar Sponsor</h3><input class="vip-table-search" data-target="sponsorRows" placeholder="Cari sponsor..."></div><div class="table-wrap"><table><thead><tr><th>Nama</th><th>Website</th><th>Logo</th><th>Urutan</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="sponsorRows"></tbody></table></div></div>
     </section>
 
     <section class="tab-panel" id="settingsTab"><div class="panel"><h3>Kontak, Social Media & Live</h3>

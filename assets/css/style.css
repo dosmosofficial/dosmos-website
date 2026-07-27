@@ -522,3 +522,153 @@ th{color:var(--gold2)}
     padding-inline:12px;
   }
 }
+
+
+/* =========================================================
+   DOSMOS VIP V11
+========================================================= */
+.auth-card{
+  position:relative;
+  overflow:hidden;
+  border-color:rgba(246,199,68,.38);
+  box-shadow:0 25px 80px rgba(0,0,0,.55),0 0 60px rgba(246,199,68,.06);
+}
+.auth-card::before{
+  content:"VIP";
+  position:absolute;
+  top:18px;
+  right:20px;
+  padding:5px 9px;
+  border:1px solid var(--goldline);
+  border-radius:999px;
+  color:var(--gold);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.15em;
+}
+.auth-card h1{
+  color:var(--gold);
+}
+
+.vip-welcome-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:22px;
+  margin-bottom:18px;
+  padding:26px;
+  border:1px solid var(--goldline);
+  border-radius:20px;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(246,199,68,.13),transparent 34%),
+    linear-gradient(145deg,#151515,#0c0c0c);
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+}
+.vip-welcome-card h3{
+  margin-bottom:7px;
+  color:var(--gold);
+  font-size:clamp(22px,3vw,34px);
+}
+.vip-welcome-badge{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+  padding:10px 13px;
+  border:1px solid rgba(117,242,154,.2);
+  border-radius:999px;
+  background:rgba(34,197,94,.07);
+  color:#8df0ad;
+  font-size:12px;
+  font-weight:800;
+}
+.vip-live-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#22c55e;
+  box-shadow:0 0 10px #22c55e;
+}
+
+.vip-quick-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:22px;
+}
+.vip-quick-grid button{
+  min-height:54px;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#101010;
+  color:#eee;
+  font-weight:800;
+  transition:.2s ease;
+}
+.vip-quick-grid button:hover{
+  transform:translateY(-2px);
+  border-color:var(--goldline);
+  color:var(--gold);
+  background:#16130b;
+}
+
+.vip-panel-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+.vip-table-search{
+  width:min(260px,100%);
+  min-height:40px;
+  padding:9px 12px;
+}
+
+.vip-toast{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  z-index:2000;
+  min-width:230px;
+  max-width:min(380px,calc(100vw - 32px));
+  padding:14px 16px;
+  border:1px solid var(--goldline);
+  border-radius:13px;
+  background:#111;
+  color:#fff;
+  box-shadow:0 18px 50px rgba(0,0,0,.48);
+  transform:translateY(25px);
+  opacity:0;
+  pointer-events:none;
+  transition:.24s ease;
+}
+.vip-toast.show{
+  transform:translateY(0);
+  opacity:1;
+}
+.vip-toast.success{border-color:rgba(104,228,154,.35)}
+.vip-toast.error{border-color:rgba(255,116,116,.4)}
+
+@media(max-width:980px){
+  .vip-welcome-card{
+    align-items:flex-start;
+    flex-direction:column;
+    padding:19px;
+  }
+  .vip-quick-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .vip-panel-head{
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .vip-table-search{
+    width:100%;
+  }
+}
+@media(max-width:480px){
+  .vip-quick-grid{
+    grid-template-columns:1fr;
+  }
+}
