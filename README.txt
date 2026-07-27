@@ -1,40 +1,32 @@
-DOSMOS V9
+DOSMOS V10
 
-FITUR BARU:
-- Registrasi tim langsung dari website
-- Admin mengelola status pendaftaran
-- Bracket dan hasil pertandingan
-- YouTube Live embed
-- Sponsor & partner management
-- Events, Champions, News, Gallery
-- Upload gambar dari panel
-- Settings kontak dan sosial media
-- Dashboard lengkap
+PERUBAHAN UTAMA:
+- Admin mobile memakai tombol hamburger (☰).
+- Sidebar tersembunyi di HP dan muncul dengan animasi slide.
+- Overlay gelap/blur, klik di luar untuk menutup menu.
+- Tombol X untuk menutup sidebar.
+- Profil Jesse — CEO DOSMOS — Online di sidebar.
+- Logout tersedia di desktop dan sidebar mobile.
+- Layout dashboard, form, statistik, dan tabel dirapikan untuk HP.
+- Semua fungsi V9 tetap dipertahankan.
 
-LANGKAH:
-1. Supabase > SQL Editor
-   Jalankan seluruh isi setup-v9.sql.
+CARA PASANG:
+1. Extract ZIP.
+2. Upload ke GitHub:
+   - index.html
+   - admin/index.html
+   - assets/css/style.css
+   - assets/js/admin.js
+   - assets/js/public.js
+   - assets/js/config.js
+3. Commit changes.
+4. Tunggu Cloudflare deploy.
+5. Refresh admin dengan Ctrl + Shift + R.
+6. Di HP, pastikan mode Desktop Site tidak aktif.
 
-2. GitHub
-   Upload seluruh isi folder ini:
-   index.html
-   admin/index.html
-   assets/css/style.css
-   assets/js/config.js
-   assets/js/public.js
-   assets/js/admin.js
+DATABASE:
+- Tidak perlu menjalankan SQL baru jika setup V9 sudah berhasil.
+- setup-v10.sql disertakan hanya untuk instalasi baru.
 
-3. Jangan upload ZIP langsung.
-
-4. Commit changes dan tunggu Cloudflare deploy.
-
-5. Buka:
-   https://dosmos.pages.dev/admin/
-
-6. Logo:
-   Upload dosmos-logo.png sejajar dengan index.html.
-
-CATATAN:
-- Event lama tidak dihapus.
-- Akun admin lama tetap digunakan.
-- Secret key/service_role jangan dimasukkan ke website.
+ADMIN:
+https://dosmos.pages.dev/admin/

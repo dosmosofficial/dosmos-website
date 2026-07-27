@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>DOSMOS Admin V9</title>
+  <title>DOSMOS Admin V10</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../assets/js/config.js"></script>
@@ -14,17 +14,67 @@
 </div></section>
 
 <section class="admin-shell hidden" id="dashboardView">
-  <aside class="sidebar"><a class="brand" href="../"><span class="logo-fallback">D</span>DOSMOS</a>
+  <div class="mobile-admin-header">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Buka menu admin" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <a class="mobile-admin-brand" href="../">
+      <span class="logo-fallback">D</span>
+      <span>DOSMOS CMS</span>
+    </a>
+
+    <div class="mobile-online">
+      <span class="mobile-online-dot"></span>
+      Jesse
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="adminSidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="../"><span class="logo-fallback">D</span>DOSMOS</a>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" type="button" aria-label="Tutup menu">×</button>
+    </div>
+
+    <div class="sidebar-profile">
+      <div class="sidebar-avatar">J</div>
+      <div>
+        <strong>Jesse</strong>
+        <span>CEO DOSMOS</span>
+        <small><i></i> Online</small>
+      </div>
+    </div>
+
     <nav class="side-nav">
       <button class="active" data-tab="dashboardTab">Dashboard</button><button data-tab="eventsTab">Events</button>
       <button data-tab="registrationsTab">Registrations</button><button data-tab="matchesTab">Bracket / Matches</button>
       <button data-tab="championsTab">Champions</button><button data-tab="newsTab">News</button>
       <button data-tab="galleryTab">Gallery</button><button data-tab="sponsorsTab">Sponsors</button>
-      <button data-tab="settingsTab">Settings</button><a href="../">Lihat Website</a>
+      <button data-tab="settingsTab">Settings</button>
+      <a href="../">Lihat Website</a>
+      <button class="sidebar-logout-btn" id="sidebarLogoutBtn" type="button">Logout</button>
     </nav>
   </aside>
   <main class="admin-main">
-    <div class="admin-top"><div><h2>DOSMOS CMS V9</h2><p class="lead">Kelola website dan turnamen dari satu panel.</p></div><button class="btn btn-secondary" id="logoutBtn">Logout</button></div>
+    <div class="admin-top">
+      <div>
+        <div class="eyebrow">ADMIN CONTROL CENTER</div>
+        <h2>DOSMOS CMS V10</h2>
+        <p class="lead">Kelola website dan turnamen dari satu panel.</p>
+      </div>
+
+      <div class="admin-account-card">
+        <div class="admin-account-avatar">J</div>
+        <div class="admin-account-info">
+          <strong>Jesse</strong>
+          <span>CEO DOSMOS</span>
+          <small><i></i> Online</small>
+        </div>
+        <button class="logout-btn" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </div>
 
     <section class="tab-panel active" id="dashboardTab">
       <div class="admin-stats">
@@ -33,7 +83,7 @@
         <div class="admin-stat"><strong id="stat_news">0</strong><span>News</span></div><div class="admin-stat"><strong id="stat_gallery">0</strong><span>Gallery</span></div>
         <div class="admin-stat"><strong id="stat_sponsors">0</strong><span>Sponsors</span></div>
       </div>
-      <div class="panel"><h3>V9 Ready</h3><p class="lead">Event, pendaftaran tim, bracket, hasil pertandingan, live stream, champion, berita, galeri, dan sponsor sudah terhubung.</p></div>
+      <div class="panel"><h3>V10 Ready</h3><p class="lead">Event, pendaftaran tim, bracket, hasil pertandingan, live stream, champion, berita, galeri, dan sponsor sudah terhubung.</p></div>
     </section>
 
     <section class="tab-panel" id="eventsTab"><div class="panel"><h3>Tambah / Edit Event</h3>

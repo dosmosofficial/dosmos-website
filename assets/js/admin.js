@@ -4,6 +4,45 @@ const sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey
 const loginView=document.getElementById("loginView");
 const dashboardView=document.getElementById("dashboardView");
 const authMessage=document.getElementById("authMessage");
+
+// Mobile sidebar V10
+const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+const adminSidebar = document.getElementById("adminSidebar");
+const sidebarOverlay = document.getElementById("sidebarOverlay");
+const sidebarCloseBtn = document.getElementById("sidebarCloseBtn");
+const sidebarLogoutBtn = document.getElementById("sidebarLogoutBtn");
+
+function openAdminSidebar(){
+  adminSidebar?.classList.add("open");
+  sidebarOverlay?.classList.add("show");
+  document.body.classList.add("admin-menu-open");
+  mobileMenuBtn?.setAttribute("aria-expanded","true");
+}
+
+function closeAdminSidebar(){
+  adminSidebar?.classList.remove("open");
+  sidebarOverlay?.classList.remove("show");
+  document.body.classList.remove("admin-menu-open");
+  mobileMenuBtn?.setAttribute("aria-expanded","false");
+}
+
+mobileMenuBtn?.addEventListener("click", openAdminSidebar);
+sidebarCloseBtn?.addEventListener("click", closeAdminSidebar);
+sidebarOverlay?.addEventListener("click", closeAdminSidebar);
+
+document.querySelectorAll(".side-nav [data-tab], .side-nav a").forEach(item=>{
+  item.addEventListener("click", closeAdminSidebar);
+});
+
+sidebarLogoutBtn?.addEventListener("click", async ()=>{
+  await sb.auth.signOut();
+  location.reload();
+});
+
+window.addEventListener("resize", ()=>{
+  if(window.innerWidth > 980) closeAdminSidebar();
+});
+
 const editState={events:null,matches:null,champions:null,news:null,gallery:null,sponsors:null};
 const esc=(v="")=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const msg=(el,text,type="")=>{el.textContent=text;el.className="message "+type};
