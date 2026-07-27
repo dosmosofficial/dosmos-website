@@ -1,18 +1,38 @@
-DOSMOS WEBSITE V3
+DOSMOS V6 — WEBSITE + ADMIN PANEL
 
-1. Ubah nama file HTML menjadi:
-   index.html
+ISI:
+- index.html
+- admin/index.html
+- assets/css/style.css
+- assets/js/config.js
+- assets/js/app.js
+- assets/js/admin.js
+- setup.sql
 
-2. Siapkan logo DOSMOS PNG transparan dan beri nama:
-   dosmos-logo.png
+LANGKAH:
+1. Supabase > SQL Editor:
+   Paste semua isi setup.sql, lalu Run.
 
-3. Upload kedua file ke repository GitHub:
-   - index.html
-   - dosmos-logo.png
+2. Supabase > Authentication > Users:
+   Buat user admin dengan email dan password.
+   Copy UUID user tersebut.
 
-4. Commit changes. Cloudflare Pages akan deploy otomatis.
+3. Supabase > SQL Editor:
+   Jalankan:
+   insert into public.admin_users (user_id) values ('UUID_USER_ADMIN');
 
-Kontak yang sudah dipasang:
-WhatsApp: 0812-8883-6205
-Email: dosmosid@gmail.com
-Instagram: @dosmos.id
+4. GitHub:
+   Upload seluruh isi folder ini dengan struktur tetap.
+   Jangan upload ZIP langsung.
+
+5. Cloudflare deploy otomatis.
+
+6. Panel admin:
+   https://ALAMAT-WEBSITE-KAMU.pages.dev/admin/
+
+7. Login memakai email/password yang dibuat di Supabase Authentication.
+
+CATATAN:
+- Publishable key boleh berada di frontend karena RLS aktif.
+- Jangan pernah masukkan Secret Key atau service_role ke file website.
+- Logo opsional: upload dosmos-logo.png sejajar dengan index.html.

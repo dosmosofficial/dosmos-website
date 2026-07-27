@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DOSMOS Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+</head>
+<body>
+<section class="auth-wrap" id="loginView">
+  <div class="auth-card">
+    <h1>DOSMOS Admin</h1><p class="lead">Login memakai akun admin Supabase.</p>
+    <form id="loginForm" style="display:grid;gap:14px;margin-top:20px">
+      <label>Email<input id="loginEmail" type="email" required></label>
+      <label>Password<input id="loginPassword" type="password" required></label>
+      <button class="btn btn-primary" type="submit">Login</button>
+    </form>
+    <div id="authMessage" class="message"></div>
+  </div>
+</section>
+
+<section class="admin-shell hidden" id="dashboardView">
+  <aside class="sidebar">
+    <a class="brand" href="../"><span class="logo-fallback">D</span>DOSMOS</a>
+    <div class="side-nav"><button class="active">Events</button><a class="btn btn-secondary" href="../">Lihat Website</a></div>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-top"><div><h2>Event Manager</h2><p class="lead">Tambah, edit, dan hapus event DOSMOS.</p></div><button class="btn btn-secondary" id="logoutBtn">Logout</button></div>
+
+    <section class="panel">
+      <h3 style="margin-bottom:18px">Form Event</h3>
+      <form id="eventForm" class="form-grid">
+        <label>Judul Event<input id="title" required></label>
+        <label>Status<select id="status"><option value="upcoming">Akan Datang</option><option value="active">Sedang Berjalan</option><option value="finished">Selesai</option></select></label>
+        <label class="form-full">Deskripsi<textarea id="description"></textarea></label>
+        <label>URL Banner<input id="banner" placeholder="https://..."></label>
+        <label>Prize Pool<input id="prizePool" placeholder="Contoh: Rp5.000.000"></label>
+        <label>Tanggal Mulai<input id="startDate" type="date"></label>
+        <label>Tanggal Selesai<input id="endDate" type="date"></label>
+        <label class="form-full">Link Pendaftaran / WhatsApp<input id="registrationLink" placeholder="https://wa.me/..."></label>
+        <div class="form-full actions" style="justify-content:flex-start">
+          <button class="btn btn-primary" id="submitBtn" type="submit">Publish Event</button>
+          <button class="btn btn-secondary hidden" id="cancelEdit" type="button">Batal Edit</button>
+        </div>
+      </form>
+      <div id="eventMessage" class="message"></div>
+    </section>
+
+    <section class="panel" style="margin-top:22px">
+      <h3>Daftar Event</h3>
+      <div class="table-wrap"><table><thead><tr><th>Judul</th><th>Status</th><th>Mulai</th><th>Prize Pool</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="eventRows"></tbody></table></div>
+    </section>
+  </main>
+</section>
+<script src="../assets/js/admin.js"></script>
+</body></html>
