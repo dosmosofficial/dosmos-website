@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>DOSMOS | Gaming & Esports Company</title>
-  <meta name="description" content="DOSMOS Gaming & Esports Company">
+  <meta id="siteMetaDescription" name="description" content="DOSMOS Gaming & Esports Company">
+  <link id="siteFavicon" rel="icon" href="dosmos-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
@@ -11,7 +12,7 @@
 </head>
 <body>
 <header class="topbar"><div class="container nav">
-  <a class="brand" href="#home"><img class="logo" src="dosmos-logo.png" alt="DOSMOS"><span class="logo-fallback">D</span>DOSMOS</a>
+  <a class="brand" href="#home"><img class="logo site-main-logo" src="dosmos-logo.png" alt="DOSMOS"><span class="logo-fallback">D</span><span data-site-name>DOSMOS</span></a>
   <button class="menu-btn" id="menuBtn">☰</button>
   <nav class="navlinks" id="navLinks">
     <a href="#events">Events</a><a href="#register">Register</a><a href="#bracket">Bracket</a><a href="#champions">Champions</a>
@@ -21,10 +22,10 @@
 
 <main>
 <section class="hero" id="home"><div class="container hero-inner">
-  <img class="hero-logo logo" src="dosmos-logo.png" alt="DOSMOS Logo"><span class="logo-fallback" style="margin:0 auto;width:130px;height:130px;font-size:3rem">D</span>
+  <img class="hero-logo logo site-hero-logo" src="dosmos-logo.png" alt="DOSMOS Logo"><span class="logo-fallback" style="margin:0 auto;width:130px;height:130px;font-size:3rem">D</span>
   <span class="badge">Official Gaming & Esports Company</span>
-  <h1>DOSMOS</h1>
-  <p class="lead">Every Gamer Deserves a Chance. Gaming, esports, community, content, event, dan business collaboration.</p>
+  <h1 data-site-name>DOSMOS</h1>
+  <p class="lead"><span data-site-slogan>Every Gamer Deserves a Chance.</span> Gaming, esports, community, content, event, dan business collaboration.</p>
   <div class="actions"><a class="btn btn-primary" href="#events">Lihat Event</a><a class="btn btn-secondary" href="#register">Daftar Tim</a></div>
 </div></section>
 
@@ -100,6 +101,6 @@
   </div>
 </div></section>
 </main>
-<footer><div class="container">© 2026 DOSMOS — Every Gamer Deserves a Chance.</div></footer>
+<footer><div class="container">© 2026 <span data-site-name>DOSMOS</span> — <span data-site-slogan>Every Gamer Deserves a Chance.</span></div></footer>
 <script src="assets/js/public.js"></script>
 </body></html>

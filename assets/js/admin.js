@@ -79,7 +79,7 @@ async function rows(table,order="created_at",asc=false){
 function showTab(id){document.querySelector(`[data-tab="${id}"]`)?.click();window.scrollTo({top:0,behavior:"smooth"})}
 window.deleteRow=async(table,id)=>{if(!confirm("Hapus data ini?"))return;const {error}=await sb.from(table).delete().eq("id",id);if(error){alert(error.message);return}await refreshAll()};
 async function refreshAll(){
-  await Promise.all([loadEvents(),loadRegistrations(),loadMatches(),loadChampions(),loadNews(),loadGallery(),loadSponsors(),loadSettings()]);
+  await Promise.all([loadEvents(),loadRegistrations(),loadMatches(),loadChampions(),loadNews(),loadGallery(),loadSponsors(),loadSettings(),loadBranding()]);
   const tables=["events","registrations","matches","champions","news","gallery","sponsors"];
   for(const t of tables)document.getElementById("stat_"+t).textContent=(await rows(t)).length;
 }
@@ -223,3 +223,195 @@ const vipObserver = new MutationObserver(mutations=>{
   }
 });
 document.querySelectorAll(".message").forEach(el=>vipObserver.observe(el,{childList:true,subtree:true,characterData:true}));
+
+
+/* Branding Manager */
+let savedBranding = {
+  site_name:"DOSMOS",
+  slogan:"Every Gamer Deserves a Chance.",
+  main_logo_url:"../dosmos-logo.png",
+  hero_logo_url:"../dosmos-logo.png",
+  favicon_url:"../dosmos-logo.png",
+  primary_color:"#f6c744",
+  background_color:"#080808"
+};
+
+const validHex = value => /^#[0-9a-fA-F]{6}$/.test(String(value||"").trim());
+
+function syncBrandColor(colorId,textId){
+  const color=document.getElementById(colorId);
+  const text=document.getElementById(textId);
+  color?.addEventListener("input",()=>{
+    text.value=color.value;
+    updateBrandingPreview();
+  });
+  text?.addEventListener("input",()=>{
+    if(validHex(text.value)){
+      color.value=text.value;
+      updateBrandingPreview();
+    }
+  });
+}
+
+function setPreviewImage(input,img){
+  const file=input?.files?.[0];
+  if(!file)return;
+  const url=URL.createObjectURL(file);
+  img.src=url;
+  img.dataset.objectUrl=url;
+}
+
+function cleanupPreviewObjectUrls(){
+  ["brandingPreviewLogo","brandingPreviewHero"].forEach(id=>{
+    const img=document.getElementById(id);
+    if(img?.dataset.objectUrl){
+      URL.revokeObjectURL(img.dataset.objectUrl);
+      delete img.dataset.objectUrl;
+    }
+  });
+}
+
+function updateBrandingPreview(){
+  const name=branding_site_name.value.trim()||"DOSMOS";
+  const slogan=branding_slogan.value.trim()||"Every Gamer Deserves a Chance.";
+  const primary=validHex(branding_primary_color_text.value)?branding_primary_color_text.value:"#f6c744";
+  const background=validHex(branding_background_color_text.value)?branding_background_color_text.value:"#080808";
+  const mainUrl=branding_main_logo_url.value.trim()||savedBranding.main_logo_url||"../dosmos-logo.png";
+  const heroUrl=branding_hero_logo_url.value.trim()||mainUrl;
+
+  brandingPreviewName.textContent=name;
+  brandingPreviewHeroName.textContent=name;
+  brandingPreviewSlogan.textContent=slogan;
+  if(!brandingPreviewLogo.dataset.objectUrl)brandingPreviewLogo.src=mainUrl;
+  if(!brandingPreviewHero.dataset.objectUrl)brandingPreviewHero.src=heroUrl;
+
+  const card=document.querySelector(".branding-preview-card");
+  card?.style.setProperty("--brand-primary",primary);
+  card?.style.setProperty("--brand-background",background);
+}
+
+function fillBrandingForm(data={}){
+  savedBranding={
+    site_name:data.site_name||"DOSMOS",
+    slogan:data.slogan||"Every Gamer Deserves a Chance.",
+    main_logo_url:data.main_logo_url||"../dosmos-logo.png",
+    hero_logo_url:data.hero_logo_url||data.main_logo_url||"../dosmos-logo.png",
+    favicon_url:data.favicon_url||data.main_logo_url||"../dosmos-logo.png",
+    primary_color:validHex(data.primary_color)?data.primary_color:"#f6c744",
+    background_color:validHex(data.background_color)?data.background_color:"#080808"
+  };
+
+  branding_site_name.value=savedBranding.site_name;
+  branding_slogan.value=savedBranding.slogan;
+  branding_main_logo_url.value=data.main_logo_url||"";
+  branding_hero_logo_url.value=data.hero_logo_url||"";
+  branding_favicon_url.value=data.favicon_url||"";
+  branding_primary_color.value=savedBranding.primary_color;
+  branding_primary_color_text.value=savedBranding.primary_color;
+  branding_background_color.value=savedBranding.background_color;
+  branding_background_color_text.value=savedBranding.background_color;
+
+  cleanupPreviewObjectUrls();
+  brandingPreviewLogo.src=savedBranding.main_logo_url;
+  brandingPreviewHero.src=savedBranding.hero_logo_url;
+  updateBrandingPreview();
+  applyAdminBranding(savedBranding);
+}
+
+function applyAdminBranding(data){
+  const logo=data.main_logo_url||"../dosmos-logo.png";
+  ["loginBrandLogo","mobileBrandLogo","sidebarBrandLogo"].forEach(id=>{
+    const img=document.getElementById(id);
+    if(img)img.src=logo;
+  });
+  const sideName=document.getElementById("sidebarSiteName");
+  if(sideName)sideName.textContent=data.site_name||"DOSMOS";
+  const fav=document.getElementById("adminFavicon");
+  if(fav)fav.href=data.favicon_url||logo;
+  document.documentElement.style.setProperty("--brand-primary",data.primary_color||"#f6c744");
+  document.documentElement.style.setProperty("--brand-background",data.background_color||"#080808");
+}
+
+async function loadBranding(){
+  const {data,error}=await sb.from("site_settings").select("*").eq("id",1).maybeSingle();
+  if(error)throw error;
+  fillBrandingForm(data||{});
+}
+
+branding_main_logo_file?.addEventListener("change",()=>{
+  cleanupPreviewObjectUrls();
+  setPreviewImage(branding_main_logo_file,brandingPreviewLogo);
+  if(!branding_hero_logo_file.files[0]&&!branding_hero_logo_url.value.trim()){
+    setPreviewImage(branding_main_logo_file,brandingPreviewHero);
+  }
+  updateBrandingPreview();
+});
+branding_hero_logo_file?.addEventListener("change",()=>{
+  if(brandingPreviewHero.dataset.objectUrl){
+    URL.revokeObjectURL(brandingPreviewHero.dataset.objectUrl);
+    delete brandingPreviewHero.dataset.objectUrl;
+  }
+  setPreviewImage(branding_hero_logo_file,brandingPreviewHero);
+  updateBrandingPreview();
+});
+[
+  branding_site_name,branding_slogan,branding_main_logo_url,
+  branding_hero_logo_url,branding_favicon_url
+].forEach(el=>el?.addEventListener("input",updateBrandingPreview));
+
+syncBrandColor("branding_primary_color","branding_primary_color_text");
+syncBrandColor("branding_background_color","branding_background_color_text");
+
+brandingResetPreview?.addEventListener("click",()=>fillBrandingForm(savedBranding));
+
+brandingForm?.addEventListener("submit",async e=>{
+  e.preventDefault();
+  msg(brandingMessage,"Mengunggah dan menyimpan branding...");
+  brandingSubmit.disabled=true;
+
+  try{
+    let mainLogo=branding_main_logo_url.value.trim()||savedBranding.main_logo_url||null;
+    if(branding_main_logo_file.files[0]){
+      mainLogo=await uploadMedia(branding_main_logo_file.files[0],"branding/main");
+    }
+
+    let heroLogo=branding_hero_logo_url.value.trim()||mainLogo;
+    if(branding_hero_logo_file.files[0]){
+      heroLogo=await uploadMedia(branding_hero_logo_file.files[0],"branding/hero");
+    }
+
+    let favicon=branding_favicon_url.value.trim()||mainLogo;
+    if(branding_favicon_file.files[0]){
+      favicon=await uploadMedia(branding_favicon_file.files[0],"branding/favicon");
+    }
+
+    const primary=branding_primary_color_text.value.trim();
+    const background=branding_background_color_text.value.trim();
+    if(!validHex(primary)||!validHex(background)){
+      throw new Error("Kode warna harus memakai format HEX seperti #f6c744.");
+    }
+
+    const payload={
+      id:1,
+      site_name:branding_site_name.value.trim()||"DOSMOS",
+      slogan:branding_slogan.value.trim()||"Every Gamer Deserves a Chance.",
+      main_logo_url:mainLogo,
+      hero_logo_url:heroLogo,
+      favicon_url:favicon,
+      primary_color:primary,
+      background_color:background,
+      updated_at:new Date().toISOString()
+    };
+
+    const {error}=await sb.from("site_settings").upsert(payload);
+    if(error)throw error;
+
+    brandingForm.reset();
+    fillBrandingForm(payload);
+    msg(brandingMessage,"Branding berhasil disimpan dan langsung aktif di website.","success");
+  }catch(err){
+    msg(brandingMessage,err.message,"error");
+  }finally{
+    brandingSubmit.disabled=false;
+  }
+});

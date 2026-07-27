@@ -1,4 +1,39 @@
 
+
+function validBrandHex(value){
+  return /^#[0-9a-fA-F]{6}$/.test(String(value||"").trim());
+}
+
+function applyPublicBranding(data){
+  const siteName=data.site_name||"DOSMOS";
+  const slogan=data.slogan||"Every Gamer Deserves a Chance.";
+  const mainLogo=data.main_logo_url||"dosmos-logo.png";
+  const heroLogo=data.hero_logo_url||mainLogo;
+  const favicon=data.favicon_url||mainLogo;
+
+  document.querySelectorAll("[data-site-name]").forEach(el=>el.textContent=siteName);
+  document.querySelectorAll("[data-site-slogan]").forEach(el=>el.textContent=slogan);
+  document.querySelectorAll(".site-main-logo").forEach(img=>img.src=mainLogo);
+  document.querySelectorAll(".site-hero-logo").forEach(img=>img.src=heroLogo);
+
+  const fav=document.getElementById("siteFavicon");
+  if(fav)fav.href=favicon;
+
+  document.title=`${siteName} | Gaming & Esports Company`;
+  const meta=document.getElementById("siteMetaDescription");
+  if(meta)meta.content=`${siteName} Gaming & Esports Company — ${slogan}`;
+
+  if(validBrandHex(data.primary_color)){
+    document.documentElement.style.setProperty("--brand-primary",data.primary_color);
+    document.documentElement.style.setProperty("--gold",data.primary_color);
+  }
+  if(validBrandHex(data.background_color)){
+    document.documentElement.style.setProperty("--brand-background",data.background_color);
+    document.documentElement.style.setProperty("--bg",data.background_color);
+  }
+}
+
+
 const cfg = window.DOSMOS_CONFIG;
 const sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabasePublishableKey);
 
@@ -69,6 +104,7 @@ async function loadSettings(){
   try{
     const {data}=await sb.from("site_settings").select("*").eq("id",1).maybeSingle();
     if(!data)return;
+    applyPublicBranding(data);
     document.querySelectorAll("[data-wa]").forEach(a=>a.href=`https://wa.me/${String(data.whatsapp||"6281288836205").replace(/\D/g,"")}`);
     document.querySelectorAll("[data-email]").forEach(a=>{a.href=`mailto:${data.email||"dosmosid@gmail.com"}`;a.querySelector("strong")&&(a.querySelector("strong").textContent=data.email||"dosmosid@gmail.com")});
     document.querySelectorAll("[data-instagram]").forEach(a=>a.href=data.instagram||"https://instagram.com/dosmos.id");

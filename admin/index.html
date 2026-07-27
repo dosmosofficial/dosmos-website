@@ -4,11 +4,13 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>DOSMOS VIP</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link id="adminFavicon" rel="icon" href="../dosmos-logo.png">
   <link rel="stylesheet" href="../assets/css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../assets/js/config.js"></script>
 </head>
 <body>
 <section class="auth-wrap" id="loginView"><div class="auth-card">
+  <img id="loginBrandLogo" class="vip-login-logo" src="../dosmos-logo.png" alt="DOSMOS">
   <h1>DOSMOS VIP</h1><p class="lead">Exclusive Management Portal untuk tim internal DOSMOS.</p>
   <form id="loginForm" style="display:grid;gap:14px;margin-top:20px"><label>Email<input id="loginEmail" type="email" required></label><label>Password<input id="loginPassword" type="password" required></label><button class="btn btn-primary">Login</button></form><div id="authMessage" class="message"></div>
 </div></section>
@@ -20,7 +22,7 @@
     </button>
 
     <a class="mobile-admin-brand" href="../">
-      <span class="logo-fallback">D</span>
+      <img id="mobileBrandLogo" class="admin-brand-logo" src="../dosmos-logo.png" alt="DOSMOS">
       <span>DOSMOS VIP</span>
     </a>
 
@@ -34,7 +36,7 @@
 
   <aside class="sidebar" id="adminSidebar">
     <div class="sidebar-head">
-      <a class="brand" href="../"><span class="logo-fallback">D</span>DOSMOS</a>
+      <a class="brand" href="../"><img id="sidebarBrandLogo" class="admin-brand-logo" src="../dosmos-logo.png" alt="DOSMOS"><span id="sidebarSiteName">DOSMOS</span></a>
       <button class="sidebar-close-btn" id="sidebarCloseBtn" type="button" aria-label="Tutup menu">×</button>
     </div>
 
@@ -52,6 +54,7 @@
       <button data-tab="registrationsTab">Registrations</button><button data-tab="matchesTab">Bracket / Matches</button>
       <button data-tab="championsTab">Champions</button><button data-tab="newsTab">News</button>
       <button data-tab="galleryTab">Gallery</button><button data-tab="sponsorsTab">Sponsors</button>
+      <button data-tab="brandingTab">Branding</button>
       <button data-tab="settingsTab">Settings</button>
       <a href="../">Lihat Website</a>
       <button class="sidebar-logout-btn" id="sidebarLogoutBtn" type="button">Logout</button>
@@ -164,6 +167,91 @@
         <div class="form-full"><button class="btn btn-primary" id="sponsorSubmit">Publish</button><div id="sponsorMessage" class="message"></div></div>
       </form></div>
       <div class="panel" style="margin-top:20px"><div class="vip-panel-head"><h3>Daftar Sponsor</h3><input class="vip-table-search" data-target="sponsorRows" placeholder="Cari sponsor..."></div><div class="table-wrap"><table><thead><tr><th>Nama</th><th>Website</th><th>Logo</th><th>Urutan</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="sponsorRows"></tbody></table></div></div>
+    </section>
+
+
+    <section class="tab-panel" id="brandingTab">
+      <div class="panel">
+        <div class="vip-panel-head">
+          <div>
+            <div class="eyebrow">BRAND MANAGER</div>
+            <h3>Branding Website</h3>
+          </div>
+          <span class="branding-status">Live Preview</span>
+        </div>
+
+        <div class="branding-layout">
+          <form id="brandingForm" class="form-grid branding-form">
+            <label>Nama Website
+              <input id="branding_site_name" maxlength="40" placeholder="DOSMOS">
+            </label>
+
+            <label>Slogan
+              <input id="branding_slogan" maxlength="100" placeholder="Every Gamer Deserves a Chance.">
+            </label>
+
+            <label>Upload Logo Utama
+              <input id="branding_main_logo_file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+            </label>
+
+            <label>Atau URL Logo Utama
+              <input id="branding_main_logo_url" placeholder="https://...">
+            </label>
+
+            <label>Upload Logo Hero
+              <input id="branding_hero_logo_file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+            </label>
+
+            <label>Atau URL Logo Hero
+              <input id="branding_hero_logo_url" placeholder="Kosongkan untuk memakai logo utama">
+            </label>
+
+            <label>Upload Favicon
+              <input id="branding_favicon_file" type="file" accept="image/png,image/jpeg,image/webp,image/x-icon,image/svg+xml">
+            </label>
+
+            <label>Atau URL Favicon
+              <input id="branding_favicon_url" placeholder="Kosongkan untuk memakai logo utama">
+            </label>
+
+            <label>Warna Utama
+              <div class="color-control">
+                <input id="branding_primary_color" type="color" value="#f6c744">
+                <input id="branding_primary_color_text" value="#f6c744" maxlength="7">
+              </div>
+            </label>
+
+            <label>Warna Background
+              <div class="color-control">
+                <input id="branding_background_color" type="color" value="#080808">
+                <input id="branding_background_color_text" value="#080808" maxlength="7">
+              </div>
+            </label>
+
+            <div class="form-full branding-actions">
+              <button class="btn btn-primary" id="brandingSubmit" type="submit">Simpan Branding</button>
+              <button class="btn btn-secondary" id="brandingResetPreview" type="button">Reset Preview</button>
+              <div id="brandingMessage" class="message"></div>
+            </div>
+          </form>
+
+          <aside class="branding-preview-card">
+            <div class="branding-preview-label">PREVIEW</div>
+            <div class="branding-preview-top">
+              <img id="brandingPreviewLogo" src="../dosmos-logo.png" alt="Preview logo">
+              <strong id="brandingPreviewName">DOSMOS</strong>
+            </div>
+            <div class="branding-preview-hero">
+              <img id="brandingPreviewHero" src="../dosmos-logo.png" alt="Preview hero">
+              <span>Official Gaming & Esports Company</span>
+              <h4 id="brandingPreviewHeroName">DOSMOS</h4>
+              <p id="brandingPreviewSlogan">Every Gamer Deserves a Chance.</p>
+              <button type="button">Lihat Event</button>
+            </div>
+            <small>Perubahan akan langsung tampil di website setelah disimpan.</small>
+          </aside>
+        </div>
+      </div>
     </section>
 
     <section class="tab-panel" id="settingsTab"><div class="panel"><h3>Kontak, Social Media & Live</h3>

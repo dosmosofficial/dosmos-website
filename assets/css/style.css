@@ -945,3 +945,206 @@ th{color:var(--gold2)}
     grid-template-columns:1fr;
   }
 }
+
+
+/* =========================================================
+   DOSMOS VIP — BRAND MANAGER
+========================================================= */
+:root{
+  --brand-primary:#f6c744;
+  --brand-background:#080808;
+}
+body{
+  background:var(--brand-background);
+}
+.vip-login-logo{
+  display:block;
+  width:96px;
+  height:96px;
+  margin:0 auto 18px;
+  object-fit:cover;
+  border:1px solid var(--goldline);
+  border-radius:22px;
+  box-shadow:0 12px 35px rgba(0,0,0,.45),0 0 24px color-mix(in srgb,var(--brand-primary) 22%,transparent);
+}
+.admin-brand-logo{
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
+  object-fit:cover;
+  border:1px solid color-mix(in srgb,var(--brand-primary) 50%,transparent);
+  border-radius:10px;
+  background:#080808;
+}
+.mobile-admin-brand .admin-brand-logo{
+  width:34px;
+  height:34px;
+  flex-basis:34px;
+}
+.branding-status{
+  padding:7px 11px;
+  border:1px solid rgba(104,228,154,.25);
+  border-radius:999px;
+  background:rgba(34,197,94,.07);
+  color:#8df0ad;
+  font-size:11px;
+  font-weight:800;
+}
+.branding-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.3fr) minmax(310px,.7fr);
+  gap:22px;
+  margin-top:22px;
+}
+.branding-form{
+  align-content:start;
+}
+.color-control{
+  display:grid;
+  grid-template-columns:58px 1fr;
+  gap:10px;
+}
+.color-control input[type="color"]{
+  width:58px;
+  padding:5px;
+  cursor:pointer;
+}
+.branding-actions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px;
+}
+.branding-actions .message{
+  width:100%;
+}
+.branding-preview-card{
+  position:sticky;
+  top:24px;
+  align-self:start;
+  overflow:hidden;
+  border:1px solid var(--goldline);
+  border-radius:19px;
+  background:#080808;
+  box-shadow:0 22px 60px rgba(0,0,0,.42);
+}
+.branding-preview-label{
+  padding:11px 14px;
+  border-bottom:1px solid var(--line);
+  color:var(--gold);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.18em;
+}
+.branding-preview-top{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:12px 15px;
+  border-bottom:1px solid var(--line);
+  background:#070707;
+}
+.branding-preview-top img{
+  width:34px;
+  height:34px;
+  object-fit:cover;
+  border-radius:9px;
+}
+.branding-preview-top strong{
+  color:var(--brand-primary);
+  font-family:Cinzel,serif;
+}
+.branding-preview-hero{
+  min-height:350px;
+  display:flex;
+  align-items:center;
+  flex-direction:column;
+  justify-content:center;
+  padding:26px 20px;
+  text-align:center;
+  background:
+    radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--brand-primary) 13%,transparent),transparent 38%),
+    linear-gradient(180deg,#121212,var(--brand-background));
+}
+.branding-preview-hero img{
+  width:118px;
+  height:118px;
+  object-fit:cover;
+  border:1px solid color-mix(in srgb,var(--brand-primary) 55%,transparent);
+  border-radius:25px;
+  box-shadow:0 0 38px color-mix(in srgb,var(--brand-primary) 17%,transparent);
+}
+.branding-preview-hero span{
+  margin-top:13px;
+  padding:5px 9px;
+  border-radius:999px;
+  background:var(--brand-primary);
+  color:#080808;
+  font-size:9px;
+  font-weight:900;
+}
+.branding-preview-hero h4{
+  margin:14px 0 5px;
+  color:var(--brand-primary);
+  font:800 35px Cinzel,serif;
+}
+.branding-preview-hero p{
+  margin:0;
+  color:#cfcfcf;
+  font-size:12px;
+}
+.branding-preview-hero button{
+  margin-top:18px;
+  padding:9px 15px;
+  border:0;
+  border-radius:8px;
+  background:var(--brand-primary);
+  color:#080808;
+  font-weight:900;
+}
+.branding-preview-card > small{
+  display:block;
+  padding:12px 15px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  line-height:1.45;
+}
+.site-main-logo{
+  object-fit:cover;
+}
+.site-hero-logo{
+  object-fit:cover;
+}
+
+@media(max-width:980px){
+  .branding-layout{
+    grid-template-columns:1fr;
+  }
+  .branding-preview-card{
+    position:static;
+    order:-1;
+  }
+  .branding-preview-hero{
+    min-height:310px;
+  }
+}
+@media(max-width:520px){
+  .branding-layout{
+    gap:15px;
+  }
+  .branding-preview-hero{
+    min-height:280px;
+    padding:22px 14px;
+  }
+  .branding-preview-hero img{
+    width:96px;
+    height:96px;
+  }
+  .branding-actions{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  .branding-actions .btn{
+    width:100%;
+  }
+}

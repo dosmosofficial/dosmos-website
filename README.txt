@@ -1,34 +1,34 @@
-DOSMOS VIP
+DOSMOS VIP — BRAND MANAGER
 
-PERUBAHAN:
-- Semua tulisan versi seperti V10, V11, atau V12 di tampilan sudah dihapus.
-- Nama portal hanya tampil sebagai DOSMOS VIP.
-- Tampilan HP dibuat lebih lega dan tidak sempit.
-- Header mobile tetap memakai tombol hamburger.
-- Sidebar slide dari kiri dengan overlay.
-- Form dibuat satu kolom di HP.
-- Statistik dibuat dua kolom yang lebih besar; di layar sangat kecil menjadi satu kolom.
-- Quick action rapi di HP.
-- Tabel dapat digeser horizontal tanpa merusak layout.
-- Padding dan ukuran tombol diperbesar agar mudah disentuh.
-- Semua fitur lama tetap dipertahankan.
+FITUR BARU:
+- Menu Branding di DOSMOS VIP.
+- Upload logo utama langsung dari HP atau komputer.
+- Upload logo hero.
+- Upload favicon.
+- Nama website dan slogan dapat diganti.
+- Warna utama dan background dapat diganti.
+- Live preview sebelum disimpan.
+- Branding otomatis tampil di navbar, hero, footer, tab browser, login, dan sidebar admin.
+- Tampilan HP tetap lega dan responsif.
+- Logo DOSMOS yang diberikan sudah disertakan sebagai fallback lokal.
 
-CARA PASANG:
+LANGKAH PEMASANGAN:
 1. Extract ZIP.
-2. Upload ke GitHub:
-   - index.html
-   - admin/index.html
-   - assets/css/style.css
-   - assets/js/admin.js
-   - assets/js/public.js
-   - assets/js/config.js
-3. Commit changes.
-4. Tunggu Cloudflare deploy.
-5. Refresh dengan Ctrl + Shift + R.
-6. Di HP pastikan Desktop Site tidak aktif.
+2. Upload seluruh file ke repository GitHub.
+3. Commit changes dan tunggu Cloudflare selesai deploy.
+4. Buka Supabase > SQL Editor.
+5. Jalankan file setup-branding.sql SATU KALI.
+6. Buka /admin lalu masuk ke menu Branding.
+7. Upload logo dan klik Simpan Branding.
 
-DATABASE:
-Tidak perlu menjalankan SQL baru apabila versi sebelumnya sudah berfungsi.
+FILE UTAMA YANG DIGANTI:
+- index.html
+- admin/index.html
+- assets/css/style.css
+- assets/js/admin.js
+- assets/js/public.js
+- dosmos-logo.png
 
-ADMIN:
-https://dosmos.pages.dev/admin/
+PENTING:
+Menu Branding memerlukan setup-branding.sql karena ada kolom database baru.
+Tidak perlu menghapus tabel atau data lama.
