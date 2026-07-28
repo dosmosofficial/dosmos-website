@@ -64,13 +64,40 @@ document.querySelectorAll("[data-tab]").forEach(btn=>btn.addEventListener("click
   document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
   btn.classList.add("active");document.getElementById(btn.dataset.tab).classList.add("active");
 }));
-async function uploadMedia(file,folder){
+function mediaCategoryFromFolder(folder="other"){
+  const first=String(folder).split("/")[0].toLowerCase();
+  const map={branding:"logo",events:"tournament",champions:"player",gallery:"gallery",news:"news",sponsors:"sponsor","live-center":"live",teams:"team",players:"player"};
+  return map[first]||first||"other";
+}
+async function registerMediaAsset({file,path,url,category,status="active",displayName=null}){
+  const payload={
+    original_name:file?.name||displayName||"media",
+    display_name:displayName||file?.name||"Media DOSMOS",
+    storage_path:path||null,
+    public_url:url,
+    category:category||"other",
+    status,
+    mime_type:file?.type||null,
+    file_size:file?.size||0,
+    updated_at:new Date().toISOString()
+  };
+  const {error}=await sb.from("media_assets").insert(payload);
+  if(error)console.warn("Media Library registration:",error.message);
+}
+async function uploadMedia(file,folder,options={}){
   if(!file)return null;
   const ext=(file.name.split(".").pop()||"jpg").toLowerCase();
   const path=`${folder}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
   const {error}=await sb.storage.from(cfg.storageBucket).upload(path,file,{cacheControl:"3600"});
   if(error)throw error;
-  return sb.storage.from(cfg.storageBucket).getPublicUrl(path).data.publicUrl;
+  const url=sb.storage.from(cfg.storageBucket).getPublicUrl(path).data.publicUrl;
+  await registerMediaAsset({
+    file,path,url,
+    category:options.category||mediaCategoryFromFolder(folder),
+    status:options.status||"active",
+    displayName:options.displayName||file.name
+  });
+  return url;
 }
 async function rows(table,order="created_at",asc=false){
   const {data,error}=await sb.from(table).select("*").order(order,{ascending:asc});
@@ -79,7 +106,7 @@ async function rows(table,order="created_at",asc=false){
 function showTab(id){document.querySelector(`[data-tab="${id}"]`)?.click();window.scrollTo({top:0,behavior:"smooth"})}
 window.deleteRow=async(table,id)=>{if(!confirm("Hapus data ini?"))return;const {error}=await sb.from(table).delete().eq("id",id);if(error){alert(error.message);return}await refreshAll()};
 async function refreshAll(){
-  await Promise.all([loadEvents(),loadRegistrations(),loadTournamentBrackets(),loadChampions(),loadNews(),loadGallery(),loadSponsors(),loadSettings(),loadBranding(),loadWebsiteContent(),loadLiveCenter(),loadAnnouncements()]);
+  await Promise.all([loadEvents(),loadRegistrations(),loadTournamentBrackets(),loadChampions(),loadNews(),loadGallery(),loadSponsors(),loadSettings(),loadBranding(),loadWebsiteContent(),loadLiveCenter(),loadAnnouncements(),loadMediaLibrary()]);
   const tables=["events","registrations","brackets","champions","news","gallery","sponsors"];
   for(const t of tables){
     const statId=t==="brackets"?"stat_matches":"stat_"+t;
@@ -1107,5 +1134,214 @@ bracketAdminBoard?.addEventListener("click",async e=>{
     alert(err.message);
   }finally{
     button.disabled=false;
+  }
+});
+
+
+/* =========================================================
+   DOSMOS VIP V14.6 — MEDIA LIBRARY PRO
+========================================================= */
+let mediaLibraryCache=[];
+
+function formatMediaBytes(bytes){
+  const value=Number(bytes||0);
+  if(value<1024)return `${value} B`;
+  if(value<1024*1024)return `${(value/1024).toFixed(1)} KB`;
+  if(value<1024*1024*1024)return `${(value/1024/1024).toFixed(1)} MB`;
+  return `${(value/1024/1024/1024).toFixed(2)} GB`;
+}
+function mediaStatusLabel(status){
+  return status==="active"?"ACTIVE":status==="hidden"?"HIDDEN":"ARCHIVE";
+}
+async function loadMediaLibrary(){
+  const {data,error}=await sb.from("media_assets").select("*").order("created_at",{ascending:false});
+  if(error){
+    if(mediaLibraryGrid)mediaLibraryGrid.innerHTML=`<div class="empty-state">Media Library belum siap: ${esc(error.message)}</div>`;
+    return;
+  }
+  mediaLibraryCache=data||[];
+  renderMediaStats();
+  renderMediaLibrary();
+}
+function renderMediaStats(){
+  if(!mediaStatTotal)return;
+  mediaStatTotal.textContent=mediaLibraryCache.length;
+  mediaStatActive.textContent=mediaLibraryCache.filter(x=>x.status==="active").length;
+  mediaStatHidden.textContent=mediaLibraryCache.filter(x=>x.status==="hidden").length;
+  mediaStatArchive.textContent=mediaLibraryCache.filter(x=>x.status==="archive").length;
+  mediaStatStorage.textContent=formatMediaBytes(mediaLibraryCache.reduce((sum,x)=>sum+Number(x.file_size||0),0));
+}
+function filteredMediaAssets(){
+  const search=(mediaSearch?.value||"").trim().toLowerCase();
+  const category=mediaCategoryFilter?.value||"all";
+  const status=mediaStatusFilter?.value||"all";
+  const sort=mediaSort?.value||"newest";
+  let assets=mediaLibraryCache.filter(asset=>{
+    const matchSearch=!search||`${asset.display_name||""} ${asset.original_name||""}`.toLowerCase().includes(search);
+    const matchCategory=category==="all"||asset.category===category;
+    const matchStatus=status==="all"||asset.status===status;
+    return matchSearch&&matchCategory&&matchStatus;
+  });
+  assets.sort((a,b)=>{
+    if(sort==="oldest")return new Date(a.created_at)-new Date(b.created_at);
+    if(sort==="name")return String(a.display_name||a.original_name).localeCompare(String(b.display_name||b.original_name));
+    if(sort==="size")return Number(b.file_size||0)-Number(a.file_size||0);
+    return new Date(b.created_at)-new Date(a.created_at);
+  });
+  return assets;
+}
+function renderMediaLibrary(){
+  if(!mediaLibraryGrid)return;
+  const assets=filteredMediaAssets();
+  if(!assets.length){
+    mediaLibraryGrid.innerHTML='<div class="empty-state media-grid-empty">Tidak ada media yang cocok.</div>';
+    return;
+  }
+  mediaLibraryGrid.innerHTML=assets.map(asset=>`
+    <article class="media-card status-${asset.status}" data-media-id="${asset.id}">
+      <div class="media-card-image">
+        <img src="${esc(asset.public_url)}" alt="${esc(asset.display_name||asset.original_name)}" loading="lazy">
+        <span class="media-status-badge">${mediaStatusLabel(asset.status)}</span>
+      </div>
+      <div class="media-card-body">
+        <h4 title="${esc(asset.display_name||asset.original_name)}">${esc(asset.display_name||asset.original_name)}</h4>
+        <div class="media-card-meta">
+          <span>${esc(String(asset.category||"other").toUpperCase())}</span>
+          <span>${formatMediaBytes(asset.file_size)}</span>
+        </div>
+        <small title="${esc(asset.original_name)}">${esc(asset.original_name||"Media")}</small>
+        <div class="media-card-actions">
+          <button class="btn btn-primary" type="button" data-media-use="${asset.id}">Gunakan</button>
+          <button class="btn btn-secondary" type="button" data-media-copy="${asset.id}">Copy URL</button>
+          <button class="btn btn-secondary" type="button" data-media-rename="${asset.id}">Rename</button>
+        </div>
+        <div class="media-status-actions">
+          <button type="button" data-media-status="active" data-id="${asset.id}" class="${asset.status==="active"?"current":""}">Active</button>
+          <button type="button" data-media-status="hidden" data-id="${asset.id}" class="${asset.status==="hidden"?"current":""}">Hidden</button>
+          <button type="button" data-media-status="archive" data-id="${asset.id}" class="${asset.status==="archive"?"current":""}">Archive</button>
+          <button type="button" class="media-delete-action" data-media-delete="${asset.id}">Delete</button>
+        </div>
+      </div>
+    </article>`).join("");
+}
+async function findMediaUsage(url){
+  const usages=[];
+  const checks=[
+    ["site_settings",["main_logo_url","hero_logo_url","favicon_url","hero_background_url","mobile_hero_background_url","login_background_url","footer_background_url","live_thumbnail_url"],"Website Settings"],
+    ["events",["banner"],"Event"],
+    ["champions",["photo"],"Champion"],
+    ["news",["cover"],"News"],
+    ["gallery",["image_url"],"Gallery"],
+    ["sponsors",["logo"],"Sponsor"],
+    ["bracket_matches",["team_a_logo","team_b_logo","winner_logo"],"Bracket Match"],
+    ["brackets",["champion_logo"],"Bracket Champion"]
+  ];
+  for(const [table,columns,label] of checks){
+    for(const column of columns){
+      const {data,error}=await sb.from(table).select("id").eq(column,url).limit(3);
+      if(!error&&data?.length)usages.push(`${label} (${column})`);
+    }
+  }
+  return [...new Set(usages)];
+}
+async function updateMediaStatus(id,status){
+  const {error}=await sb.from("media_assets").update({status,updated_at:new Date().toISOString()}).eq("id",id);
+  if(error)throw error;
+  await loadMediaLibrary();
+}
+async function deleteMediaAsset(asset){
+  const usages=await findMediaUsage(asset.public_url);
+  if(usages.length){
+    alert(`Gambar ini masih dipakai oleh:\n\n${usages.join("\n")}\n\nUbah gambar pada modul tersebut atau jadikan Hidden/Archive. File tidak dihapus.`);
+    return;
+  }
+  if(!confirm(`Hapus permanen "${asset.display_name||asset.original_name}" dari database dan storage?`))return;
+  if(asset.storage_path){
+    const {error:storageError}=await sb.storage.from(cfg.storageBucket).remove([asset.storage_path]);
+    if(storageError)throw storageError;
+  }
+  const {error}=await sb.from("media_assets").delete().eq("id",asset.id);
+  if(error)throw error;
+  await loadMediaLibrary();
+}
+async function copyMediaUrl(url){
+  try{
+    await navigator.clipboard.writeText(url);
+  }catch{
+    const area=document.createElement("textarea");
+    area.value=url;document.body.appendChild(area);area.select();document.execCommand("copy");area.remove();
+  }
+}
+function useMediaAsset(asset){
+  const targetValue=mediaPickerTarget?.value||"";
+  if(!targetValue){
+    copyMediaUrl(asset.public_url);
+    alert("URL gambar sudah dicopy.");
+    return;
+  }
+  const [fieldId,tabId]=targetValue.split("|");
+  const field=document.getElementById(fieldId);
+  if(!field){
+    alert("Target field tidak ditemukan.");return;
+  }
+  field.value=asset.public_url;
+  field.dispatchEvent(new Event("input",{bubbles:true}));
+  field.dispatchEvent(new Event("change",{bubbles:true}));
+  showTab(tabId);
+  field.scrollIntoView({behavior:"smooth",block:"center"});
+  field.focus();
+}
+mediaUploadForm?.addEventListener("submit",async e=>{
+  e.preventDefault();
+  msg(mediaUploadMessage,"Mengunggah media...");
+  mediaUploadSubmit.disabled=true;
+  try{
+    const file=media_upload_file.files[0];
+    if(!file)throw new Error("Pilih gambar terlebih dahulu.");
+    const category=media_category.value;
+    await uploadMedia(file,`library/${category}`,{
+      category,
+      status:media_initial_status.value,
+      displayName:media_display_name.value.trim()||file.name
+    });
+    mediaUploadForm.reset();
+    media_initial_status.value="active";
+    msg(mediaUploadMessage,"Media berhasil masuk Library.","success");
+    await loadMediaLibrary();
+  }catch(err){
+    msg(mediaUploadMessage,err.message,"error");
+  }finally{
+    mediaUploadSubmit.disabled=false;
+  }
+});
+[mediaSearch,mediaCategoryFilter,mediaStatusFilter,mediaSort].forEach(el=>{
+  el?.addEventListener(el?.tagName==="INPUT"?"input":"change",renderMediaLibrary);
+});
+mediaRefreshBtn?.addEventListener("click",loadMediaLibrary);
+mediaLibraryGrid?.addEventListener("click",async e=>{
+  const card=e.target.closest("[data-media-id]");
+  if(!card)return;
+  const asset=mediaLibraryCache.find(x=>String(x.id)===String(card.dataset.mediaId));
+  if(!asset)return;
+  try{
+    const use=e.target.closest("[data-media-use]");
+    const copy=e.target.closest("[data-media-copy]");
+    const rename=e.target.closest("[data-media-rename]");
+    const status=e.target.closest("[data-media-status]");
+    const del=e.target.closest("[data-media-delete]");
+    if(use)useMediaAsset(asset);
+    if(copy){await copyMediaUrl(asset.public_url);copy.textContent="Copied!";setTimeout(()=>copy.textContent="Copy URL",1200);}
+    if(rename){
+      const name=prompt("Nama tampilan baru:",asset.display_name||asset.original_name);
+      if(name?.trim()){
+        const {error}=await sb.from("media_assets").update({display_name:name.trim(),updated_at:new Date().toISOString()}).eq("id",asset.id);
+        if(error)throw error;
+        await loadMediaLibrary();
+      }
+    }
+    if(status)await updateMediaStatus(asset.id,status.dataset.mediaStatus);
+    if(del)await deleteMediaAsset(asset);
+  }catch(err){
+    alert(err.message);
   }
 });

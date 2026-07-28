@@ -53,7 +53,7 @@
       <button class="active" data-tab="dashboardTab">Dashboard</button><button data-tab="eventsTab">Events</button>
       <button data-tab="registrationsTab">Registrations</button><button data-tab="matchesTab">Tournament Bracket</button>
       <button data-tab="championsTab">Champions</button><button data-tab="newsTab">News</button>
-      <button data-tab="galleryTab">Gallery</button><button data-tab="sponsorsTab">Sponsors</button>
+      <button data-tab="galleryTab">Gallery</button><button data-tab="mediaLibraryTab">Media Library</button><button data-tab="sponsorsTab">Sponsors</button>
       <button data-tab="brandingTab">Branding</button>
       <button data-tab="contentTab">Website Text</button>
       <button data-tab="liveCenterTab">Live Center</button>
@@ -112,6 +112,7 @@
         <button type="button" data-tab-jump="registrationsTab">Lihat Registrasi</button>
         <button type="button" data-tab-jump="matchesTab">Kelola Bracket</button>
         <button type="button" data-tab-jump="galleryTab">Upload Gallery</button>
+        <button type="button" data-tab-jump="mediaLibraryTab">Buka Media Library</button>
       </div>
     </section>
 
@@ -249,6 +250,131 @@ ONIC"></textarea>
         <div class="form-full"><button class="btn btn-primary" id="gallerySubmit">Publish</button><div id="galleryMessage" class="message"></div></div>
       </form></div>
       <div class="panel" style="margin-top:20px"><div class="vip-panel-head"><h3>Daftar Gallery</h3><input class="vip-table-search" data-target="galleryRows" placeholder="Cari gallery..."></div><div class="table-wrap"><table><thead><tr><th>Caption</th><th>Event</th><th>Foto</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="galleryRows"></tbody></table></div></div>
+    </section>
+
+
+    <section class="tab-panel" id="mediaLibraryTab">
+      <div class="panel">
+        <div class="vip-panel-head">
+          <div>
+            <div class="eyebrow">DOSMOS DIGITAL ASSET MANAGER</div>
+            <h3>Media Library PRO</h3>
+          </div>
+          <span class="branding-status">Upload Sekali, Pakai Berkali-kali</span>
+        </div>
+
+        <div class="media-stat-grid" style="margin-top:20px">
+          <div class="media-stat-card"><span>Total Media</span><strong id="mediaStatTotal">0</strong></div>
+          <div class="media-stat-card"><span>Active</span><strong id="mediaStatActive">0</strong></div>
+          <div class="media-stat-card"><span>Hidden</span><strong id="mediaStatHidden">0</strong></div>
+          <div class="media-stat-card"><span>Archive</span><strong id="mediaStatArchive">0</strong></div>
+          <div class="media-stat-card"><span>Storage</span><strong id="mediaStatStorage">0 MB</strong></div>
+        </div>
+
+        <form id="mediaUploadForm" class="form-grid media-upload-form" style="margin-top:22px">
+          <label>Upload Gambar
+            <input id="media_upload_file" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" required>
+          </label>
+          <label>Nama Tampilan
+            <input id="media_display_name" placeholder="Contoh: Hero Cyber Gold">
+          </label>
+          <label>Kategori
+            <select id="media_category">
+              <option value="hero">Hero</option>
+              <option value="background">Background</option>
+              <option value="logo">Logo</option>
+              <option value="tournament">Tournament</option>
+              <option value="team">Team</option>
+              <option value="player">Player</option>
+              <option value="gallery">Gallery</option>
+              <option value="news">News</option>
+              <option value="sponsor">Sponsor</option>
+              <option value="partner">Partner</option>
+              <option value="live">Live Center</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <label>Status Awal
+            <select id="media_initial_status">
+              <option value="active">Active</option>
+              <option value="hidden">Hidden</option>
+              <option value="archive">Archive</option>
+            </select>
+          </label>
+          <div class="form-full media-upload-actions">
+            <button class="btn btn-primary" id="mediaUploadSubmit" type="submit">Upload ke Library</button>
+            <div id="mediaUploadMessage" class="message"></div>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel" style="margin-top:20px">
+        <div class="vip-panel-head media-library-head">
+          <div>
+            <div class="eyebrow">ASSET COLLECTION</div>
+            <h3>Semua Media DOSMOS</h3>
+          </div>
+          <button class="btn btn-secondary" id="mediaRefreshBtn" type="button">Refresh</button>
+        </div>
+
+        <div class="media-library-toolbar">
+          <input id="mediaSearch" placeholder="Cari nama atau file...">
+          <select id="mediaCategoryFilter">
+            <option value="all">Semua Kategori</option>
+            <option value="hero">Hero</option>
+            <option value="background">Background</option>
+            <option value="logo">Logo</option>
+            <option value="tournament">Tournament</option>
+            <option value="team">Team</option>
+            <option value="player">Player</option>
+            <option value="gallery">Gallery</option>
+            <option value="news">News</option>
+            <option value="sponsor">Sponsor</option>
+            <option value="partner">Partner</option>
+            <option value="live">Live Center</option>
+            <option value="other">Other</option>
+          </select>
+          <select id="mediaStatusFilter">
+            <option value="all">Semua Status</option>
+            <option value="active">Active</option>
+            <option value="hidden">Hidden</option>
+            <option value="archive">Archive</option>
+          </select>
+          <select id="mediaSort">
+            <option value="newest">Terbaru</option>
+            <option value="oldest">Terlama</option>
+            <option value="name">Nama A–Z</option>
+            <option value="size">Ukuran Terbesar</option>
+          </select>
+        </div>
+
+        <div class="media-picker-bar">
+          <div>
+            <strong>Gunakan gambar ke modul:</strong>
+            <small>Pilih target, kemudian tekan “Gunakan” pada gambar.</small>
+          </div>
+          <select id="mediaPickerTarget">
+            <option value="">Hanya copy URL</option>
+            <option value="branding_main_logo_url|brandingTab">Branding — Logo Utama</option>
+            <option value="branding_hero_logo_url|brandingTab">Branding — Logo Hero</option>
+            <option value="branding_favicon_url|brandingTab">Branding — Favicon</option>
+            <option value="branding_hero_bg_url|brandingTab">Branding — Hero Background</option>
+            <option value="branding_mobile_hero_bg_url|brandingTab">Branding — Mobile Hero</option>
+            <option value="branding_login_bg_url|brandingTab">Branding — Login Background</option>
+            <option value="branding_footer_bg_url|brandingTab">Branding — Footer Background</option>
+            <option value="event_banner|eventsTab">Event — Banner</option>
+            <option value="champion_photo|championsTab">Champion — Foto</option>
+            <option value="news_cover|newsTab">News — Cover</option>
+            <option value="gallery_image_url|galleryTab">Gallery — Gambar</option>
+            <option value="sponsor_logo|sponsorsTab">Sponsor — Logo</option>
+            <option value="live_thumbnail_url|liveCenterTab">Live Center — Thumbnail</option>
+          </select>
+        </div>
+
+        <div id="mediaLibraryGrid" class="media-library-grid">
+          <div class="empty-state">Memuat media...</div>
+        </div>
+      </div>
     </section>
 
     <section class="tab-panel" id="sponsorsTab"><div class="panel"><h3>Tambah / Edit Sponsor</h3>

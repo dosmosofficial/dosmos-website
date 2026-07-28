@@ -147,3 +147,42 @@ CATATAN:
 - Bracket pertama fokus pada Single Elimination agar engine stabil.
 - Jangan mengubah hasil match ronde lama setelah ronde berikutnya sudah dimainkan,
   karena dapat menyebabkan jalur pemenang tidak konsisten.
+
+
+=========================================================
+DOSMOS VIP V14.6 — MEDIA LIBRARY PRO
+=========================================================
+
+FITUR:
+- Semua upload baru otomatis tercatat di Media Library.
+- Upload gambar langsung dari tab Media Library.
+- Status Active, Hidden, dan Archive.
+- Hidden/Archive tidak menghapus file dari Supabase Storage.
+- Search, filter kategori, filter status, dan sorting.
+- Statistik total media, status, dan penggunaan storage.
+- Rename nama tampilan tanpa mengubah URL.
+- Copy URL.
+- Media Picker untuk Branding, Event, Champion, News, Gallery,
+  Sponsor, dan Live Center.
+- Safe Delete: file tidak bisa dihapus jika URL masih dipakai
+  oleh modul website yang terdeteksi.
+- Hapus permanen membersihkan database dan file Storage.
+- Mobile responsive.
+
+CARA PASANG:
+1. Pastikan V14.5 sudah terpasang.
+2. Jalankan `supabase-v14-6.sql` di Supabase SQL Editor.
+3. Replace seluruh file paket V14.6 ke repository GitHub.
+4. Commit dan tunggu Cloudflare Pages selesai deploy.
+5. Tekan Ctrl + F5.
+6. Login Admin > Media Library.
+
+CATATAN PENTING:
+- Gambar yang sudah ada sebelum V14.6 belum otomatis masuk ke library.
+  Upload baru setelah V14.6 akan tercatat otomatis.
+- Untuk gambar yang tidak dipakai sementara, pilih HIDDEN atau ARCHIVE.
+  Jangan Delete.
+- Status media mengatur pengelolaan aset di admin. Modul website tetap memakai
+  URL yang sudah dipilih sampai URL tersebut diganti dari modul terkait.
+- Safe Delete mengecek pemakaian URL pada Branding, Live, Events, Champions,
+  News, Gallery, Sponsors, dan Tournament Bracket.
