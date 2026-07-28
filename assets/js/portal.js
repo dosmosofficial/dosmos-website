@@ -334,3 +334,6 @@ async function initDonate(){
   donationPaidButton.onclick=async()=>{const ref=donationPaidButton.dataset.reference;const {error}=await sb.from("donations").update({status:"waiting_confirmation",updated_at:new Date().toISOString()}).eq("reference",ref);donationModalMessage.textContent=error?error.message:"Konfirmasi terkirim. Admin akan memeriksa pembayaran kamu.";donationPaidButton.disabled=!error};
   await loadSupporters(donateSupporters);
 }
+
+
+document.querySelectorAll("[data-current-year]").forEach(el=>el.textContent=new Date().getFullYear());

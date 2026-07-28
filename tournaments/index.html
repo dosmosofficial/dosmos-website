@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="author" content="Jesse — Founder & CEO of DOSMOS.ID">
+  <meta name="publisher" content="DOSMOS.ID">
   <title>Tournament | DOSMOS</title>
   <meta id="siteMetaDescription" name="description" content="DOSMOS Gaming & Esports Portal">
   <meta property="og:type" content="website">
@@ -17,6 +19,27 @@
   <link rel="stylesheet" href="/assets/css/portal.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/assets/js/config.js"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "DOSMOS.ID",
+  "url": "https://dosmos.id",
+  "logo": "https://dosmos.id/dosmos-logo.png",
+  "email": "mailto:dosmosid@gmail.com",
+  "telephone": "+6281288836205",
+  "founder": {
+    "@type": "Person",
+    "name": "Jesse",
+    "jobTitle": "Founder & CEO"
+  },
+  "sameAs": [
+    "https://instagram.com/dosmos.id",
+    "https://www.tiktok.com/@dosmos.id"
+  ]
+}
+</script>
 </head>
 <body data-page="tournaments">
 <div id="announcementTopbarRoot"></div>
@@ -57,10 +80,48 @@
   <div class="portal-toolbar"><input id="portalSearch" placeholder="Cari tournament..."><select id="portalStatusFilter"><option value="all">Semua Status</option><option value="published">Published</option><option value="finished">Finished</option></select></div>
   <div class="grid" id="portalTournamentGrid"><div class="empty">Memuat tournament...</div></div>
 </div></section></main>
-<footer class="portal-footer">
-  <div class="container portal-footer-inner">
-    <div><strong data-site-name>DOSMOS</strong><p data-site-slogan>Every Gamer Deserves a Chance.</p></div>
-    <div class="portal-footer-links"><a href="/events/">Event</a><a href="/tournaments/">Tournament</a><a href="/news/">News</a><a href="/gallery/">Gallery</a></div>
+<footer class="portal-footer dosmos-pro-footer">
+  <div class="container dosmos-footer-grid">
+    <div class="dosmos-footer-brand">
+      <a class="dosmos-footer-logo" href="/" aria-label="DOSMOS Home">
+        <img src="/dosmos-logo.png" alt="Logo DOSMOS">
+        <div><strong data-site-name>DOSMOS</strong><p data-site-slogan>Every Gamer Deserves a Chance.</p></div>
+      </a>
+      <p class="dosmos-footer-description">Official gaming and esports community platform for events, tournaments, content, collaboration, and professional Mobile Legends services.</p>
+      <div class="dosmos-founder">Founder &amp; CEO <span>— Jesse</span></div>
+    </div>
+
+    <div class="dosmos-footer-column">
+      <h3>Explore</h3>
+      <a href="/">Home</a>
+      <a href="/events/">Event</a>
+      <a href="/tournaments/">Tournament</a>
+      <a href="/news/">News</a>
+      <a href="/gallery/">Gallery</a>
+      <a href="/hall-of-fame/">Hall of Fame</a>
+    </div>
+
+    <div class="dosmos-footer-column">
+      <h3>Community</h3>
+      <a href="/live/">Live Center</a>
+      <a href="/community/">Community Hub</a>
+      <a href="/donate/">Donate</a>
+      <a href="/register/">Register</a>
+    </div>
+
+    <div class="dosmos-footer-column dosmos-contact-column">
+      <h3>Contact &amp; Social</h3>
+      <a href="https://dosmos.id" target="_blank" rel="noopener"><span>🌐</span><div><small>Website</small><strong>dosmos.id</strong></div></a>
+      <a href="https://instagram.com/dosmos.id" target="_blank" rel="noopener"><span>◎</span><div><small>Instagram</small><strong>@dosmos.id</strong></div></a>
+      <a href="https://www.tiktok.com/@dosmos.id" target="_blank" rel="noopener"><span>♪</span><div><small>TikTok</small><strong>@dosmos.id</strong></div></a>
+      <a href="https://wa.me/6281288836205" target="_blank" rel="noopener"><span>◉</span><div><small>WhatsApp Jesse</small><strong>0812-8883-6205</strong></div></a>
+      <a href="mailto:dosmosid@gmail.com"><span>✉</span><div><small>Gmail</small><strong>dosmosid@gmail.com</strong></div></a>
+    </div>
+  </div>
+
+  <div class="container dosmos-footer-bottom">
+    <p>© <span data-current-year></span> DOSMOS.ID. All rights reserved.</p>
+    <p>Built for gamers, communities, and esports opportunities.</p>
   </div>
 </footer>
 <script src="/assets/js/portal.js"></script>

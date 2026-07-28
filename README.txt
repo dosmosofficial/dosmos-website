@@ -309,3 +309,24 @@ KEAMANAN PEMBAYARAN:
 - Jangan menyimpan secret key payment gateway di JavaScript/browser.
 - Otomatisasi QRIS dinamis memerlukan backend/Cloudflare Worker dan webhook
   dari payment gateway resmi. Modul tersebut belum diaktifkan pada rilis ini.
+
+
+=========================================================
+DOSMOS VIP V14.8.1 — FOOTER, CONTACT & SEO BRAND PROFILE
+=========================================================
+
+DITAMBAHKAN KE SELURUH HALAMAN:
+- Website: dosmos.id
+- Instagram: @dosmos.id
+- TikTok: @dosmos.id
+- WhatsApp Jesse: 0812-8883-6205
+- Gmail: dosmosid@gmail.com
+- Founder & CEO — Jesse
+- Footer navigation lengkap
+- Copyright otomatis mengikuti tahun berjalan
+- Meta author dan publisher
+- Schema.org Organization + Founder + kontak + social profile
+
+CATATAN:
+Tidak ada fitur V14.8 yang dihapus. Paket ini merupakan V14.8 lengkap
+dengan tambahan footer, kontak, identitas founder, dan structured data.
