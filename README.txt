@@ -330,3 +330,20 @@ DITAMBAHKAN KE SELURUH HALAMAN:
 CATATAN:
 Tidak ada fitur V14.8 yang dihapus. Paket ini merupakan V14.8 lengkap
 dengan tambahan footer, kontak, identitas founder, dan structured data.
+
+
+=========================================================
+DOSMOS VIP V14.8.2 — COMMUNITY HOMEPAGE LAYOUT FIX
+=========================================================
+
+PERBAIKAN:
+- Community Hub homepage didesain ulang total.
+- Tiga kartu dibuat rapi, simetris, dan memiliki lebar penuh.
+- Desktop: 3 kolom.
+- Tablet: 2 kolom dengan kartu ketiga penuh.
+- Mobile: 1 kolom.
+- CTA, ikon, nomor kartu, hover, spacing, dan tipografi diperbaiki.
+- Cache-busting portal.css dan portal.js ditambahkan agar browser tidak
+  terus memakai tampilan CSS versi lama.
+
+Tidak ada fitur V14.8.1 yang dihapus.
