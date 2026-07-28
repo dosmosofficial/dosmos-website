@@ -51,7 +51,7 @@
 
     <nav class="side-nav">
       <button class="active" data-tab="dashboardTab">Dashboard</button><button data-tab="eventsTab">Events</button>
-      <button data-tab="registrationsTab">Registrations</button><button data-tab="matchesTab">Bracket / Matches</button>
+      <button data-tab="registrationsTab">Registrations</button><button data-tab="matchesTab">Tournament Bracket</button>
       <button data-tab="championsTab">Champions</button><button data-tab="newsTab">News</button>
       <button data-tab="galleryTab">Gallery</button><button data-tab="sponsorsTab">Sponsors</button>
       <button data-tab="brandingTab">Branding</button>
@@ -126,16 +126,103 @@
     </section>
 
     <section class="tab-panel" id="registrationsTab"><div class="panel"><div class="vip-panel-head"><h3>Pendaftaran Tim</h3><input class="vip-table-search" data-target="registrationRows" placeholder="Cari tim..."></div><div class="table-wrap"><table><thead><tr><th>Event</th><th>Tim</th><th>Kapten</th><th>WhatsApp</th><th>Status</th><th>Ubah</th><th>Hapus</th></tr></thead><tbody id="registrationRows"></tbody></table></div></div></section>
+    <section class="tab-panel" id="matchesTab">
+      <div class="panel">
+        <div class="vip-panel-head">
+          <div>
+            <div class="eyebrow">DOSMOS TOURNAMENT ENGINE</div>
+            <h3>Buat Bracket Bercabang</h3>
+          </div>
+          <span class="branding-status">Single Elimination</span>
+        </div>
 
-    <section class="tab-panel" id="matchesTab"><div class="panel"><h3>Tambah / Edit Match</h3>
-      <form id="matchForm" class="form-grid" style="margin-top:18px">
-        <label>Nama Event<input id="match_event_name"></label><label>Round<input id="match_round_name" placeholder="Quarter Final"></label>
-        <label>Team A<input id="match_team_a"></label><label>Team B<input id="match_team_b"></label>
-        <label>Score A<input id="match_score_a" type="number" min="0"></label><label>Score B<input id="match_score_b" type="number" min="0"></label>
-        <label>Winner<input id="match_winner"></label><label>Urutan<input id="match_sort_order" type="number" min="0"></label>
-        <div class="form-full"><button class="btn btn-primary" id="matchSubmit">Publish</button><div id="matchMessage" class="message"></div></div>
-      </form></div>
-      <div class="panel" style="margin-top:20px"><div class="vip-panel-head"><h3>Daftar Match</h3><input class="vip-table-search" data-target="matchRows" placeholder="Cari match..."></div><div class="table-wrap"><table><thead><tr><th>Event</th><th>Round</th><th>Team A</th><th>Score</th><th>Team B</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="matchRows"></tbody></table></div></div>
+        <form id="bracketCreateForm" class="form-grid" style="margin-top:20px">
+          <label>Nama Bracket
+            <input id="bracket_name" required placeholder="DOSMOS Cup Season 1">
+          </label>
+
+          <label>Event
+            <select id="bracket_event_id">
+              <option value="">Tanpa event</option>
+            </select>
+          </label>
+
+          <label>Jumlah Slot
+            <select id="bracket_size">
+              <option value="4">4 Tim</option>
+              <option value="8" selected>8 Tim</option>
+              <option value="16">16 Tim</option>
+              <option value="32">32 Tim</option>
+            </select>
+          </label>
+
+          <label>Format Match
+            <select id="bracket_best_of">
+              <option value="1">Best of 1</option>
+              <option value="3" selected>Best of 3</option>
+              <option value="5">Best of 5</option>
+              <option value="7">Best of 7</option>
+            </select>
+          </label>
+
+          <label>Status Publik
+            <select id="bracket_status">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+              <option value="finished">Finished</option>
+            </select>
+          </label>
+
+          <label>Seeding
+            <select id="bracket_seed_mode">
+              <option value="manual">Sesuai urutan</option>
+              <option value="random">Acak otomatis</option>
+            </select>
+          </label>
+
+          <label class="form-full">Daftar Tim
+            <textarea id="bracket_teams" rows="11" placeholder="Satu tim per baris. Bisa pakai format:
+DOSMOS | https://domain.com/logo.png
+RRQ | https://domain.com/rrq.png
+EVOS
+ONIC"></textarea>
+            <small class="field-help">Tim kosong otomatis menjadi BYE. Logo bersifat opsional.</small>
+          </label>
+
+          <div class="form-full bracket-create-actions">
+            <button class="btn btn-primary" id="bracketGenerateBtn" type="submit">Generate Bracket</button>
+            <div id="bracketCreateMessage" class="message"></div>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel" style="margin-top:20px">
+        <div class="vip-panel-head">
+          <div>
+            <div class="eyebrow">BRACKET CONTROL ROOM</div>
+            <h3>Kelola Hasil Pertandingan</h3>
+          </div>
+          <div class="bracket-admin-toolbar">
+            <select id="bracketAdminSelect"><option value="">Pilih bracket...</option></select>
+            <button class="btn btn-secondary" type="button" id="bracketAdminRefresh">Refresh</button>
+          </div>
+        </div>
+
+        <div id="bracketAdminSummary" class="bracket-admin-summary"></div>
+        <div id="bracketAdminBoard" class="bracket-admin-board">
+          <div class="empty-state">Pilih bracket untuk mengelola skor.</div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:20px">
+        <div class="vip-panel-head">
+          <div>
+            <div class="eyebrow">BRACKET LIBRARY</div>
+            <h3>Daftar Bracket</h3>
+          </div>
+        </div>
+        <div id="bracketAdminList" class="announcement-admin-list" style="margin-top:18px"></div>
+      </div>
     </section>
 
     <section class="tab-panel" id="championsTab"><div class="panel"><h3>Tambah / Edit Champion</h3>

@@ -241,16 +241,138 @@ async function loadSponsors(){
     el.innerHTML=rows.length?rows.map(s=>`<a class="sponsor-card" href="${esc(s.website||"#")}" target="_blank" rel="noopener">${s.logo?`<img src="${esc(s.logo)}" alt="${esc(s.name)}">`:`<strong>${esc(s.name)}</strong>`}</a>`).join(""):'<div class="empty">Partnership terbuka.</div>';
   }catch(e){el.innerHTML='<div class="empty">Sponsor gagal dimuat.</div>'}
 }
+let publicBracketCache=[];
+let publicBracketZoom=1;
+let bracketPan={active:false,x:0,y:0,left:0,top:0};
+
+function publicRoundName(round,totalRounds){
+  if(round===totalRounds)return "GRAND FINAL";
+  if(round===totalRounds-1)return "SEMIFINAL";
+  if(round===totalRounds-2)return "QUARTER FINAL";
+  return `ROUND ${round}`;
+}
+function publicTeamRow(match,slot){
+  const name=slot==="a"?match.team_a_name:match.team_b_name;
+  const logo=slot==="a"?match.team_a_logo:match.team_b_logo;
+  const score=slot==="a"?match.score_a:match.score_b;
+  const winner=match.winner_slot===slot;
+  const loser=match.winner_slot&&match.winner_slot!==slot;
+  return `<div class="bracket-team ${winner?"is-winner":""} ${loser?"is-loser":""}">
+    <div class="bracket-team-main">
+      ${logo?`<img src="${esc(logo)}" alt="">`:'<span class="bracket-logo-fallback">D</span>'}
+      <span class="bracket-team-name">${esc(name||"TBD")}</span>
+    </div>
+    <strong class="bracket-score">${score??"–"}</strong>
+  </div>`;
+}
+function renderPublicBracket(bracket,matches){
+  const el=document.getElementById("bracketWrap");
+  const stage=document.getElementById("bracketStage");
+  if(!bracket||!matches.length){
+    el.innerHTML='<div class="empty">Bracket belum dipublikasikan.</div>';return;
+  }
+  const groups={};
+  matches.forEach(m=>(groups[m.round_number]??=[]).push(m));
+  const totalRounds=Math.log2(Number(bracket.size));
+  el.innerHTML=Object.entries(groups).map(([round,roundMatches])=>`
+    <section class="bracket-round-column" data-round="${round}">
+      <div class="bracket-round-title">
+        <span>${esc(publicRoundName(Number(round),totalRounds))}</span>
+        <small>${roundMatches.length} Match</small>
+      </div>
+      <div class="bracket-round-matches" style="--match-count:${roundMatches.length}">
+        ${roundMatches.map(m=>`
+          <article class="bracket-match-card ${m.status==="live"?"is-live":""} ${m.round_number===totalRounds?"is-final":""}"
+            data-public-match="${m.id}" data-source-a="${m.source_match_a||""}" data-source-b="${m.source_match_b||""}">
+            <div class="bracket-match-top">
+              <span>Match ${m.position}</span>
+              <span class="bracket-status status-${m.status}">${m.status==="live"?"● LIVE":String(m.status||"upcoming").toUpperCase()}</span>
+            </div>
+            ${publicTeamRow(m,"a")}
+            ${publicTeamRow(m,"b")}
+            <div class="bracket-match-bottom">
+              <span>BO${m.best_of||bracket.best_of||3}</span>
+              <span>${m.scheduled_at?new Date(m.scheduled_at).toLocaleString():"Schedule TBA"}</span>
+            </div>
+          </article>`).join("")}
+      </div>
+    </section>`).join("");
+
+  if(bracket.champion_name){
+    el.insertAdjacentHTML("beforeend",`<section class="bracket-champion-column">
+      <div class="bracket-round-title"><span>CHAMPION</span><small>Winner</small></div>
+      <div class="bracket-champion-card">
+        <div class="bracket-trophy">🏆</div>
+        ${bracket.champion_logo?`<img src="${esc(bracket.champion_logo)}" alt="">`:""}
+        <strong>${esc(bracket.champion_name)}</strong>
+        <span>${esc(bracket.name)}</span>
+      </div>
+    </section>`);
+  }
+  requestAnimationFrame(()=>requestAnimationFrame(drawBracketConnectors));
+}
+function drawBracketConnectors(){
+  const svg=document.getElementById("bracketConnectors");
+  const stage=document.getElementById("bracketStage");
+  if(!svg||!stage)return;
+  const stageRect=stage.getBoundingClientRect();
+  const width=stage.scrollWidth;
+  const height=stage.scrollHeight;
+  svg.setAttribute("viewBox",`0 0 ${width} ${height}`);
+  svg.setAttribute("width",width);
+  svg.setAttribute("height",height);
+  svg.innerHTML="";
+  document.querySelectorAll("[data-public-match]").forEach(target=>{
+    ["a","b"].forEach(slot=>{
+      const sourceId=target.dataset[slot==="a"?"sourceA":"sourceB"];
+      if(!sourceId)return;
+      const source=document.querySelector(`[data-public-match="${sourceId}"]`);
+      if(!source)return;
+      const s=source.getBoundingClientRect(),t=target.getBoundingClientRect();
+      const x1=(s.right-stageRect.left)/publicBracketZoom;
+      const y1=(s.top+s.height/2-stageRect.top)/publicBracketZoom;
+      const x2=(t.left-stageRect.left)/publicBracketZoom;
+      const targetOffset=slot==="a"?t.height*.36:t.height*.64;
+      const y2=(t.top+targetOffset-stageRect.top)/publicBracketZoom;
+      const mid=x1+(x2-x1)/2;
+      const path=document.createElementNS("http://www.w3.org/2000/svg","path");
+      path.setAttribute("d",`M ${x1} ${y1} H ${mid} V ${y2} H ${x2}`);
+      path.setAttribute("class","bracket-connector-path");
+      svg.appendChild(path);
+    });
+  });
+}
 async function loadBracket(){
   const el=document.getElementById("bracketWrap");
   try{
-    const rows=await getRows("matches","sort_order",true);
-    if(!rows.length){el.innerHTML='<div class="empty">Bracket belum dipublikasikan.</div>';return}
-    const groups={};
-    rows.forEach(m=>(groups[m.round_name||"Round"]??=[]).push(m));
-    el.innerHTML=Object.entries(groups).map(([round,matches])=>`<div class="round"><h3>${esc(round)}</h3>${matches.map(m=>`<div class="match"><strong>${esc(m.team_a||"TBD")} ${m.score_a??""}</strong><span>VS</span><strong>${m.score_b??""} ${esc(m.team_b||"TBD")}</strong></div>`).join("")}</div>`).join("");
-  }catch(e){el.innerHTML='<div class="empty">Bracket gagal dimuat.</div>'}
+    const {data:brackets,error}=await sb.from("brackets").select("*").in("status",["published","finished"]).order("created_at",{ascending:false});
+    if(error)throw error;
+    publicBracketCache=brackets||[];
+    if(!publicBracketCache.length){
+      publicBracketSelect.innerHTML='<option value="">Belum ada bracket</option>';
+      el.innerHTML='<div class="empty">Bracket belum dipublikasikan.</div>';return;
+    }
+    publicBracketSelect.innerHTML=publicBracketCache.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`).join("");
+    await loadSelectedPublicBracket(publicBracketCache[0].id);
+  }catch(e){
+    console.warn(e);
+    el.innerHTML='<div class="empty">Bracket gagal dimuat.</div>';
+  }
 }
+async function loadSelectedPublicBracket(id){
+  const bracket=publicBracketCache.find(b=>String(b.id)===String(id));
+  if(!bracket)return;
+  const {data,error}=await sb.from("bracket_matches").select("*").eq("bracket_id",id).order("round_number").order("position");
+  if(error)throw error;
+  renderPublicBracket(bracket,data||[]);
+}
+function applyPublicBracketZoom(){
+  publicBracketZoom=Math.max(.5,Math.min(1.5,publicBracketZoom));
+  bracketStage.style.transform=`scale(${publicBracketZoom})`;
+  bracketZoomReset.textContent=`${Math.round(publicBracketZoom*100)}%`;
+  requestAnimationFrame(drawBracketConnectors);
+}
+
 async function loadSettings(){
   try{
     const {data}=await sb.from("site_settings").select("*").eq("id",1).maybeSingle();
@@ -263,8 +385,6 @@ async function loadSettings(){
     document.querySelectorAll("[data-instagram]").forEach(a=>a.href=data.instagram||"https://instagram.com/dosmos.id");
     document.querySelectorAll("[data-tiktok]").forEach(a=>a.href=data.tiktok||"#");
     document.querySelectorAll("[data-discord]").forEach(a=>a.href=data.discord||"#");
-    " allowfullscreen></iframe>`;
-    }
   }catch(e){}
 }
 function extractYoutubeId(url=""){
@@ -294,3 +414,26 @@ document.getElementById("menuBtn")?.addEventListener("click",()=>document.getEle
 loadContent();loadSponsors();loadBracket();loadSettings();
 
 document.addEventListener('DOMContentLoaded',loadPublicAnnouncements);
+
+
+/* V14.5 public bracket interaction */
+publicBracketSelect?.addEventListener("change",()=>loadSelectedPublicBracket(publicBracketSelect.value));
+bracketZoomIn?.addEventListener("click",()=>{publicBracketZoom+=.1;applyPublicBracketZoom()});
+bracketZoomOut?.addEventListener("click",()=>{publicBracketZoom-=.1;applyPublicBracketZoom()});
+bracketZoomReset?.addEventListener("click",()=>{publicBracketZoom=1;applyPublicBracketZoom()});
+window.addEventListener("resize",()=>requestAnimationFrame(drawBracketConnectors));
+
+bracketViewport?.addEventListener("pointerdown",e=>{
+  if(e.target.closest("button,a,select"))return;
+  bracketPan={active:true,x:e.clientX,y:e.clientY,left:bracketViewport.scrollLeft,top:bracketViewport.scrollTop};
+  bracketViewport.setPointerCapture(e.pointerId);
+  bracketViewport.classList.add("is-dragging");
+});
+bracketViewport?.addEventListener("pointermove",e=>{
+  if(!bracketPan.active)return;
+  bracketViewport.scrollLeft=bracketPan.left-(e.clientX-bracketPan.x);
+  bracketViewport.scrollTop=bracketPan.top-(e.clientY-bracketPan.y);
+});
+function stopBracketPan(){bracketPan.active=false;bracketViewport?.classList.remove("is-dragging")}
+bracketViewport?.addEventListener("pointerup",stopBracketPan);
+bracketViewport?.addEventListener("pointercancel",stopBracketPan);

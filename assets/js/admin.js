@@ -79,9 +79,13 @@ async function rows(table,order="created_at",asc=false){
 function showTab(id){document.querySelector(`[data-tab="${id}"]`)?.click();window.scrollTo({top:0,behavior:"smooth"})}
 window.deleteRow=async(table,id)=>{if(!confirm("Hapus data ini?"))return;const {error}=await sb.from(table).delete().eq("id",id);if(error){alert(error.message);return}await refreshAll()};
 async function refreshAll(){
-  await Promise.all([loadEvents(),loadRegistrations(),loadMatches(),loadChampions(),loadNews(),loadGallery(),loadSponsors(),loadSettings(),loadBranding(),loadWebsiteContent(),loadLiveCenter(),loadAnnouncements()]);
-  const tables=["events","registrations","matches","champions","news","gallery","sponsors"];
-  for(const t of tables)document.getElementById("stat_"+t).textContent=(await rows(t)).length;
+  await Promise.all([loadEvents(),loadRegistrations(),loadTournamentBrackets(),loadChampions(),loadNews(),loadGallery(),loadSponsors(),loadSettings(),loadBranding(),loadWebsiteContent(),loadLiveCenter(),loadAnnouncements()]);
+  const tables=["events","registrations","brackets","champions","news","gallery","sponsors"];
+  for(const t of tables){
+    const statId=t==="brackets"?"stat_matches":"stat_"+t;
+    const statEl=document.getElementById(statId);
+    if(statEl)statEl.textContent=(await rows(t)).length;
+  }
 }
 function makeFormHandler({formId,table,stateKey,payloadFn,messageId,submitId,after}){
   document.getElementById(formId).addEventListener("submit",async e=>{
@@ -113,13 +117,7 @@ async function loadRegistrations(){
 }
 window.updateRegistration=async(id,status)=>{const {error}=await sb.from("registrations").update({status}).eq("id",id);if(error)alert(error.message)};
 
-/* matches */
-async function loadMatches(){
-  const data=await rows("matches","sort_order",true);
-  matchRows.innerHTML=data.map(m=>`<tr><td>${esc(m.event_name||"-")}</td><td>${esc(m.round_name)}</td><td>${esc(m.team_a)}</td><td>${m.score_a??0} - ${m.score_b??0}</td><td>${esc(m.team_b)}</td><td><button class="btn btn-secondary" onclick='editMatch(${JSON.stringify(m)})'>Edit</button></td><td><button class="btn btn-danger" onclick="deleteRow('matches','${m.id}')">Hapus</button></td></tr>`).join("")||'<tr><td colspan="7">Belum ada match.</td></tr>';
-}
-window.editMatch=m=>{editState.matches=m.id;["event_name","round_name","team_a","team_b","score_a","score_b","winner","sort_order"].forEach(k=>document.getElementById("match_"+k).value=m[k]??"");matchSubmit.textContent="Simpan Perubahan";showTab("matchesTab")};
-makeFormHandler({formId:"matchForm",table:"matches",stateKey:"matches",messageId:"matchMessage",submitId:"matchSubmit",payloadFn:async()=>({event_name:match_event_name.value.trim(),round_name:match_round_name.value.trim(),team_a:match_team_a.value.trim(),team_b:match_team_b.value.trim(),score_a:Number(match_score_a.value||0),score_b:Number(match_score_b.value||0),winner:match_winner.value.trim(),sort_order:Number(match_sort_order.value||0)})});
+/* Legacy match form replaced by V14.5 Tournament Bracket Center. */
 
 /* champions */
 async function loadChampions(){
@@ -740,3 +738,374 @@ announcementForm?.addEventListener("submit",async e=>{
 
 announcementReset?.addEventListener("click",resetAnnouncementForm);
 announcementRefresh?.addEventListener("click",loadAnnouncements);
+
+
+/* =========================================================
+   DOSMOS VIP V14.5 — TOURNAMENT BRACKET CENTER
+   Single elimination 4 / 8 / 16 / 32 teams
+========================================================= */
+let tournamentBracketCache=[];
+let activeAdminBracketId=null;
+
+function bracketEsc(value){return esc(value);}
+function bracketRoundName(round,totalRounds){
+  if(round===totalRounds)return "GRAND FINAL";
+  if(round===totalRounds-1)return "SEMIFINAL";
+  if(round===totalRounds-2)return "QUARTER FINAL";
+  return `ROUND ${round}`;
+}
+function parseBracketTeams(text,size){
+  const teams=String(text||"").split("\n").map(line=>line.trim()).filter(Boolean).slice(0,size).map((line,index)=>{
+    const parts=line.split("|");
+    return {name:(parts[0]||"").trim()||`Team ${index+1}`,logo:(parts[1]||"").trim()||null,seed:index+1};
+  });
+  while(teams.length<size)teams.push({name:"BYE",logo:null,seed:teams.length+1});
+  return teams;
+}
+function seededOrder(size){
+  let order=[1,2];
+  while(order.length<size){
+    const next=order.length*2+1;
+    order=order.flatMap(seed=>[seed,next-seed]);
+  }
+  return order;
+}
+function shuffleArray(items){
+  const arr=[...items];
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+async function loadBracketEventOptions(){
+  try{
+    const events=await rows("events","start_date",false);
+    const current=bracket_event_id?.value||"";
+    bracket_event_id.innerHTML='<option value="">Tanpa event</option>'+events.map(e=>`<option value="${e.id}">${bracketEsc(e.title)}</option>`).join("");
+    bracket_event_id.value=current;
+  }catch(err){console.warn(err.message)}
+}
+async function loadTournamentBrackets(){
+  const {data,error}=await sb.from("brackets").select("*, events(title)").order("created_at",{ascending:false});
+  if(error)throw error;
+  tournamentBracketCache=data||[];
+  renderTournamentBracketList();
+  renderTournamentBracketSelect();
+  await loadBracketEventOptions();
+}
+function renderTournamentBracketSelect(){
+  const current=String(bracketAdminSelect?.value||activeAdminBracketId||"");
+  bracketAdminSelect.innerHTML='<option value="">Pilih bracket...</option>'+tournamentBracketCache.map(b=>`<option value="${b.id}">${bracketEsc(b.name)} · ${b.size} Tim</option>`).join("");
+  if(tournamentBracketCache.some(b=>String(b.id)===current))bracketAdminSelect.value=current;
+}
+function renderTournamentBracketList(){
+  if(!bracketAdminList)return;
+  if(!tournamentBracketCache.length){
+    bracketAdminList.innerHTML='<div class="empty-state">Belum ada bracket.</div>';
+    return;
+  }
+  bracketAdminList.innerHTML=tournamentBracketCache.map(b=>`
+    <article class="announcement-admin-card">
+      <div>
+        <div class="announcement-admin-meta">
+          <span>${String(b.status||"draft").toUpperCase()}</span>
+          <span>${b.size} TIM</span>
+          <span>BO${b.best_of||3}</span>
+          <span>SINGLE ELIMINATION</span>
+        </div>
+        <h4>${bracketEsc(b.name)}</h4>
+        <p>${bracketEsc(b.events?.title||"Independent Tournament")}</p>
+        <small>Dibuat ${new Date(b.created_at).toLocaleString()}</small>
+      </div>
+      <div class="announcement-admin-buttons">
+        <button class="btn btn-secondary" type="button" data-bracket-open="${b.id}">Kelola</button>
+        <button class="btn btn-secondary" type="button" data-bracket-publish="${b.id}">${b.status==="published"?"Jadikan Draft":"Publish"}</button>
+        <button class="btn btn-danger" type="button" data-bracket-delete="${b.id}">Hapus</button>
+      </div>
+    </article>`).join("");
+}
+async function createBracketMatches(bracket,teams){
+  const size=Number(bracket.size);
+  const totalRounds=Math.log2(size);
+  const order=seededOrder(size);
+  const teamBySeed=Object.fromEntries(teams.map(t=>[t.seed,t]));
+  const ordered=order.map(seed=>teamBySeed[seed]);
+  const matches=[];
+  let previousRoundIds=[];
+
+  for(let round=1;round<=totalRounds;round++){
+    const matchCount=size/Math.pow(2,round);
+    const thisRoundIds=[];
+    for(let position=1;position<=matchCount;position++){
+      const tempId=`r${round}m${position}`;
+      thisRoundIds.push(tempId);
+      let teamA=null,teamB=null;
+      if(round===1){
+        teamA=ordered[(position-1)*2];
+        teamB=ordered[(position-1)*2+1];
+      }
+      matches.push({
+        _temp_id:tempId,
+        bracket_id:bracket.id,
+        round_number:round,
+        round_name:bracketRoundName(round,totalRounds),
+        position,
+        team_a_name:teamA?.name||null,
+        team_a_logo:teamA?.logo||null,
+        team_a_seed:teamA?.seed||null,
+        team_b_name:teamB?.name||null,
+        team_b_logo:teamB?.logo||null,
+        team_b_seed:teamB?.seed||null,
+        score_a:null,
+        score_b:null,
+        winner_name:null,
+        winner_logo:null,
+        winner_slot:null,
+        status:"upcoming",
+        best_of:bracket.best_of,
+        source_match_a:round===1?null:previousRoundIds[(position-1)*2],
+        source_match_b:round===1?null:previousRoundIds[(position-1)*2+1]
+      });
+    }
+    previousRoundIds=thisRoundIds;
+  }
+
+  const tempToReal={};
+  for(const match of matches){
+    const payload={...match};
+    delete payload._temp_id;
+    payload.source_match_a=payload.source_match_a?tempToReal[payload.source_match_a]:null;
+    payload.source_match_b=payload.source_match_b?tempToReal[payload.source_match_b]:null;
+    const {data,error}=await sb.from("bracket_matches").insert(payload).select().single();
+    if(error)throw error;
+    tempToReal[match._temp_id]=data.id;
+  }
+
+  await resolveAllByes(bracket.id);
+}
+async function resolveAllByes(bracketId){
+  let changed=true;
+  let guard=0;
+  while(changed&&guard<10){
+    changed=false;guard++;
+    const {data,error}=await sb.from("bracket_matches").select("*").eq("bracket_id",bracketId).order("round_number").order("position");
+    if(error)throw error;
+    for(const match of data||[]){
+      if(match.winner_name)continue;
+      const a=match.team_a_name,b=match.team_b_name;
+      if(a&&b){
+        if(a==="BYE"&&b!=="BYE"){
+          await completeBracketMatch(match,b,match.team_b_logo,"b",0,1,true);changed=true;
+        }else if(b==="BYE"&&a!=="BYE"){
+          await completeBracketMatch(match,a,match.team_a_logo,"a",1,0,true);changed=true;
+        }else if(a==="BYE"&&b==="BYE"){
+          await completeBracketMatch(match,"BYE",null,"a",0,0,true);changed=true;
+        }
+      }
+    }
+  }
+}
+async function completeBracketMatch(match,winnerName,winnerLogo,winnerSlot,scoreA,scoreB,isBye=false){
+  const status=isBye?"bye":"finished";
+  const {error}=await sb.from("bracket_matches").update({
+    score_a:scoreA,score_b:scoreB,winner_name:winnerName,winner_logo:winnerLogo||null,
+    winner_slot:winnerSlot,status,updated_at:new Date().toISOString()
+  }).eq("id",match.id);
+  if(error)throw error;
+
+  const {data:nextMatches,error:nextError}=await sb.from("bracket_matches")
+    .select("*").eq("bracket_id",match.bracket_id)
+    .or(`source_match_a.eq.${match.id},source_match_b.eq.${match.id}`);
+  if(nextError)throw nextError;
+
+  for(const next of nextMatches||[]){
+    const update=next.source_match_a===match.id
+      ?{team_a_name:winnerName,team_a_logo:winnerLogo||null,team_a_seed:null}
+      :{team_b_name:winnerName,team_b_logo:winnerLogo||null,team_b_seed:null};
+    update.updated_at=new Date().toISOString();
+    const {error:updateError}=await sb.from("bracket_matches").update(update).eq("id",next.id);
+    if(updateError)throw updateError;
+  }
+}
+bracketCreateForm?.addEventListener("submit",async e=>{
+  e.preventDefault();
+  msg(bracketCreateMessage,"Membuat bracket bercabang...");
+  bracketGenerateBtn.disabled=true;
+  try{
+    const size=Number(bracket_size.value);
+    let teams=parseBracketTeams(bracket_teams.value,size);
+    if(bracket_seed_mode.value==="random"){
+      const real=shuffleArray(teams.filter(t=>t.name!=="BYE"));
+      teams=real.map((t,i)=>({...t,seed:i+1}));
+      while(teams.length<size)teams.push({name:"BYE",logo:null,seed:teams.length+1});
+    }
+    const payload={
+      name:bracket_name.value.trim(),
+      event_id:bracket_event_id.value||null,
+      format:"single_elimination",
+      size,
+      best_of:Number(bracket_best_of.value),
+      status:bracket_status.value,
+      champion_name:null,
+      champion_logo:null,
+      updated_at:new Date().toISOString()
+    };
+    if(!payload.name)throw new Error("Nama bracket wajib diisi.");
+    const realTeamCount=teams.filter(t=>t.name!=="BYE").length;
+    if(realTeamCount<2)throw new Error("Minimal masukkan 2 tim.");
+
+    const {data:bracket,error}=await sb.from("brackets").insert(payload).select().single();
+    if(error)throw error;
+    try{
+      await createBracketMatches(bracket,teams);
+    }catch(matchError){
+      await sb.from("brackets").delete().eq("id",bracket.id);
+      throw matchError;
+    }
+    msg(bracketCreateMessage,"Bracket berhasil dibuat.","success");
+    bracketCreateForm.reset();
+    bracket_size.value="8"; bracket_best_of.value="3"; bracket_status.value="draft";
+    await loadTournamentBrackets();
+    bracketAdminSelect.value=bracket.id;
+    await openAdminBracket(bracket.id);
+  }catch(err){
+    msg(bracketCreateMessage,err.message,"error");
+  }finally{
+    bracketGenerateBtn.disabled=false;
+  }
+});
+async function openAdminBracket(id){
+  if(!id){
+    activeAdminBracketId=null;
+    bracketAdminSummary.innerHTML="";
+    bracketAdminBoard.innerHTML='<div class="empty-state">Pilih bracket untuk mengelola skor.</div>';
+    return;
+  }
+  activeAdminBracketId=String(id);
+  const bracket=tournamentBracketCache.find(b=>String(b.id)===String(id));
+  const {data:matches,error}=await sb.from("bracket_matches").select("*").eq("bracket_id",id).order("round_number").order("position");
+  if(error)throw error;
+  renderAdminBracket(bracket,matches||[]);
+}
+function adminTeamRow(match,slot){
+  const name=slot==="a"?match.team_a_name:match.team_b_name;
+  const logo=slot==="a"?match.team_a_logo:match.team_b_logo;
+  const score=slot==="a"?match.score_a:match.score_b;
+  const winner=match.winner_slot===slot;
+  return `<div class="bracket-admin-team ${winner?"is-winner":""}">
+    <div class="bracket-team-identity">
+      ${logo?`<img src="${bracketEsc(logo)}" alt="">`:'<span class="bracket-team-fallback">D</span>'}
+      <span>${bracketEsc(name||"TBD")}</span>
+    </div>
+    <input type="number" min="0" value="${score??""}" data-score="${slot}" ${!name||name==="BYE"?'disabled':""}>
+  </div>`;
+}
+function renderAdminBracket(bracket,matches){
+  if(!bracket){
+    bracketAdminBoard.innerHTML='<div class="empty-state">Bracket tidak ditemukan.</div>';return;
+  }
+  const groups={};
+  matches.forEach(m=>(groups[m.round_number]??=[]).push(m));
+  const finished=matches.filter(m=>["finished","bye"].includes(m.status)).length;
+  bracketAdminSummary.innerHTML=`
+    <div><strong>${bracketEsc(bracket.name)}</strong><span>${bracket.events?.title?bracketEsc(bracket.events.title):"Independent Tournament"}</span></div>
+    <div class="bracket-summary-pills"><span>${bracket.size} Teams</span><span>BO${bracket.best_of}</span><span>${finished}/${matches.length} Complete</span><span>${String(bracket.status).toUpperCase()}</span></div>`;
+  bracketAdminBoard.innerHTML=`<div class="bracket-admin-scroll"><div class="bracket-admin-rounds">${
+    Object.entries(groups).map(([round,roundMatches])=>`
+      <section class="bracket-admin-round">
+        <h4>${bracketEsc(roundMatches[0]?.round_name||`Round ${round}`)}</h4>
+        <div class="bracket-admin-round-stack">
+          ${roundMatches.map(m=>`
+            <article class="bracket-admin-match" data-admin-match="${m.id}">
+              <div class="bracket-admin-match-meta">
+                <span>Match ${m.position}</span>
+                <select data-match-status>
+                  <option value="upcoming" ${m.status==="upcoming"?"selected":""}>Upcoming</option>
+                  <option value="live" ${m.status==="live"?"selected":""}>Live</option>
+                  <option value="finished" ${m.status==="finished"?"selected":""}>Finished</option>
+                  <option value="bye" ${m.status==="bye"?"selected":""}>Bye</option>
+                </select>
+              </div>
+              ${adminTeamRow(m,"a")}
+              ${adminTeamRow(m,"b")}
+              <label class="bracket-match-time">Jadwal
+                <input type="datetime-local" data-match-time value="${m.scheduled_at?announcementToLocalInput(m.scheduled_at):""}">
+              </label>
+              <button class="btn btn-primary bracket-save-result" type="button" data-save-match="${m.id}" ${(!m.team_a_name||!m.team_b_name)?"disabled":""}>Save Result</button>
+            </article>`).join("")}
+        </div>
+      </section>`).join("")
+  }</div></div>`;
+}
+bracketAdminSelect?.addEventListener("change",()=>openAdminBracket(bracketAdminSelect.value));
+bracketAdminRefresh?.addEventListener("click",async()=>{await loadTournamentBrackets();if(activeAdminBracketId)await openAdminBracket(activeAdminBracketId)});
+bracketAdminList?.addEventListener("click",async e=>{
+  const open=e.target.closest("[data-bracket-open]");
+  const publish=e.target.closest("[data-bracket-publish]");
+  const del=e.target.closest("[data-bracket-delete]");
+  if(open){
+    bracketAdminSelect.value=open.dataset.bracketOpen;
+    await openAdminBracket(open.dataset.bracketOpen);
+    document.querySelector('[data-tab="matchesTab"]')?.click();
+  }
+  if(publish){
+    const b=tournamentBracketCache.find(x=>String(x.id)===publish.dataset.bracketPublish);
+    if(!b)return;
+    const status=b.status==="published"?"draft":"published";
+    const {error}=await sb.from("brackets").update({status,updated_at:new Date().toISOString()}).eq("id",b.id);
+    if(error)return alert(error.message);
+    await loadTournamentBrackets();
+  }
+  if(del){
+    if(!confirm("Hapus bracket beserta seluruh match?"))return;
+    const {error}=await sb.from("brackets").delete().eq("id",del.dataset.bracketDelete);
+    if(error)return alert(error.message);
+    if(String(activeAdminBracketId)===del.dataset.bracketDelete)await openAdminBracket(null);
+    await loadTournamentBrackets();
+  }
+});
+bracketAdminBoard?.addEventListener("click",async e=>{
+  const button=e.target.closest("[data-save-match]");
+  if(!button)return;
+  const card=button.closest("[data-admin-match]");
+  button.disabled=true;
+  try{
+    const id=button.dataset.saveMatch;
+    const {data:match,error}=await sb.from("bracket_matches").select("*").eq("id",id).single();
+    if(error)throw error;
+    const scoreA=Number(card.querySelector('[data-score="a"]').value);
+    const scoreB=Number(card.querySelector('[data-score="b"]').value);
+    const status=card.querySelector("[data-match-status]").value;
+    const scheduledAt=announcementToIso(card.querySelector("[data-match-time]").value);
+    if(status==="finished"&&scoreA===scoreB)throw new Error("Skor tidak boleh seri saat match selesai.");
+
+    if(status==="finished"){
+      const slot=scoreA>scoreB?"a":"b";
+      const winnerName=slot==="a"?match.team_a_name:match.team_b_name;
+      const winnerLogo=slot==="a"?match.team_a_logo:match.team_b_logo;
+      await completeBracketMatch(match,winnerName,winnerLogo,slot,scoreA,scoreB,false);
+
+      const bracket=tournamentBracketCache.find(b=>String(b.id)===String(match.bracket_id));
+      const totalRounds=Math.log2(Number(bracket.size));
+      if(Number(match.round_number)===totalRounds){
+        await sb.from("brackets").update({
+          champion_name:winnerName,champion_logo:winnerLogo||null,status:"finished",
+          updated_at:new Date().toISOString()
+        }).eq("id",match.bracket_id);
+      }
+    }else{
+      const {error:updateError}=await sb.from("bracket_matches").update({
+        score_a:Number.isFinite(scoreA)?scoreA:null,score_b:Number.isFinite(scoreB)?scoreB:null,
+        status,scheduled_at:scheduledAt,updated_at:new Date().toISOString()
+      }).eq("id",id);
+      if(updateError)throw updateError;
+    }
+    await loadTournamentBrackets();
+    await openAdminBracket(match.bracket_id);
+  }catch(err){
+    alert(err.message);
+  }finally{
+    button.disabled=false;
+  }
+});

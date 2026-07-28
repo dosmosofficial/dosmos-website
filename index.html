@@ -62,7 +62,21 @@
 
 <section class="section section-alt" id="bracket"><div class="container">
   <div class="eyebrow" data-content="bracket_eyebrow">Tournament Progress</div><h2 data-content="bracket_title">Bracket & Match Results</h2>
-  <div class="bracket" id="bracketWrap"><div class="empty">Memuat bracket...</div></div>
+  <div class="bracket-public-head">
+    <select id="publicBracketSelect" aria-label="Pilih bracket"><option value="">Memuat bracket...</option></select>
+    <div class="bracket-zoom-controls">
+      <button type="button" id="bracketZoomOut" aria-label="Perkecil">−</button>
+      <button type="button" id="bracketZoomReset">100%</button>
+      <button type="button" id="bracketZoomIn" aria-label="Perbesar">+</button>
+    </div>
+  </div>
+  <div class="bracket-viewport" id="bracketViewport">
+    <div class="bracket-stage" id="bracketStage">
+      <svg class="bracket-connectors" id="bracketConnectors" aria-hidden="true"></svg>
+      <div class="bracket bracket-tree" id="bracketWrap"><div class="empty">Memuat bracket...</div></div>
+    </div>
+  </div>
+  <div class="bracket-mobile-hint">Geser bracket ke kiri atau kanan. Gunakan tombol zoom untuk melihat seluruh ronde.</div>
 </div></section>
 
 <section class="section live-center-section" id="live"><div class="container">

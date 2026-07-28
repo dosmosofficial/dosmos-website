@@ -98,3 +98,52 @@ CATATAN:
 - Emergency Mode akan mengambil prioritas dan tampil sebagai popup utama.
 - Tanggal memakai timezone browser admin, lalu disimpan sebagai UTC di Supabase.
 - Pengumuman yang ditutup pengunjung disembunyikan selama sesi browser tersebut.
+
+
+=========================================================
+DOSMOS VIP V14.5 — TOURNAMENT BRACKET CENTER
+=========================================================
+
+FITUR UTAMA:
+- Bracket bercabang native seperti platform turnamen profesional.
+- Single Elimination.
+- Slot 4, 8, 16, atau 32 tim.
+- Best of 1, 3, 5, atau 7.
+- Manual seeding atau random seeding.
+- BYE otomatis jika slot belum penuh.
+- Logo tim opsional.
+- Input skor dari Admin.
+- Pemenang otomatis maju ke ronde berikutnya.
+- Status Upcoming, Live, Finished, dan Bye.
+- Jadwal setiap pertandingan.
+- Grand Final dengan efek emas.
+- Champion otomatis ketika final selesai.
+- Draft, Published, dan Finished.
+- Bracket publik dengan garis bercabang.
+- Drag untuk menggeser bracket.
+- Zoom 50% sampai 150%.
+- Responsif untuk desktop dan HP.
+
+CARA PASANG:
+1. Jalankan migration lama sampai V14.4 jika belum pernah.
+2. Buka `supabase-v14-5.sql`.
+3. Copy seluruh SQL ke Supabase SQL Editor lalu klik Run.
+4. Upload/replace semua file paket V14.5 ke GitHub.
+5. Commit changes.
+6. Tunggu Cloudflare Pages selesai deploy.
+7. Tekan Ctrl + F5.
+8. Login Admin > Tournament Bracket.
+9. Buat bracket, isi daftar tim, lalu Generate Bracket.
+10. Publish bracket agar muncul di website publik.
+
+FORMAT DAFTAR TIM:
+DOSMOS | https://domain.com/dosmos.png
+RRQ | https://domain.com/rrq.png
+EVOS
+ONIC
+
+CATATAN:
+- Gunakan URL gambar langsung untuk logo tim.
+- Bracket pertama fokus pada Single Elimination agar engine stabil.
+- Jangan mengubah hasil match ronde lama setelah ronde berikutnya sudah dimainkan,
+  karena dapat menyebabkan jalur pemenang tidak konsisten.
