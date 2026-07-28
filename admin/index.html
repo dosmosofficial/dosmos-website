@@ -5,7 +5,7 @@
   <title>DOSMOS VIP</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link id="adminFavicon" rel="icon" href="../dosmos-logo.png">
-  <link rel="stylesheet" href="../assets/css/style.css?v=15.1">
+  <link rel="stylesheet" href="../assets/css/style.css?v=16.0">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../assets/js/config.js"></script>
 </head>
 <body>
@@ -53,7 +53,7 @@
       <button class="active" data-tab="dashboardTab">Dashboard</button><button data-tab="eventsTab">Events</button>
       <button data-tab="registrationsTab">Registrations</button><button data-tab="matchesTab">Tournament Bracket</button>
       <button data-tab="championsTab">Champions</button><button data-tab="newsTab">News</button>
-      <button data-tab="galleryTab">Gallery</button><button data-tab="mediaLibraryTab">Media Library</button><button data-tab="communityHubTab">Community Hub</button><button data-tab="donationCenterTab">Donation Center</button><button data-tab="themeStudioTab">Theme Studio</button><button data-tab="sponsorsTab">Sponsors</button>
+      <button data-tab="galleryTab">Gallery</button><button data-tab="mediaLibraryTab">Media Library</button><button data-tab="communityHubTab">Community Hub</button><button data-tab="donationCenterTab">Donation Center</button><button data-tab="themeStudioTab">Theme Studio</button><button data-tab="userManagementTab">User Management</button><button data-tab="sponsorsTab">Sponsors</button>
       <button data-tab="brandingTab">Branding</button>
       <button data-tab="contentTab">Website Text</button>
       <button data-tab="liveCenterTab">Live Center</button>
@@ -412,6 +412,116 @@ ONIC"></textarea>
 
 
     
+
+    <section class="tab-panel" id="userManagementTab">
+      <div class="user-pro-shell">
+        <div class="user-pro-header">
+          <div>
+            <div class="eyebrow">DOSMOS ACCESS CONTROL</div>
+            <h2>User Management Pro</h2>
+            <p>Tambah akun tim, atur role, nonaktifkan akses, dan lindungi akun utama DOSMOS dari satu panel.</p>
+          </div>
+          <button class="btn btn-secondary" id="userRefreshBtn" type="button">Refresh Users</button>
+        </div>
+
+        <div class="user-pro-stats">
+          <div class="user-pro-stat"><span>Total User</span><strong id="userStatTotal">0</strong></div>
+          <div class="user-pro-stat"><span>Active</span><strong id="userStatActive">0</strong></div>
+          <div class="user-pro-stat"><span>Suspended</span><strong id="userStatSuspended">0</strong></div>
+          <div class="user-pro-stat"><span>Super Admin</span><strong id="userStatSuper">0</strong></div>
+        </div>
+
+        <div class="user-pro-grid">
+          <aside class="user-pro-card">
+            <div class="user-pro-card-head">
+              <div><div class="eyebrow">NEW ACCOUNT</div><h3>Tambah User</h3></div>
+              <small>Super Admin only</small>
+            </div>
+
+            <form id="userCreateForm" class="user-create-form">
+              <label>Nama Lengkap<input id="user_full_name" required placeholder="Nama anggota tim"></label>
+              <label>Email<input id="user_email" type="email" required placeholder="nama@dosmos.id"></label>
+              <label>Role
+                <select id="user_role">
+                  <option value="admin">Admin</option>
+                  <option value="content_admin">Content Admin</option>
+                  <option value="tournament_admin">Tournament Admin</option>
+                  <option value="moderator">Moderator</option>
+                  <option value="super_admin">Super Admin</option>
+                </select>
+              </label>
+              <label>Password Awal
+                <div class="user-password-row">
+                  <input id="user_password" type="text" minlength="8" required placeholder="Minimal 8 karakter">
+                  <button class="btn btn-secondary" id="generatePasswordBtn" type="button">Generate</button>
+                </div>
+              </label>
+              <button class="btn btn-primary" type="submit">Create Account</button>
+              <div id="userCreateMessage" class="message"></div>
+            </form>
+
+            <div class="user-security-note" style="margin-top:14px">
+              <i>🛡️</i>
+              <div><strong>Secure server action</strong><span>Password tidak disimpan di tabel website. Akun dibuat melalui Supabase Edge Function.</span></div>
+            </div>
+          </aside>
+
+          <main class="user-pro-card">
+            <div class="user-pro-card-head">
+              <div><div class="eyebrow">TEAM ACCESS</div><h3>Daftar User</h3></div>
+              <small id="userListStatus">Belum dimuat</small>
+            </div>
+
+            <div class="user-pro-toolbar">
+              <input class="user-pro-search" id="userSearchInput" placeholder="Cari nama atau email...">
+              <select class="user-pro-filter" id="userRoleFilter">
+                <option value="">Semua Role</option>
+                <option value="super_admin">Super Admin</option>
+                <option value="admin">Admin</option>
+                <option value="content_admin">Content Admin</option>
+                <option value="tournament_admin">Tournament Admin</option>
+                <option value="moderator">Moderator</option>
+              </select>
+            </div>
+
+            <div class="user-list" id="userList">
+              <div class="user-empty">User Management siap digunakan setelah SQL dan Edge Function V16 dipasang.</div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <div class="user-edit-modal" id="userEditModal" aria-hidden="true">
+      <div class="user-edit-dialog">
+        <div class="user-edit-dialog-head">
+          <div><div class="eyebrow">EDIT ACCESS</div><h3>Edit User</h3></div>
+          <button class="user-edit-close" id="userEditClose" type="button">×</button>
+        </div>
+        <form id="userEditForm" class="user-create-form">
+          <input id="edit_user_id" type="hidden">
+          <label>Nama Lengkap<input id="edit_user_full_name" required></label>
+          <label>Role
+            <select id="edit_user_role">
+              <option value="admin">Admin</option>
+              <option value="content_admin">Content Admin</option>
+              <option value="tournament_admin">Tournament Admin</option>
+              <option value="moderator">Moderator</option>
+              <option value="super_admin">Super Admin</option>
+            </select>
+          </label>
+          <label>Status
+            <select id="edit_user_status">
+              <option value="active">Active</option>
+              <option value="suspended">Suspended</option>
+            </select>
+          </label>
+          <button class="btn btn-primary" type="submit">Simpan Perubahan</button>
+          <div id="userEditMessage" class="message"></div>
+        </form>
+      </div>
+    </div>
+
     <section class="tab-panel" id="themeStudioTab">
       <div class="theme-ultra-shell">
         <div class="theme-ultra-header">
@@ -945,5 +1055,5 @@ ONIC"></textarea>
     </section>
   </main>
 </section>
-<script src="../assets/js/admin.js?v=15.1"></script>
+<script src="../assets/js/admin.js?v=16.0"></script>
 </body></html>

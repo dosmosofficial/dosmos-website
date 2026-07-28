@@ -414,3 +414,42 @@ PERBAIKAN TOTAL UI/UX:
 - Cache-busting admin CSS/JS versi 15.1.
 
 Tidak ada fitur V15.0 yang dihapus.
+
+
+=========================================================
+DOSMOS VIP V16.0 — USER MANAGEMENT PRO
+=========================================================
+
+FITUR:
+- Tambah user admin melalui panel.
+- Role: Super Admin, Admin, Content Admin, Tournament Admin, Moderator.
+- Edit nama, role, dan status.
+- Suspend / aktifkan akun.
+- Reset password.
+- Hapus akun.
+- Search dan filter role.
+- Statistik total, aktif, suspended, dan Super Admin.
+- Protected account untuk Jesse.
+- Semua operasi sensitif berjalan melalui Supabase Edge Function.
+- Password tidak disimpan di tabel website.
+
+PERBAIKAN THEME STUDIO:
+- CSS Theme Studio V15.1 sekarang benar-benar dimuat oleh admin.
+- Preset menjadi card, bukan tombol putih browser.
+- Color picker, spacing, border, preview, effect cards, dan responsive layout diperbaiki.
+- Cache CSS/JS dinaikkan ke V16.0.
+
+WAJIB SETUP:
+1. Upload seluruh project V16 ke GitHub.
+2. Buka Supabase SQL Editor.
+3. Jalankan file: supabase-v16-0.sql
+4. Edit dan jalankan query terakhir untuk menetapkan email Jesse sebagai:
+   role='super_admin', status='active', is_protected=true
+5. Deploy Edge Function:
+   supabase functions deploy admin-users
+6. Commit dan tunggu Cloudflare Pages deploy.
+7. Buka admin lalu Ctrl + Shift + R.
+
+PENTING:
+- Jangan taruh SUPABASE_SERVICE_ROLE_KEY di file website.
+- Service role hanya boleh berada di Supabase Edge Function.

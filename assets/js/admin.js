@@ -49,7 +49,7 @@ const msg=(el,text,type="")=>{el.textContent=text;el.className="message "+type};
 
 async function checkSession(){
   const {data:{session}}=await sb.auth.getSession();
-  if(session){loginView.classList.add("hidden");dashboardView.classList.remove("hidden");await refreshAll()}
+  if(session){loginView.classList.add("hidden");dashboardView.classList.remove("hidden");await loadCurrentAdminProfile();await refreshAll()}
   else{loginView.classList.remove("hidden");dashboardView.classList.add("hidden")}
 }
 document.getElementById("loginForm").addEventListener("submit",async e=>{
@@ -1524,3 +1524,195 @@ themeResetBtn?.addEventListener("click",()=>{
   previewThemeStudio();
   msg(themeStudioMessage,"Preview dikembalikan ke theme yang sedang aktif.","success");
 });
+
+
+/* =========================================================
+   DOSMOS VIP V16.0 — USER MANAGEMENT PRO
+========================================================= */
+const adminUsersEndpoint = `${cfg.supabaseUrl}/functions/v1/admin-users`;
+let dosmosUsers = [];
+let currentAdminProfile = null;
+
+const roleLabels = {
+  super_admin:"Super Admin",
+  admin:"Admin",
+  content_admin:"Content Admin",
+  tournament_admin:"Tournament Admin",
+  moderator:"Moderator"
+};
+
+async function adminUsersRequest(action,payload={}){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session)throw new Error("Sesi login berakhir. Silakan login ulang.");
+  const response=await fetch(adminUsersEndpoint,{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":`Bearer ${session.access_token}`
+    },
+    body:JSON.stringify({action,...payload})
+  });
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(result.error||"User Management gagal diproses.");
+  return result;
+}
+
+async function loadCurrentAdminProfile(){
+  const {data:{user}}=await sb.auth.getUser();
+  if(!user)return null;
+  const {data}=await sb.from("admin_profiles").select("*").eq("id",user.id).maybeSingle();
+  currentAdminProfile=data||null;
+  document.querySelectorAll(".admin-account-info strong,.sidebar-profile strong").forEach(el=>{
+    if(currentAdminProfile?.full_name)el.textContent=currentAdminProfile.full_name;
+  });
+  return currentAdminProfile;
+}
+
+function filterDosmosUsers(){
+  const term=(document.getElementById("userSearchInput")?.value||"").trim().toLowerCase();
+  const role=document.getElementById("userRoleFilter")?.value||"";
+  return dosmosUsers.filter(user=>{
+    const matchesTerm=!term||`${user.full_name||""} ${user.email||""}`.toLowerCase().includes(term);
+    const matchesRole=!role||user.role===role;
+    return matchesTerm&&matchesRole;
+  });
+}
+
+function renderDosmosUsers(){
+  const list=document.getElementById("userList");
+  if(!list)return;
+  const filtered=filterDosmosUsers();
+  userStatTotal.textContent=dosmosUsers.length;
+  userStatActive.textContent=dosmosUsers.filter(u=>u.status==="active").length;
+  userStatSuspended.textContent=dosmosUsers.filter(u=>u.status==="suspended").length;
+  userStatSuper.textContent=dosmosUsers.filter(u=>u.role==="super_admin").length;
+  userListStatus.textContent=`${filtered.length} user ditampilkan`;
+
+  if(!filtered.length){
+    list.innerHTML='<div class="user-empty">Tidak ada user yang cocok.</div>';
+    return;
+  }
+
+  list.innerHTML=filtered.map(user=>{
+    const protectedUser=!!user.is_protected;
+    const initial=(user.full_name||user.email||"U").trim().charAt(0).toUpperCase();
+    return `<article class="user-row">
+      <div class="user-identity">
+        <div class="user-avatar">${esc(initial)}</div>
+        <div>
+          <strong>${esc(user.full_name||"Tanpa Nama")}</strong>
+          <small>${esc(user.email||"-")}</small>
+        </div>
+      </div>
+      <div>
+        <span class="role-badge">${esc(roleLabels[user.role]||user.role)}</span>
+        ${protectedUser?'<span class="protected-badge" style="margin-top:5px;display:block">Protected</span>':""}
+      </div>
+      <span class="status-badge ${user.status==="suspended"?"suspended":"active"}">${user.status==="suspended"?"Suspended":"Active"}</span>
+      <div class="user-actions">
+        <button class="user-action-btn" type="button" onclick="openUserEditor('${user.id}')">Edit</button>
+        <button class="user-action-btn" type="button" onclick="resetAdminPassword('${user.id}','${esc(user.email||"")}')">Password</button>
+        <button class="user-action-btn danger" type="button" ${protectedUser?"disabled":""} onclick="deleteAdminUser('${user.id}','${esc(user.full_name||user.email||"user")}')">Delete</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+async function loadAdminUsers(){
+  const list=document.getElementById("userList");
+  if(!list)return;
+  list.innerHTML='<div class="user-empty">Memuat user...</div>';
+  try{
+    const result=await adminUsersRequest("list");
+    dosmosUsers=result.users||[];
+    renderDosmosUsers();
+  }catch(error){
+    list.innerHTML=`<div class="user-empty">${esc(error.message)}<br><br>Pastikan supabase-v16-0.sql dan Edge Function admin-users sudah dipasang.</div>`;
+    userListStatus.textContent="Setup diperlukan";
+  }
+}
+
+document.getElementById("generatePasswordBtn")?.addEventListener("click",()=>{
+  const alphabet="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$";
+  let password="";
+  crypto.getRandomValues(new Uint32Array(14)).forEach(n=>password+=alphabet[n%alphabet.length]);
+  user_password.value=password;
+});
+
+document.getElementById("userCreateForm")?.addEventListener("submit",async e=>{
+  e.preventDefault();
+  msg(userCreateMessage,"Membuat akun...");
+  try{
+    await adminUsersRequest("create",{
+      email:user_email.value.trim(),
+      password:user_password.value,
+      full_name:user_full_name.value.trim(),
+      role:user_role.value
+    });
+    e.target.reset();
+    msg(userCreateMessage,"Akun berhasil dibuat.","success");
+    await loadAdminUsers();
+  }catch(error){msg(userCreateMessage,error.message,"error")}
+});
+
+window.openUserEditor=id=>{
+  const user=dosmosUsers.find(item=>item.id===id);
+  if(!user)return;
+  edit_user_id.value=user.id;
+  edit_user_full_name.value=user.full_name||"";
+  edit_user_role.value=user.role||"admin";
+  edit_user_status.value=user.status||"active";
+  edit_user_role.disabled=!!user.is_protected;
+  edit_user_status.disabled=!!user.is_protected;
+  userEditModal.classList.add("open");
+  userEditModal.setAttribute("aria-hidden","false");
+};
+
+function closeUserEditor(){
+  userEditModal?.classList.remove("open");
+  userEditModal?.setAttribute("aria-hidden","true");
+}
+userEditClose?.addEventListener("click",closeUserEditor);
+userEditModal?.addEventListener("click",e=>{if(e.target===userEditModal)closeUserEditor()});
+
+userEditForm?.addEventListener("submit",async e=>{
+  e.preventDefault();
+  msg(userEditMessage,"Menyimpan...");
+  try{
+    await adminUsersRequest("update",{
+      user_id:edit_user_id.value,
+      full_name:edit_user_full_name.value.trim(),
+      role:edit_user_role.value,
+      status:edit_user_status.value
+    });
+    msg(userEditMessage,"User berhasil diperbarui.","success");
+    closeUserEditor();
+    await loadAdminUsers();
+  }catch(error){msg(userEditMessage,error.message,"error")}
+});
+
+window.resetAdminPassword=async(id,email)=>{
+  const password=prompt(`Masukkan password baru untuk ${email} (minimal 8 karakter):`);
+  if(password===null)return;
+  if(password.length<8){alert("Password minimal 8 karakter.");return}
+  try{
+    await adminUsersRequest("reset_password",{user_id:id,password});
+    showVipToast("Password berhasil diubah.","success");
+  }catch(error){showVipToast(error.message,"error")}
+};
+
+window.deleteAdminUser=async(id,name)=>{
+  if(!confirm(`Hapus akun ${name}? Aksi ini tidak bisa dibatalkan.`))return;
+  try{
+    await adminUsersRequest("delete",{user_id:id});
+    showVipToast("User berhasil dihapus.","success");
+    await loadAdminUsers();
+  }catch(error){showVipToast(error.message,"error")}
+};
+
+userRefreshBtn?.addEventListener("click",loadAdminUsers);
+userSearchInput?.addEventListener("input",renderDosmosUsers);
+userRoleFilter?.addEventListener("change",renderDosmosUsers);
+
+document.querySelector('[data-tab="userManagementTab"]')?.addEventListener("click",loadAdminUsers);
+
