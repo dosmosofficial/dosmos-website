@@ -140,7 +140,7 @@ async function boot(){
   await loadSettings();
   const p=document.body.dataset.page;
   try{
-    if(p==="home")await initHome();if(p==="events"&&portalEventGrid)await initEvents();if(p==="tournaments"&&portalTournamentGrid)await initTournaments();if(p==="news"&&portalNewsGrid)await initNews();if(p==="gallery")await initGallery();if(p==="hall")await initHall();if(p==="register")await initRegister();if(p==="live")await renderLive();if(location.pathname.startsWith("/event/"))await initEventDetail();if(location.pathname.startsWith("/article/"))await initArticle();if(location.pathname.startsWith("/tournament/"))await initTournament();
+    if(p==="home")await initHome();if(p==="events"&&portalEventGrid)await initEvents();if(p==="tournaments"&&portalTournamentGrid)await initTournaments();if(p==="news"&&portalNewsGrid)await initNews();if(p==="gallery")await initGallery();if(p==="hall")await initHall();if(p==="register")await initRegister();if(p==="live")await renderLive();if(p==="community")await initCommunity();if(p==="donate")await initDonate();if(location.pathname.startsWith("/event/"))await initEventDetail();if(location.pathname.startsWith("/article/"))await initArticle();if(location.pathname.startsWith("/tournament/"))await initTournament();
   }catch(e){console.error(e)}
 }
 boot();
@@ -233,4 +233,104 @@ function renderOfficialLiveChat(settings,videoId){
     panel.classList.toggle("is-collapsed");
     toggle.textContent=panel.classList.contains("is-collapsed")?"Tampilkan Chat":"Sembunyikan Chat";
   });
+}
+
+
+/* =========================================================
+   DOSMOS VIP V14.8 — COMMUNITY HUB
+========================================================= */
+const rupiah=value=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(value||0));
+
+async function communitySettings(){
+  const {data}=await sb.from("site_settings").select("*").limit(1).maybeSingle();
+  return data||{};
+}
+function supporterBadge(total){
+  const n=Number(total||0);
+  if(n>=5000000)return {icon:"💎",name:"Diamond"};
+  if(n>=1000000)return {icon:"🥇",name:"Gold"};
+  if(n>=250000)return {icon:"🥈",name:"Silver"};
+  return {icon:"🥉",name:"Bronze"};
+}
+async function loadSupporters(target){
+  if(!target)return;
+  const {data,error}=await sb.from("donations").select("donor_name,anonymous,amount,status").eq("status","paid");
+  if(error){target.innerHTML='<div class="empty">Supporter belum tersedia.</div>';return}
+  const totals={};
+  (data||[]).forEach(d=>{const name=d.anonymous?"Anonymous":d.donor_name||"Anonymous";totals[name]=(totals[name]||0)+Number(d.amount||0)});
+  const list=Object.entries(totals).map(([name,total])=>({name,total})).sort((a,b)=>b.total-a.total).slice(0,12);
+  target.innerHTML=list.length?list.map((s,i)=>{const badge=supporterBadge(s.total);return `<article class="supporter-card"><span class="supporter-rank">${i<3?["🥇","🥈","🥉"][i]:`#${i+1}`}</span><div><strong>${esc(s.name)}</strong><small>${badge.icon} ${badge.name} Supporter</small></div><b>${rupiah(s.total)}</b></article>`}).join(""):'<div class="empty">Belum ada supporter.</div>';
+}
+async function initCommunity(){
+  const settings=await communitySettings();
+  communityLiveTitle.textContent=settings.live_title||"DOSMOS Watch Party";
+  communityLiveDescription.textContent=settings.live_description||"Live berikutnya segera hadir.";
+  communityPlatform.textContent=(settings.live_platform||"DOSMOS LIVE").toUpperCase();
+  communityChannel.textContent=settings.live_channel_name||"DOSMOS Official";
+  const liveUrl=settings.live_url||settings.community_tiktok_url||"/live/";
+  communityExternalLive.href=liveUrl;
+  if(liveUrl!="/live/")communityExternalLive.target="_blank";
+  const isLive=String(settings.live_status||"offline")==="live";
+  communityLiveStatus.textContent=isLive?"LIVE":"OFFLINE";
+  communityLiveStatus.className=`live-status-pill ${isLive?"is-live":"is-offline"}`;
+  const yt=youtubeVideoId(settings.live_url||"");
+  if(isLive&&yt)communityPlayer.innerHTML=`<iframe src="https://www.youtube.com/embed/${yt}?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+  else if(settings.community_tiktok_url){
+    communityPlayer.innerHTML=`<div class="tiktok-live-fallback"><span class="tiktok-mark">♪</span><h2>TikTok Live DOSMOS</h2><p>TikTok tidak menyediakan player dan komentar live resmi penuh untuk website. Buka live TikTok, lalu kembali ke sini untuk ngobrol di DOSMOS Chat.</p><a class="btn btn-primary" href="${esc(settings.community_tiktok_url)}" target="_blank" rel="noopener">Buka TikTok Live</a></div>`;
+  }
+  communityDisplayName.value=localStorage.getItem("dosmos_chat_name")||"";
+  communitySaveName.onclick=()=>{const name=communityDisplayName.value.trim();if(name){localStorage.setItem("dosmos_chat_name",name);communitySaveName.textContent="Tersimpan";setTimeout(()=>communitySaveName.textContent="Simpan",1000)}};
+  await loadCommunityMessages();
+  communityChatForm.onsubmit=sendCommunityMessage;
+  sb.channel("community-chat-live").on("postgres_changes",{event:"INSERT",schema:"public",table:"community_messages"},()=>loadCommunityMessages()).on("postgres_changes",{event:"UPDATE",schema:"public",table:"community_messages"},()=>loadCommunityMessages()).subscribe();
+  renderCommunityPoll(settings);
+  await loadSupporters(communitySupporters);
+}
+async function loadCommunityMessages(){
+  const {data,error}=await sb.from("community_messages").select("*").eq("is_hidden",false).order("created_at",{ascending:true}).limit(100);
+  if(error){communityMessages.innerHTML='<div class="empty">Chat belum tersedia.</div>';return}
+  communityMessages.innerHTML=(data||[]).length?(data||[]).map(m=>`<div class="community-message"><div class="community-avatar">${esc((m.display_name||"D")[0].toUpperCase())}</div><div><div class="community-message-meta"><strong>${esc(m.display_name||"Guest")}</strong><span>${new Date(m.created_at).toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}</span></div><p>${esc(m.message)}</p></div></div>`).join(""):'<div class="empty">Jadilah yang pertama mengirim pesan.</div>';
+  communityMessages.scrollTop=communityMessages.scrollHeight;
+}
+async function sendCommunityMessage(e){
+  e.preventDefault();
+  const name=(communityDisplayName.value||localStorage.getItem("dosmos_chat_name")||"").trim();
+  const message=communityChatInput.value.trim();
+  if(!name){alert("Isi nama kamu terlebih dahulu.");communityDisplayName.focus();return}
+  if(!message)return;
+  localStorage.setItem("dosmos_chat_name",name);
+  const visitorId=localStorage.getItem("dosmos_visitor_id")||crypto.randomUUID();
+  localStorage.setItem("dosmos_visitor_id",visitorId);
+  communityChatInput.disabled=true;
+  const {error}=await sb.from("community_messages").insert({display_name:name,message,visitor_id:visitorId});
+  communityChatInput.disabled=false;
+  if(error){alert(error.message);return}
+  communityChatInput.value="";communityChatInput.focus();
+}
+async function renderCommunityPoll(settings){
+  if(!settings.community_poll_enabled){communityPollCard.hidden=true;return}
+  communityPollCard.hidden=false;
+  pollQuestion.textContent=settings.community_poll_question||"Siapa yang akan menang?";
+  const opts=[settings.community_poll_a||"Team A",settings.community_poll_b||"Team B"];
+  const {data:votes}=await sb.from("community_poll_votes").select("option_key");
+  const counts={a:0,b:0};(votes||[]).forEach(v=>counts[v.option_key]=(counts[v.option_key]||0)+1);
+  const total=counts.a+counts.b;
+  pollOptions.innerHTML=opts.map((o,i)=>{const key=i===0?"a":"b",pct=total?Math.round(counts[key]/total*100):0;return `<button type="button" data-poll-option="${key}"><span><strong>${esc(o)}</strong><b>${pct}%</b></span><i style="width:${pct}%"></i></button>`}).join("");
+  pollOptions.onclick=async e=>{const btn=e.target.closest("[data-poll-option]");if(!btn)return;const visitorId=localStorage.getItem("dosmos_visitor_id")||crypto.randomUUID();localStorage.setItem("dosmos_visitor_id",visitorId);const {error}=await sb.from("community_poll_votes").upsert({visitor_id:visitorId,option_key:btn.dataset.pollOption},{onConflict:"visitor_id"});if(error)alert(error.message);else renderCommunityPoll(settings)};
+}
+async function initDonate(){
+  const settings=await communitySettings();
+  const qris=settings.donation_qris_url||"/dosmos-logo.png";
+  donationQrisPreview.src=qris;donationModalQris.src=qris;
+  donationGoalTitle.textContent=settings.donation_goal_title||"Community Development";
+  donationGoalTarget.textContent=rupiah(settings.donation_goal_target||10000000);
+  const {data:paid}=await sb.from("donations").select("amount").eq("status","paid");
+  const current=(paid||[]).reduce((s,d)=>s+Number(d.amount||0),0),target=Number(settings.donation_goal_target||10000000),pct=Math.min(100,target?Math.round(current/target*100):0);
+  donationGoalCurrent.textContent=rupiah(current);donationProgressBar.style.width=`${pct}%`;donationGoalPercent.textContent=`${pct}% tercapai`;
+  donateAmountGrid.onclick=e=>{const b=e.target.closest("[data-amount]");if(!b)return;document.querySelectorAll("[data-amount]").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(b.dataset.amount==="custom"){donationAmount.value="";donationAmount.focus()}else donationAmount.value=b.dataset.amount};
+  donationForm.onsubmit=async e=>{e.preventDefault();const amount=Number(donationAmount.value),min=Number(settings.donation_minimum||10000);if(amount<min){donationFormMessage.textContent=`Minimum donation ${rupiah(min)}.`;return}const ref=`DSM-${Date.now().toString(36).toUpperCase()}`;const payload={reference:ref,donor_name:donorName.value.trim(),amount,message:donationMessage.value.trim(),anonymous:donationAnonymous.checked,status:"pending"};const {error}=await sb.from("donations").insert(payload);if(error){donationFormMessage.textContent=error.message;return}donationModalAmount.textContent=rupiah(amount);donationReference.textContent=ref;donationModal.hidden=false;donationPaidButton.dataset.reference=ref};
+  donationModalClose.onclick=()=>donationModal.hidden=true;
+  donationModal.onclick=e=>{if(e.target===donationModal)donationModal.hidden=true};
+  donationPaidButton.onclick=async()=>{const ref=donationPaidButton.dataset.reference;const {error}=await sb.from("donations").update({status:"waiting_confirmation",updated_at:new Date().toISOString()}).eq("reference",ref);donationModalMessage.textContent=error?error.message:"Konfirmasi terkirim. Admin akan memeriksa pembayaran kamu.";donationPaidButton.disabled=!error};
+  await loadSupporters(donateSupporters);
 }

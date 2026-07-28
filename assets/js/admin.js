@@ -1348,3 +1348,63 @@ mediaLibraryGrid?.addEventListener("click",async e=>{
 
 event_title?.addEventListener("input",()=>{if(!editState.events||!event_slug.value)event_slug.value=slugify(event_title.value)});
 news_title?.addEventListener("input",()=>{if(!editState.news||!news_slug.value)news_slug.value=slugify(news_title.value)});
+
+
+/* =========================================================
+   DOSMOS VIP V14.8 — COMMUNITY + DONATION ADMIN
+========================================================= */
+async function loadV148Settings(){
+  const {data}=await sb.from("site_settings").select("*").limit(1).maybeSingle();
+  if(!data)return;
+  if(typeof community_chat_enabled!=="undefined")community_chat_enabled.value=String(data.community_chat_enabled!==false);
+  if(typeof community_tiktok_url!=="undefined")community_tiktok_url.value=data.community_tiktok_url||"";
+  if(typeof community_poll_question!=="undefined")community_poll_question.value=data.community_poll_question||"";
+  if(typeof community_poll_enabled!=="undefined")community_poll_enabled.value=String(data.community_poll_enabled===true);
+  if(typeof community_poll_a!=="undefined")community_poll_a.value=data.community_poll_a||"";
+  if(typeof community_poll_b!=="undefined")community_poll_b.value=data.community_poll_b||"";
+  if(typeof donation_enabled!=="undefined")donation_enabled.value=String(data.donation_enabled!==false);
+  if(typeof donation_qris_url!=="undefined")donation_qris_url.value=data.donation_qris_url||"";
+  if(typeof donation_goal_title!=="undefined")donation_goal_title.value=data.donation_goal_title||"";
+  if(typeof donation_goal_target!=="undefined")donation_goal_target.value=data.donation_goal_target||10000000;
+  if(typeof donation_minimum!=="undefined")donation_minimum.value=data.donation_minimum||10000;
+  if(typeof donation_whatsapp!=="undefined")donation_whatsapp.value=data.donation_whatsapp||"";
+}
+communitySettingsForm?.addEventListener("submit",async e=>{
+  e.preventDefault();msg(communitySettingsMessage,"Menyimpan...");
+  const payload={community_chat_enabled:community_chat_enabled.value==="true",community_tiktok_url:community_tiktok_url.value.trim()||null,community_poll_question:community_poll_question.value.trim()||null,community_poll_enabled:community_poll_enabled.value==="true",community_poll_a:community_poll_a.value.trim()||null,community_poll_b:community_poll_b.value.trim()||null,updated_at:new Date().toISOString()};
+  const {data:row}=await sb.from("site_settings").select("id").limit(1).maybeSingle();
+  const q=row?sb.from("site_settings").update(payload).eq("id",row.id):sb.from("site_settings").insert(payload);
+  const {error}=await q;msg(communitySettingsMessage,error?error.message:"Community settings tersimpan.",error?"error":"success");
+});
+donationSettingsForm?.addEventListener("submit",async e=>{
+  e.preventDefault();msg(donationSettingsMessage,"Menyimpan...");
+  const payload={donation_enabled:donation_enabled.value==="true",donation_qris_url:donation_qris_url.value.trim()||null,donation_goal_title:donation_goal_title.value.trim()||null,donation_goal_target:Number(donation_goal_target.value||0),donation_minimum:Number(donation_minimum.value||10000),donation_whatsapp:donation_whatsapp.value.trim()||null,updated_at:new Date().toISOString()};
+  const {data:row}=await sb.from("site_settings").select("id").limit(1).maybeSingle();
+  const q=row?sb.from("site_settings").update(payload).eq("id",row.id):sb.from("site_settings").insert(payload);
+  const {error}=await q;msg(donationSettingsMessage,error?error.message:"Donation settings tersimpan.",error?"error":"success");
+});
+async function loadCommunityAdminMessages(){
+  if(!communityAdminMessages)return;
+  const {data,error}=await sb.from("community_messages").select("*").order("created_at",{ascending:false}).limit(100);
+  if(error){communityAdminMessages.innerHTML=`<div class="empty-state">${esc(error.message)}</div>`;return}
+  communityAdminMessages.innerHTML=(data||[]).map(m=>`<div class="admin-community-row"><div><strong>${esc(m.display_name)}</strong><p>${esc(m.message)}</p><small>${new Date(m.created_at).toLocaleString("id-ID")}</small></div><div><button class="btn btn-secondary" data-chat-toggle="${m.id}" data-hidden="${m.is_hidden}">${m.is_hidden?"Tampilkan":"Sembunyikan"}</button><button class="btn btn-danger" data-chat-delete="${m.id}">Hapus</button></div></div>`).join("")||'<div class="empty-state">Belum ada chat.</div>';
+}
+communityAdminMessages?.addEventListener("click",async e=>{
+  const toggle=e.target.closest("[data-chat-toggle]"),del=e.target.closest("[data-chat-delete]");
+  if(toggle){await sb.from("community_messages").update({is_hidden:toggle.dataset.hidden!=="true"}).eq("id",toggle.dataset.chatToggle);loadCommunityAdminMessages()}
+  if(del&&confirm("Hapus pesan ini?")){await sb.from("community_messages").delete().eq("id",del.dataset.chatDelete);loadCommunityAdminMessages()}
+});
+communityChatRefresh?.addEventListener("click",loadCommunityAdminMessages);
+async function loadAdminDonations(){
+  if(!adminDonationList)return;
+  const {data,error}=await sb.from("donations").select("*").order("created_at",{ascending:false}).limit(200);
+  if(error){adminDonationList.innerHTML=`<div class="empty-state">${esc(error.message)}</div>`;return}
+  adminDonationList.innerHTML=(data||[]).map(d=>`<div class="admin-donation-row"><div><strong>${esc(d.anonymous?"Anonymous":d.donor_name)}</strong><p>${new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(d.amount)}</p><small>${esc(d.reference)} • ${esc(d.status)} • ${new Date(d.created_at).toLocaleString("id-ID")}</small>${d.message?`<em>${esc(d.message)}</em>`:""}</div><div class="admin-donation-actions"><button class="btn btn-primary" data-donation-status="paid" data-id="${d.id}">Paid</button><button class="btn btn-secondary" data-donation-status="rejected" data-id="${d.id}">Reject</button><button class="btn btn-danger" data-donation-delete="${d.id}">Delete</button></div></div>`).join("")||'<div class="empty-state">Belum ada donation.</div>';
+}
+adminDonationList?.addEventListener("click",async e=>{
+  const status=e.target.closest("[data-donation-status]"),del=e.target.closest("[data-donation-delete]");
+  if(status){await sb.from("donations").update({status:status.dataset.donationStatus,updated_at:new Date().toISOString()}).eq("id",status.dataset.id);loadAdminDonations()}
+  if(del&&confirm("Hapus data donation ini?")){await sb.from("donations").delete().eq("id",del.dataset.donationDelete);loadAdminDonations()}
+});
+donationRefreshBtn?.addEventListener("click",loadAdminDonations);
+setTimeout(()=>{loadV148Settings();loadCommunityAdminMessages();loadAdminDonations()},300);

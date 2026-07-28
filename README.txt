@@ -264,3 +264,48 @@ CATATAN YOUTUBE:
 - Domain website harus sama dengan domain yang membuka halaman.
 - Preview melalui file lokal tidak mendukung YouTube live chat.
 - TikTok Live Chat resmi belum tersedia untuk embed website biasa.
+
+
+=========================================================
+DOSMOS VIP V14.8 — COMMUNITY HUB
+=========================================================
+
+FITUR:
+- Halaman /community/ untuk Watch Party.
+- YouTube player otomatis jika link YouTube aktif.
+- TikTok Live fallback resmi: tombol membuka TikTok Live.
+- DOSMOS Community Chat realtime via Supabase Realtime.
+- Nama tamu tersimpan di browser.
+- Moderasi chat di admin: Hidden, Show, Delete.
+- Live Poll dua pilihan dan satu vote per browser.
+- Halaman /donate/ dengan nominal:
+  Rp10.000, Rp25.000, Rp50.000, Rp100.000, Rp250.000, dan Custom.
+- QRIS statis milik DOSMOS.
+- Donation request, kode referensi, dan tombol “Saya Sudah Bayar”.
+- Admin approval Paid / Rejected.
+- Support Goal.
+- Hall of Support.
+- Badge Bronze, Silver, Gold, Diamond.
+- Semua nominal menggunakan Rupiah.
+
+CARA PASANG:
+1. Jalankan `supabase-v14-8.sql` di Supabase SQL Editor.
+2. Replace seluruh file V14.7.1 dengan isi paket V14.8.
+3. Commit ke GitHub dan tunggu Cloudflare Pages deploy.
+4. Tekan Ctrl + F5.
+5. Admin > Community Hub:
+   - Masukkan TikTok Live URL.
+   - Atur Poll.
+   - Moderasi chat.
+6. Admin > Donation Center:
+   - Upload QRIS ke Media Library.
+   - Copy URL dan tempel ke QRIS Image URL.
+   - Atur goal dan minimum donation.
+   - Konfirmasi donation yang benar-benar sudah masuk sebagai Paid.
+
+KEAMANAN PEMBAYARAN:
+- V14.8 memakai QRIS statis + verifikasi admin.
+- Sistem tidak otomatis menganggap pembayaran berhasil.
+- Jangan menyimpan secret key payment gateway di JavaScript/browser.
+- Otomatisasi QRIS dinamis memerlukan backend/Cloudflare Worker dan webhook
+  dari payment gateway resmi. Modul tersebut belum diaktifkan pada rilis ini.

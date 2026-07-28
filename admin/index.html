@@ -53,7 +53,7 @@
       <button class="active" data-tab="dashboardTab">Dashboard</button><button data-tab="eventsTab">Events</button>
       <button data-tab="registrationsTab">Registrations</button><button data-tab="matchesTab">Tournament Bracket</button>
       <button data-tab="championsTab">Champions</button><button data-tab="newsTab">News</button>
-      <button data-tab="galleryTab">Gallery</button><button data-tab="mediaLibraryTab">Media Library</button><button data-tab="sponsorsTab">Sponsors</button>
+      <button data-tab="galleryTab">Gallery</button><button data-tab="mediaLibraryTab">Media Library</button><button data-tab="communityHubTab">Community Hub</button><button data-tab="donationCenterTab">Donation Center</button><button data-tab="sponsorsTab">Sponsors</button>
       <button data-tab="brandingTab">Branding</button>
       <button data-tab="contentTab">Website Text</button>
       <button data-tab="liveCenterTab">Live Center</button>
@@ -375,6 +375,39 @@ ONIC"></textarea>
           <div class="empty-state">Memuat media...</div>
         </div>
       </div>
+    </section>
+
+
+    <section class="tab-panel" id="communityHubTab">
+      <div class="panel">
+        <div class="vip-panel-head"><div><div class="eyebrow">DOSMOS COMMUNITY</div><h3>Community Hub Manager</h3></div><span class="branding-status">Realtime</span></div>
+        <form id="communitySettingsForm" class="form-grid" style="margin-top:20px">
+          <label>Community Chat<select id="community_chat_enabled"><option value="true">Aktif</option><option value="false">Nonaktif</option></select></label>
+          <label>TikTok Live URL<input id="community_tiktok_url" placeholder="https://www.tiktok.com/@username/live"></label>
+          <label>Poll Question<input id="community_poll_question" placeholder="Siapa yang akan menang?"></label>
+          <label>Poll Status<select id="community_poll_enabled"><option value="true">Aktif</option><option value="false">Nonaktif</option></select></label>
+          <label>Poll Option A<input id="community_poll_a" placeholder="Team A"></label>
+          <label>Poll Option B<input id="community_poll_b" placeholder="Team B"></label>
+          <div class="form-full"><button class="btn btn-primary">Simpan Community Settings</button><div id="communitySettingsMessage" class="message"></div></div>
+        </form>
+      </div>
+      <div class="panel" style="margin-top:20px"><div class="vip-panel-head"><div><div class="eyebrow">MODERATION</div><h3>Chat Terbaru</h3></div><button class="btn btn-secondary" id="communityChatRefresh" type="button">Refresh</button></div><div id="communityAdminMessages" class="admin-community-list"><div class="empty-state">Memuat chat...</div></div></div>
+    </section>
+
+    <section class="tab-panel" id="donationCenterTab">
+      <div class="panel">
+        <div class="vip-panel-head"><div><div class="eyebrow">SUPPORT SYSTEM</div><h3>Donation Center</h3></div><span class="branding-status">Rupiah + QRIS</span></div>
+        <form id="donationSettingsForm" class="form-grid" style="margin-top:20px">
+          <label>Donation Center<select id="donation_enabled"><option value="true">Aktif</option><option value="false">Nonaktif</option></select></label>
+          <label>QRIS Image URL<input id="donation_qris_url" placeholder="Pilih dari Media Library atau paste URL"></label>
+          <label>Goal Title<input id="donation_goal_title" placeholder="Community Development"></label>
+          <label>Goal Target (Rp)<input id="donation_goal_target" type="number" min="0" step="1000"></label>
+          <label>Minimum Donation (Rp)<input id="donation_minimum" type="number" min="1000" step="1000"></label>
+          <label>WhatsApp Admin<input id="donation_whatsapp" placeholder="628..."></label>
+          <div class="form-full"><button class="btn btn-primary">Simpan Donation Settings</button><div id="donationSettingsMessage" class="message"></div></div>
+        </form>
+      </div>
+      <div class="panel" style="margin-top:20px"><div class="vip-panel-head"><div><div class="eyebrow">TRANSACTIONS</div><h3>Donation Requests</h3></div><button class="btn btn-secondary" id="donationRefreshBtn" type="button">Refresh</button></div><div id="adminDonationList" class="admin-donation-list"><div class="empty-state">Memuat donation...</div></div></div>
     </section>
 
     <section class="tab-panel" id="sponsorsTab"><div class="panel"><h3>Tambah / Edit Sponsor</h3>

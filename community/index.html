@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Community Hub | DOSMOS</title>
+  <meta name="description" content="Watch Party, TikTok Live, YouTube Live, chat komunitas, dan polling DOSMOS.">
+  <link id="siteFavicon" rel="icon" href="/dosmos-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="/assets/css/portal.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/assets/js/config.js"></script>
+</head>
+<body data-page="community">
+<header class="topbar portal-topbar"><div class="container nav">
+  <a class="brand" href="/"><img class="logo site-main-logo" src="/dosmos-logo.png" alt="DOSMOS"><span class="logo-fallback">D</span><span data-site-name>DOSMOS</span></a>
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <nav class="navlinks" id="navLinks">
+    <a data-nav="home" href="/">Home</a><a data-nav="events" href="/events/">Event</a><a data-nav="tournaments" href="/tournaments/">Tournament</a><a data-nav="news" href="/news/">News</a><a data-nav="gallery" href="/gallery/">Gallery</a><a data-nav="live" href="/live/">Live</a><a data-nav="community" href="/community/">Community</a><a data-nav="donate" href="/donate/">Donate</a><a data-nav="hall" href="/hall-of-fame/">Hall of Fame</a>
+  </nav>
+</div></header>
+<main>
+<section class="portal-page-hero"><div class="container"><div class="portal-breadcrumb"><a href="/">Home</a><span>›</span><strong>Community Hub</strong></div><div class="eyebrow">DOSMOS WATCH PARTY</div><h1>Community Hub</h1><p>Nonton live, ngobrol realtime, vote tim favorit, dan dukung DOSMOS dalam satu tempat.</p></div></section>
+<section class="section"><div class="container">
+  <div class="watch-party-grid">
+    <section class="watch-party-stage">
+      <div class="watch-party-player" id="communityPlayer"><div class="watch-party-placeholder"><span class="live-status-pill is-offline" id="communityLiveStatus">OFFLINE</span><h2 id="communityLiveTitle">DOSMOS Watch Party</h2><p id="communityLiveDescription">Live berikutnya segera hadir.</p><a id="communityExternalLive" class="btn btn-primary" href="/live/">Buka Live Center</a></div></div>
+      <div class="watch-party-toolbar"><div><strong id="communityPlatform">DOSMOS LIVE</strong><small id="communityChannel">DOSMOS Official</small></div><a class="btn btn-secondary" href="/donate/">❤️ Support DOSMOS</a></div>
+      <div class="community-poll-card" id="communityPollCard">
+        <div class="portal-section-head"><div><div class="eyebrow">LIVE POLL</div><h3 id="pollQuestion">Siapa yang akan menang?</h3></div></div>
+        <div id="pollOptions" class="poll-options"><div class="empty">Belum ada poll aktif.</div></div>
+      </div>
+    </section>
+    <aside class="community-chat-card">
+      <div class="community-chat-header"><div><span class="live-chat-dot"></span><strong>DOSMOS CHAT</strong></div><span id="communityOnlineText">Realtime</span></div>
+      <div class="community-chat-name"><input id="communityDisplayName" maxlength="24" placeholder="Nama kamu"><button id="communitySaveName" type="button">Simpan</button></div>
+      <div class="community-messages" id="communityMessages"><div class="empty">Memuat chat...</div></div>
+      <form class="community-chat-form" id="communityChatForm"><input id="communityChatInput" maxlength="220" placeholder="Tulis pesan..." autocomplete="off"><button type="submit">Kirim</button></form>
+      <div class="community-chat-rules">Jaga bahasa, dilarang spam, dan hormati seluruh member komunitas.</div>
+    </aside>
+  </div>
+</div></section>
+<section class="section section-alt"><div class="container">
+  <div class="portal-section-head"><div><div class="eyebrow">TOP SUPPORTER</div><h2>Hall of Support</h2></div><a href="/donate/">Lihat Donate Center →</a></div>
+  <div id="communitySupporters" class="supporter-grid"><div class="empty">Memuat supporter...</div></div>
+</div></section>
+</main>
+<footer class="portal-footer"><div class="container portal-footer-inner"><div><strong data-site-name>DOSMOS</strong><p data-site-slogan>Every Gamer Deserves a Chance.</p></div></div></footer>
+<script src="/assets/js/portal.js"></script>
+</body></html>

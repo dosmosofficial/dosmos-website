@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Support DOSMOS | Donate</title>
+  <meta name="description" content="Dukung DOSMOS melalui QRIS dengan nominal Rupiah.">
+  <link id="siteFavicon" rel="icon" href="/dosmos-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="/assets/css/portal.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/assets/js/config.js"></script>
+</head>
+<body data-page="donate">
+<header class="topbar portal-topbar"><div class="container nav">
+  <a class="brand" href="/"><img class="logo site-main-logo" src="/dosmos-logo.png" alt="DOSMOS"><span class="logo-fallback">D</span><span data-site-name>DOSMOS</span></a>
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <nav class="navlinks" id="navLinks"><a data-nav="home" href="/">Home</a><a data-nav="events" href="/events/">Event</a><a data-nav="tournaments" href="/tournaments/">Tournament</a><a data-nav="live" href="/live/">Live</a><a data-nav="community" href="/community/">Community</a><a data-nav="donate" href="/donate/">Donate</a></nav>
+</div></header>
+<main>
+<section class="portal-page-hero donate-hero"><div class="container"><div class="portal-breadcrumb"><a href="/">Home</a><span>›</span><strong>Donate</strong></div><div class="eyebrow">SUPPORT DOSMOS</div><h1>Every Support Matters.</h1><p>Dukungan kamu membantu DOSMOS membangun event, komunitas, dan kesempatan yang lebih besar untuk gamer.</p></div></section>
+<section class="section"><div class="container donate-layout">
+  <section class="donate-main-card">
+    <div class="eyebrow">PILIH NOMINAL</div><h2>Support dalam Rupiah</h2>
+    <div class="donate-amount-grid" id="donateAmountGrid">
+      <button type="button" data-amount="10000">Rp10.000</button><button type="button" data-amount="25000">Rp25.000</button><button type="button" data-amount="50000">Rp50.000</button><button type="button" data-amount="100000">Rp100.000</button><button type="button" data-amount="250000">Rp250.000</button><button type="button" data-amount="custom">Custom</button>
+    </div>
+    <form id="donationForm" class="form-grid">
+      <label>Nama Supporter<input id="donorName" maxlength="40" required placeholder="Nama yang akan ditampilkan"></label>
+      <label>Nominal<input id="donationAmount" type="number" min="10000" step="1000" required placeholder="Minimal Rp10.000"></label>
+      <label class="form-full">Pesan<textarea id="donationMessage" maxlength="180" placeholder="Semangat terus DOSMOS!"></textarea></label>
+      <label class="donate-anonymous"><input id="donationAnonymous" type="checkbox"> Tampilkan sebagai Anonymous</label>
+      <div class="form-full"><button class="btn btn-primary" type="submit">Lanjut ke QRIS</button><div id="donationFormMessage" class="message"></div></div>
+    </form>
+  </section>
+  <aside class="donate-side">
+    <div class="donation-goal-card"><div class="eyebrow">SUPPORT GOAL</div><h3 id="donationGoalTitle">Community Development</h3><div class="donation-goal-numbers"><strong id="donationGoalCurrent">Rp0</strong><span>dari <b id="donationGoalTarget">Rp10.000.000</b></span></div><div class="donation-progress"><span id="donationProgressBar"></span></div><small id="donationGoalPercent">0% tercapai</small></div>
+    <div class="qris-preview-card"><div class="eyebrow">PAYMENT</div><h3>QRIS DOSMOS</h3><img id="donationQrisPreview" src="/dosmos-logo.png" alt="QRIS DOSMOS"><p>Pilih nominal dan isi data terlebih dahulu.</p></div>
+  </aside>
+</div></section>
+<section class="section section-alt"><div class="container"><div class="portal-section-head"><div><div class="eyebrow">HALL OF SUPPORT</div><h2>Top Supporter</h2></div></div><div id="donateSupporters" class="supporter-grid"><div class="empty">Memuat supporter...</div></div></div></section>
+</main>
+<div class="donation-modal" id="donationModal" hidden><div class="donation-modal-card"><button id="donationModalClose" class="donation-modal-close">×</button><div class="eyebrow">SCAN QRIS</div><h2 id="donationModalAmount">Rp0</h2><img id="donationModalQris" src="/dosmos-logo.png" alt="QRIS"><p id="donationModalInstruction">Scan QRIS lalu tunggu konfirmasi admin.</p><div class="donation-reference">Kode: <strong id="donationReference">-</strong></div><button class="btn btn-secondary" id="donationPaidButton" type="button">Saya Sudah Bayar</button><div id="donationModalMessage" class="message"></div></div></div>
+<footer class="portal-footer"><div class="container portal-footer-inner"><div><strong data-site-name>DOSMOS</strong><p data-site-slogan>Every Gamer Deserves a Chance.</p></div></div></footer>
+<script src="/assets/js/portal.js"></script>
+</body></html>
