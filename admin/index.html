@@ -5,7 +5,7 @@
   <title>DOSMOS VIP</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link id="adminFavicon" rel="icon" href="../dosmos-logo.png">
-  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/style.css?v=15.1">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../assets/js/config.js"></script>
 </head>
 <body>
@@ -411,98 +411,160 @@ ONIC"></textarea>
     </section>
 
 
+    
     <section class="tab-panel" id="themeStudioTab">
-      <div class="panel theme-studio-panel">
-        <div class="vip-panel-head">
+      <div class="theme-ultra-shell">
+        <div class="theme-ultra-header">
           <div>
-            <div class="eyebrow">DOSMOS VISUAL BUILDER</div>
-            <h3>Theme Studio PRO</h3>
-            <p>Ubah tema, warna, kartu, tombol, dan efek website tanpa menyentuh kode.</p>
+            <div class="eyebrow">DOSMOS VISUAL SYSTEM</div>
+            <h2>Theme Studio Ultra</h2>
+            <p>Atur tampilan website dari satu tempat dengan preview langsung, preset profesional, dan kontrol efek yang rapi.</p>
           </div>
-          <div class="theme-studio-actions">
-            <button class="btn btn-secondary" id="themePreviewBtn" type="button">Preview</button>
+          <div class="theme-ultra-header-actions">
+            <button class="btn btn-secondary" id="themeResetBtn" type="button">Reset Preview</button>
             <button class="btn btn-primary" id="themeSaveBtn" type="button">Apply Theme</button>
           </div>
         </div>
 
-        <div class="theme-studio-grid">
-          <div class="theme-studio-sidebar">
-            <div class="theme-control-group">
-              <label>Theme Preset</label>
-              <div class="theme-preset-grid" id="themePresetGrid">
-                <button type="button" data-theme-preset="gold" class="active"><span class="preset-dot preset-gold"></span>Luxury Gold</button>
-                <button type="button" data-theme-preset="blue"><span class="preset-dot preset-blue"></span>Blue Esports</button>
-                <button type="button" data-theme-preset="red"><span class="preset-dot preset-red"></span>Red Inferno</button>
-                <button type="button" data-theme-preset="purple"><span class="preset-dot preset-purple"></span>Purple Galaxy</button>
-                <button type="button" data-theme-preset="emerald"><span class="preset-dot preset-emerald"></span>Emerald Arena</button>
-                <button type="button" data-theme-preset="cyber"><span class="preset-dot preset-cyber"></span>Cyber Neon</button>
+        <div class="theme-ultra-workspace">
+          <aside class="theme-ultra-controls">
+            <div class="theme-ultra-card">
+              <div class="theme-ultra-card-head">
+                <div><span>01</span><h3>Theme Preset</h3></div>
+                <small>Pilih gaya dasar</small>
+              </div>
+              <div class="theme-ultra-presets" id="themePresetGrid">
+                <button type="button" data-theme-preset="gold" class="active">
+                  <i class="theme-swatch swatch-gold"></i>
+                  <span><strong>Luxury Gold</strong><small>Premium & elegan</small></span>
+                </button>
+                <button type="button" data-theme-preset="blue">
+                  <i class="theme-swatch swatch-blue"></i>
+                  <span><strong>Blue Esports</strong><small>Modern & kompetitif</small></span>
+                </button>
+                <button type="button" data-theme-preset="red">
+                  <i class="theme-swatch swatch-red"></i>
+                  <span><strong>Red Inferno</strong><small>Agresif & berani</small></span>
+                </button>
+                <button type="button" data-theme-preset="purple">
+                  <i class="theme-swatch swatch-purple"></i>
+                  <span><strong>Purple Galaxy</strong><small>Futuristik & mewah</small></span>
+                </button>
+                <button type="button" data-theme-preset="emerald">
+                  <i class="theme-swatch swatch-emerald"></i>
+                  <span><strong>Emerald Arena</strong><small>Segar & profesional</small></span>
+                </button>
+                <button type="button" data-theme-preset="cyber">
+                  <i class="theme-swatch swatch-cyber"></i>
+                  <span><strong>Cyber Neon</strong><small>Teknologi & neon</small></span>
+                </button>
               </div>
             </div>
 
-            <div class="theme-control-group">
-              <label>Warna Custom</label>
-              <div class="theme-color-grid">
-                <label>Primary<input id="theme_primary" type="color" value="#f6c744"></label>
-                <label>Accent<input id="theme_accent" type="color" value="#9b7208"></label>
-                <label>Background<input id="theme_background" type="color" value="#070707"></label>
-                <label>Surface<input id="theme_surface" type="color" value="#0d0d0d"></label>
-                <label>Text<input id="theme_text" type="color" value="#ffffff"></label>
-                <label>Muted<input id="theme_muted" type="color" value="#888888"></label>
+            <div class="theme-ultra-card">
+              <div class="theme-ultra-card-head">
+                <div><span>02</span><h3>Color System</h3></div>
+                <small>Warna seluruh website</small>
+              </div>
+              <div class="theme-ultra-colors">
+                <label><span><b>Primary</b><small>Brand utama</small></span><input id="theme_primary" type="color" value="#f6c744"></label>
+                <label><span><b>Accent</b><small>Highlight pendukung</small></span><input id="theme_accent" type="color" value="#9b7208"></label>
+                <label><span><b>Background</b><small>Latar halaman</small></span><input id="theme_background" type="color" value="#070707"></label>
+                <label><span><b>Surface</b><small>Kartu dan panel</small></span><input id="theme_surface" type="color" value="#0d0d0d"></label>
+                <label><span><b>Text</b><small>Teks utama</small></span><input id="theme_text" type="color" value="#ffffff"></label>
+                <label><span><b>Muted</b><small>Teks sekunder</small></span><input id="theme_muted" type="color" value="#888888"></label>
               </div>
             </div>
 
-            <div class="theme-control-group">
-              <label>Style</label>
-              <div class="theme-select-grid">
-                <label>Card Style<select id="theme_card_style"><option value="luxury">Luxury</option><option value="glass">Glass</option><option value="solid">Solid</option><option value="cyber">Cyber</option></select></label>
-                <label>Button Style<select id="theme_button_style"><option value="rounded">Rounded</option><option value="square">Square</option><option value="pill">Pill</option><option value="neon">Neon</option></select></label>
-                <label>Animation<select id="theme_animation"><option value="fade">Fade</option><option value="slide">Slide</option><option value="zoom">Zoom</option><option value="none">None</option></select></label>
-                <label>Intensity<select id="theme_effect_intensity"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+            <div class="theme-ultra-card">
+              <div class="theme-ultra-card-head">
+                <div><span>03</span><h3>Component Style</h3></div>
+                <small>Bentuk UI</small>
+              </div>
+              <div class="theme-ultra-selects">
+                <label><span>Card Style</span><select id="theme_card_style"><option value="luxury">Luxury</option><option value="glass">Glass</option><option value="solid">Solid</option><option value="cyber">Cyber</option></select></label>
+                <label><span>Button Style</span><select id="theme_button_style"><option value="rounded">Rounded</option><option value="square">Square</option><option value="pill">Pill</option><option value="neon">Neon</option></select></label>
+                <label><span>Animation</span><select id="theme_animation"><option value="fade">Fade</option><option value="slide">Slide</option><option value="zoom">Zoom</option><option value="none">None</option></select></label>
+                <label><span>Effect Intensity</span><select id="theme_effect_intensity"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
               </div>
             </div>
-          </div>
+          </aside>
 
-          <div class="theme-studio-main">
-            <div class="theme-live-preview" id="themeLivePreview">
-              <div class="theme-preview-topbar"><strong>DOSMOS</strong><span>Home &nbsp; Event &nbsp; Tournament &nbsp; Live</span></div>
-              <div class="theme-preview-hero">
-                <div class="eyebrow">OFFICIAL GAMING & ESPORTS COMMUNITY</div>
-                <h2>DOSMOS</h2>
-                <p>Every Gamer Deserves a Chance.</p>
-                <div><button type="button">Lihat Event</button><button type="button">Community Hub</button></div>
+          <main class="theme-ultra-preview-area">
+            <div class="theme-ultra-preview-toolbar">
+              <div>
+                <strong>Live Preview</strong>
+                <small>Perubahan terlihat langsung sebelum disimpan</small>
               </div>
-              <div class="theme-preview-cards">
-                <article><span>🏆</span><strong>Tournament</strong><small>Premium competition experience.</small></article>
-                <article><span>💬</span><strong>Community</strong><small>Realtime chat and watch party.</small></article>
-                <article><span>❤️</span><strong>Support</strong><small>Support DOSMOS community.</small></article>
-              </div>
-            </div>
-
-            <div class="theme-effect-manager">
-              <div class="vip-panel-head">
-                <div><div class="eyebrow">VISUAL EFFECTS</div><h3>Effect Manager</h3></div>
-              </div>
-              <div class="theme-toggle-grid">
-                <label><span><strong>Glow</strong><small>Efek cahaya pada tombol dan kartu.</small></span><input id="effect_glow" type="checkbox" checked></label>
-                <label><span><strong>Gold Dust / Particles</strong><small>Partikel ringan bergerak di background.</small></span><input id="effect_particles" type="checkbox" checked></label>
-                <label><span><strong>Animated Border</strong><small>Garis cahaya bergerak pada kartu.</small></span><input id="effect_animated_border" type="checkbox"></label>
-                <label><span><strong>Mouse Glow</strong><small>Cahaya halus mengikuti pointer.</small></span><input id="effect_mouse_glow" type="checkbox" checked></label>
-                <label><span><strong>Parallax Hero</strong><small>Background hero bergerak secara halus.</small></span><input id="effect_parallax" type="checkbox"></label>
-                <label><span><strong>Page Reveal</strong><small>Animasi saat section masuk layar.</small></span><input id="effect_reveal" type="checkbox" checked></label>
+              <div class="theme-device-switcher" id="themeDeviceSwitcher">
+                <button class="active" type="button" data-preview-size="desktop">Desktop</button>
+                <button type="button" data-preview-size="tablet">Tablet</button>
+                <button type="button" data-preview-size="mobile">Mobile</button>
               </div>
             </div>
 
-            <div class="theme-safety-note">
-              <strong>Performance Guard</strong>
-              <p>Efek otomatis dikurangi pada perangkat mobile dan pengguna yang mengaktifkan reduced motion.</p>
+            <div class="theme-preview-stage">
+              <div class="theme-live-preview" id="themeLivePreview" data-preview-size="desktop">
+                <div class="theme-preview-browser">
+                  <div class="theme-preview-browser-bar">
+                    <span></span><span></span><span></span>
+                    <div>dosmos.id</div>
+                  </div>
+                  <div class="theme-preview-site">
+                    <div class="theme-preview-topbar">
+                      <strong>DOSMOS</strong>
+                      <nav>Home &nbsp; Event &nbsp; Tournament &nbsp; Live &nbsp; Community</nav>
+                    </div>
+                    <section class="theme-preview-hero">
+                      <div class="eyebrow">OFFICIAL GAMING & ESPORTS COMMUNITY</div>
+                      <h2>DOSMOS</h2>
+                      <p>Every Gamer Deserves a Chance.</p>
+                      <div class="theme-preview-actions">
+                        <button type="button">Lihat Event</button>
+                        <button type="button">Community Hub</button>
+                      </div>
+                    </section>
+                    <section class="theme-preview-section">
+                      <div class="theme-preview-section-head">
+                        <div><small>CURRENT & UPCOMING</small><strong>Event Terbaru</strong></div>
+                        <span>Lihat Semua →</span>
+                      </div>
+                      <div class="theme-preview-cards">
+                        <article><span>🏆</span><strong>Tournament</strong><small>Premium competition experience.</small></article>
+                        <article><span>💬</span><strong>Community</strong><small>Realtime chat and watch party.</small></article>
+                        <article><span>❤️</span><strong>Support</strong><small>Support DOSMOS community.</small></article>
+                      </div>
+                    </section>
+                    <div class="theme-preview-footer">DOSMOS.ID · Founder & CEO — Jesse</div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div id="themeStudioMessage" class="message"></div>
-          </div>
+
+            <div class="theme-ultra-card theme-effects-card">
+              <div class="theme-ultra-card-head">
+                <div><span>04</span><h3>Effect Manager</h3></div>
+                <small>Aktifkan sesuai kebutuhan</small>
+              </div>
+              <div class="theme-ultra-effects">
+                <label><input id="effect_glow" type="checkbox" checked><span><i>✨</i><b>Glow</b><small>Cahaya premium pada elemen utama.</small></span></label>
+                <label><input id="effect_particles" type="checkbox" checked><span><i>🌟</i><b>Particles</b><small>Partikel halus di latar website.</small></span></label>
+                <label><input id="effect_animated_border" type="checkbox"><span><i>⚡</i><b>Animated Border</b><small>Garis bergerak di kartu tertentu.</small></span></label>
+                <label><input id="effect_mouse_glow" type="checkbox" checked><span><i>🖱️</i><b>Mouse Glow</b><small>Cahaya mengikuti arah pointer.</small></span></label>
+                <label><input id="effect_parallax" type="checkbox"><span><i>🎬</i><b>Parallax Hero</b><small>Gerakan halus pada area hero.</small></span></label>
+                <label><input id="effect_reveal" type="checkbox" checked><span><i>🪄</i><b>Page Reveal</b><small>Animasi saat section tampil.</small></span></label>
+              </div>
+            </div>
+
+            <div class="theme-ultra-footer-note">
+              <div><strong>Performance Guard aktif</strong><span>Efek berat otomatis dikurangi di HP dan perangkat reduced motion.</span></div>
+              <div id="themeStudioMessage" class="message"></div>
+            </div>
+          </main>
         </div>
       </div>
     </section>
-
-    <section class="tab-panel" id="sponsorsTab"><div class="panel"><h3>Tambah / Edit Sponsor</h3>
+<section class="tab-panel" id="sponsorsTab"><div class="panel"><h3>Tambah / Edit Sponsor</h3>
       <form id="sponsorForm" class="form-grid" style="margin-top:18px">
         <label>Nama Sponsor<input id="sponsor_name" required></label><label>Website<input id="sponsor_website"></label><label>Upload Logo<input id="sponsor_file" type="file" accept="image/*"></label><label>Atau URL Logo<input id="sponsor_logo"></label><label>Urutan<input id="sponsor_sort_order" type="number" min="0"></label>
         <div class="form-full"><button class="btn btn-primary" id="sponsorSubmit">Publish</button><div id="sponsorMessage" class="message"></div></div>
@@ -883,5 +945,5 @@ ONIC"></textarea>
     </section>
   </main>
 </section>
-<script src="../assets/js/admin.js"></script>
+<script src="../assets/js/admin.js?v=15.1"></script>
 </body></html>

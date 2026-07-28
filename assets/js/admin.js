@@ -1501,3 +1501,26 @@ themeSaveBtn?.addEventListener("click",async()=>{
   msg(themeStudioMessage,error?error.message:"Theme berhasil diterapkan ke seluruh website.",error?"error":"success");
 });
 setTimeout(loadThemeStudio,400);
+
+
+/* =========================================================
+   DOSMOS VIP V15.1 — THEME STUDIO ULTRA UX
+========================================================= */
+themeDeviceSwitcher?.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-preview-size]");
+  if(!btn)return;
+  themeDeviceSwitcher.querySelectorAll("button").forEach(b=>b.classList.toggle("active",b===btn));
+  themeLivePreview.dataset.previewSize=btn.dataset.previewSize;
+});
+themeResetBtn?.addEventListener("click",()=>{
+  const preset=currentThemeStudioSettings?.theme_preset||"gold";
+  applyPresetToControls(preset);
+  ["theme_card_style","theme_button_style","theme_animation","theme_effect_intensity"].forEach(id=>{
+    if(currentThemeStudioSettings?.[id]!=null)document.getElementById(id).value=currentThemeStudioSettings[id];
+  });
+  ["effect_glow","effect_particles","effect_animated_border","effect_mouse_glow","effect_parallax","effect_reveal"].forEach(id=>{
+    if(currentThemeStudioSettings?.[id]!=null)document.getElementById(id).checked=!!currentThemeStudioSettings[id];
+  });
+  previewThemeStudio();
+  msg(themeStudioMessage,"Preview dikembalikan ke theme yang sedang aktif.","success");
+});

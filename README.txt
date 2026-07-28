@@ -393,3 +393,24 @@ CATATAN:
 - Semua fitur V14.8.2 tetap dipertahankan.
 - Theme diterapkan melalui CSS variables agar seluruh halaman ikut berubah.
 - Efek visual dibuat ringan dan otomatis dikurangi pada mobile.
+
+
+=========================================================
+DOSMOS VIP V15.1 — THEME STUDIO ULTRA
+=========================================================
+
+PERBAIKAN TOTAL UI/UX:
+- Theme Studio dibangun ulang dari nol.
+- Layout dua kolom yang rapi.
+- Panel kontrol di kiri dan live preview besar di kanan.
+- Preset tema menjadi card premium.
+- Color picker tidak lagi berbentuk garis panjang.
+- Select control tersusun dalam grid.
+- Preview memiliki frame browser.
+- Preview Desktop, Tablet, dan Mobile.
+- Effect Manager menjadi card ON/OFF.
+- Tombol Reset Preview.
+- Responsive untuk desktop, tablet, dan mobile.
+- Cache-busting admin CSS/JS versi 15.1.
+
+Tidak ada fitur V15.0 yang dihapus.
