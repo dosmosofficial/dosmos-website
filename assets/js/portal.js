@@ -106,7 +106,35 @@ async function initTournament(){
 }
 let countdownTimer;
 async function renderLive(homeOnly=false){
-  try{const {data:d}=await sb.from("site_settings").select("*").limit(1).maybeSingle();if(!d)return;const status=String(d.live_status||"offline").toLowerCase(),isLive=status==="live",title=d.live_title||"DOSMOS Live",url=d.live_url||"#",thumb=d.live_thumbnail_url||"";if(homeOnly){homeLiveFeature.innerHTML=`<div class="portal-section-head"><div><span class="live-status-pill ${isLive?"is-live":"is-offline"}">${isLive?"LIVE":"OFFLINE"}</span><h2>${esc(title)}</h2><p class="lead">${esc(d.live_description||"Live berikutnya segera hadir.")}</p></div><a class="btn btn-primary" href="/live/">Buka Live Center</a></div>`;return}liveStreamTitle.textContent=title;liveStreamDescription.textContent=d.live_description||"";liveChannelName.textContent=d.live_channel_name||"DOSMOS Official";livePlatformLabel.textContent=(d.live_platform||"youtube").toUpperCase();liveWatchButton.href=url;liveStatusPill.textContent=liveStatusSide.textContent=isLive?"LIVE":"OFFLINE";liveStatusPill.className=liveStatusSide.className=`live-status-pill ${isLive?"is-live":"is-offline"}`;if(isLive&&url.includes("youtube")){const id=(url.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{6,})/)||[])[1];if(id)liveFrame.innerHTML=`<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" allowfullscreen></iframe>`}else if(thumb)liveFrame.style.background=`url("${thumb}") center/cover`}catch(e){}
+  try{
+    const {data:d}=await sb.from("site_settings").select("*").limit(1).maybeSingle();
+    if(!d)return;
+    const status=String(d.live_status||"offline").toLowerCase();
+    const isLive=status==="live";
+    const title=d.live_title||"DOSMOS Live";
+    const url=d.live_url||"#";
+    const thumb=d.live_thumbnail_url||"";
+    const videoId=youtubeVideoId(url);
+    if(homeOnly){
+      homeLiveFeature.innerHTML=`<div class="portal-section-head"><div><span class="live-status-pill ${isLive?"is-live":"is-offline"}">${isLive?"LIVE":"OFFLINE"}</span><h2>${esc(title)}</h2><p class="lead">${esc(d.live_description||"Live berikutnya segera hadir.")}</p></div><a class="btn btn-primary" href="/live/">Buka Live Center</a></div>`;
+      return;
+    }
+    liveStreamTitle.textContent=title;
+    liveStreamDescription.textContent=d.live_description||"";
+    liveChannelName.textContent=d.live_channel_name||"DOSMOS Official";
+    livePlatformLabel.textContent=(d.live_platform||"youtube").toUpperCase();
+    liveWatchButton.href=url;
+    liveStatusPill.textContent=liveStatusSide.textContent=isLive?"LIVE":"OFFLINE";
+    liveStatusPill.className=liveStatusSide.className=`live-status-pill ${isLive?"is-live":"is-offline"}`;
+    livePlaceholderTitle.textContent=title;
+    livePlaceholderText.textContent=d.live_description||"Live berikutnya segera hadir.";
+    if(isLive&&videoId){
+      liveFrame.innerHTML=`<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1" title="${esc(title)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+    }else if(thumb){
+      liveFrame.style.background=`linear-gradient(rgba(0,0,0,.38),rgba(0,0,0,.55)),url("${thumb}") center/cover`;
+    }
+    renderOfficialLiveChat(d,videoId);
+  }catch(e){console.error("Live Center:",e)}
 }
 async function boot(){
   await loadSettings();
@@ -116,3 +144,93 @@ async function boot(){
   }catch(e){console.error(e)}
 }
 boot();
+
+
+/* =========================================================
+   DOSMOS VIP V14.7.1 — PORTAL POLISH
+========================================================= */
+function injectPortalLoader(){
+  if(document.getElementById("portalPageLoader"))return;
+  const loader=document.createElement("div");
+  loader.id="portalPageLoader";
+  loader.className="portal-page-loader";
+  loader.innerHTML='<div class="portal-loader-mark">D</div><span>Loading DOSMOS</span>';
+  document.body.appendChild(loader);
+  requestAnimationFrame(()=>loader.classList.add("is-visible"));
+  window.addEventListener("load",()=>setTimeout(()=>loader.classList.remove("is-visible"),180));
+}
+injectPortalLoader();
+
+document.addEventListener("click",e=>{
+  const link=e.target.closest("a[href]");
+  if(!link||link.target==="_blank"||link.hasAttribute("download"))return;
+  const href=link.getAttribute("href");
+  if(!href||href.startsWith("#")||href.startsWith("mailto:")||href.startsWith("tel:"))return;
+  try{
+    const url=new URL(href,location.href);
+    if(url.origin!==location.origin)return;
+    const loader=document.getElementById("portalPageLoader");
+    loader?.classList.add("is-visible");
+  }catch{}
+});
+
+const portalObserver=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("portal-reveal-visible");
+      portalObserver.unobserve(entry.target);
+    }
+  });
+},{threshold:.08,rootMargin:"0px 0px -30px 0px"});
+function activatePortalReveal(){
+  document.querySelectorAll(".card,.portal-feature-panel,.portal-detail-content,.portal-detail-sidebar,.portal-gallery-item,.portal-info-card").forEach(el=>{
+    el.classList.add("portal-reveal");
+    portalObserver.observe(el);
+  });
+}
+setTimeout(activatePortalReveal,120);
+
+function markImageLoaded(img){
+  img.classList.add("portal-image-ready");
+}
+document.querySelectorAll("img").forEach(img=>{
+  img.loading=img.loading||"lazy";
+  if(img.complete)markImageLoaded(img);else img.addEventListener("load",()=>markImageLoaded(img),{once:true});
+});
+const portalMutationObserver=new MutationObserver(()=>{
+  document.querySelectorAll("img:not([data-polished])").forEach(img=>{
+    img.dataset.polished="true";
+    img.loading=img.loading||"lazy";
+    if(img.complete)markImageLoaded(img);else img.addEventListener("load",()=>markImageLoaded(img),{once:true});
+  });
+  activatePortalReveal();
+});
+portalMutationObserver.observe(document.body,{subtree:true,childList:true});
+
+function youtubeVideoId(url=""){
+  return (String(url).match(/(?:youtube\.com\/(?:watch\?v=|live\/|embed\/)|youtu\.be\/)([\w-]{6,})/)||[])[1]||"";
+}
+function youtubeChatUrl(videoId){
+  const host=location.hostname;
+  if(!videoId||!host)return "";
+  return `https://www.youtube.com/live_chat?v=${encodeURIComponent(videoId)}&embed_domain=${encodeURIComponent(host)}&dark_theme=1`;
+}
+function renderOfficialLiveChat(settings,videoId){
+  const panel=document.getElementById("liveChatPanel");
+  const frame=document.getElementById("liveChatFrame");
+  const toggle=document.getElementById("liveChatToggle");
+  if(!panel||!frame)return;
+  const enabled=settings.live_chat_enabled!==false&&settings.live_chat_mode!=="hidden";
+  const youtube=String(settings.live_platform||"youtube").toLowerCase()==="youtube";
+  if(enabled&&youtube&&videoId){
+    frame.innerHTML=`<iframe title="YouTube Live Chat" src="${youtubeChatUrl(videoId)}" allow="clipboard-write" loading="lazy"></iframe>`;
+    panel.classList.remove("is-unavailable");
+  }else{
+    panel.classList.add("is-unavailable");
+    frame.innerHTML=`<div class="live-chat-placeholder"><strong>${youtube?"Chat belum tersedia":"Live chat belum didukung"}</strong><p>${youtube?"Pastikan link YouTube Live sudah benar dan live chat di YouTube diaktifkan.":"TikTok belum menyediakan live chat embed resmi untuk website biasa."}</p></div>`;
+  }
+  toggle?.addEventListener("click",()=>{
+    panel.classList.toggle("is-collapsed");
+    toggle.textContent=panel.classList.contains("is-collapsed")?"Tampilkan Chat":"Sembunyikan Chat";
+  });
+}

@@ -582,6 +582,19 @@ ONIC"></textarea>
         </div>
         <form id="liveCenterForm" class="form-grid" style="margin-top:20px">
           <label>Status Live<select id="live_status"><option value="offline">OFFLINE</option><option value="coming_soon">COMING SOON</option><option value="live">LIVE NOW</option></select></label>
+          <label>Channel Name<input id="live_channel_name"></label>
+          <label>Live Chat
+            <select id="live_chat_enabled">
+              <option value="true">Aktif</option>
+              <option value="false">Nonaktif</option>
+            </select>
+          </label>
+          <label>Mode Chat
+            <select id="live_chat_mode">
+              <option value="youtube">YouTube Official Chat</option>
+              <option value="hidden">Sembunyikan Chat</option>
+            </select>
+          </label>
           <label>Platform<select id="live_platform"><option value="youtube">YouTube</option><option value="twitch">Twitch</option><option value="facebook">Facebook</option><option value="kick">Kick</option><option value="tiktok">TikTok</option><option value="custom">Custom Link / Embed</option></select></label>
           <label>Judul Live<input id="live_stream_title" placeholder="DOSMOS Championship Grand Final"></label>
           <label>Nama Channel<input id="live_channel_name" placeholder="DOSMOS Official"></label>

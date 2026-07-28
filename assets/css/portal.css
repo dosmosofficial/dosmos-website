@@ -24,3 +24,52 @@ body{min-height:100vh}
 .portal-result-card{padding:22px;border:1px solid var(--line);border-radius:16px;text-align:center}.portal-result-card strong{display:block;font-size:28px;color:var(--gold);margin-top:8px}
 @media(max-width:900px){.portal-detail-layout{grid-template-columns:1fr}.portal-detail-sidebar{grid-template-columns:repeat(2,minmax(0,1fr))}.portal-home-hero{min-height:620px}.portal-page-hero,.portal-detail-hero{padding-top:125px}.portal-tabs-wrap{top:64px}}
 @media(max-width:650px){.portal-toolbar{flex-direction:column}.portal-toolbar select{width:100%}.portal-section-head{align-items:flex-start;flex-direction:column}.portal-detail-sidebar{grid-template-columns:1fr 1fr}.portal-footer-inner{flex-direction:column}.portal-lightbox{padding:20px}.portal-page-hero h1,.portal-detail-hero h1{font-size:42px}.portal-detail-hero{min-height:400px}}
+
+
+/* =========================================================
+   DOSMOS VIP V14.7.1 — PORTAL POLISH
+========================================================= */
+html{scroll-behavior:smooth}
+body{overflow-x:hidden}
+.portal-page-loader{position:fixed;inset:0;z-index:100000;background:rgba(5,5,5,.96);backdrop-filter:blur(14px);display:grid;place-items:center;align-content:center;gap:14px;opacity:0;pointer-events:none;transition:opacity .22s ease}
+.portal-page-loader.is-visible{opacity:1;pointer-events:auto}
+.portal-loader-mark{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(145deg,var(--gold),#8a6508);color:#080808;font-family:Cinzel,serif;font-size:28px;font-weight:900;box-shadow:0 0 50px rgba(246,199,68,.22);animation:portalLoaderPulse 1s ease-in-out infinite alternate}
+.portal-page-loader span{font-size:10px;letter-spacing:.16em;color:#9b9b9b;text-transform:uppercase}
+@keyframes portalLoaderPulse{to{transform:scale(1.08);box-shadow:0 0 75px rgba(246,199,68,.38)}}
+
+.portal-reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.portal-reveal.portal-reveal-visible{opacity:1;transform:none}
+img{opacity:.18;transition:opacity .45s ease,transform .45s ease}
+img.portal-image-ready{opacity:1}
+.card,.portal-gallery-item,.portal-feature-panel{will-change:transform}
+.card:hover,.portal-gallery-item:hover{transform:translateY(-5px)}
+.portal-card-link:focus-visible,.btn:focus-visible,.navlinks a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+.live-experience-shell{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(340px,.72fr);gap:18px;align-items:stretch}
+.live-stage-column{display:grid;gap:16px}
+.live-player-card,.live-info-card,.live-chat-panel{border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.032),rgba(0,0,0,.3));overflow:hidden}
+.live-player-frame{position:relative;aspect-ratio:16/9;background:#050505;display:grid;place-items:center}
+.live-player-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.live-info-card{padding:20px}
+.live-info-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.live-chat-panel{min-height:640px;display:grid;grid-template-rows:auto 1fr auto;transition:max-width .3s ease,opacity .3s ease,transform .3s ease}
+.live-chat-panel.is-collapsed{display:none}
+.live-chat-head{height:58px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(255,255,255,.025)}
+.live-chat-head>div{display:flex;align-items:center;gap:9px}
+.live-chat-head strong{font-size:11px;letter-spacing:.1em}
+.live-chat-head>span{font-size:10px;color:#888}
+.live-chat-dot{width:8px;height:8px;border-radius:50%;background:#ff424d;box-shadow:0 0 14px rgba(255,66,77,.7);animation:chatDot 1s ease-in-out infinite alternate}
+@keyframes chatDot{to{opacity:.35}}
+.live-chat-frame{min-height:520px;background:#0b0b0b}
+.live-chat-frame iframe{width:100%;height:100%;min-height:520px;border:0;background:#0b0b0b}
+.live-chat-placeholder{height:100%;min-height:520px;display:grid;place-items:center;align-content:center;text-align:center;padding:30px;color:#aaa}
+.live-chat-placeholder strong{color:#fff;margin-bottom:7px}
+.live-chat-placeholder p{max-width:280px;line-height:1.7;font-size:12px}
+.live-chat-note{padding:12px 15px;border-top:1px solid var(--line);color:#777;font-size:9px;line-height:1.5}
+.live-chat-panel.is-unavailable .live-chat-dot{background:#777;box-shadow:none}
+.portal-topbar{transition:background .25s ease,border-color .25s ease}
+.portal-topbar:hover{border-color:rgba(246,199,68,.17)}
+.portal-page-hero:before,.portal-detail-hero:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 0 45%,rgba(246,199,68,.025) 50%,transparent 55%);background-size:240% 100%;animation:portalShine 8s linear infinite}
+@keyframes portalShine{to{background-position:-240% 0}}
+@media(max-width:1080px){.live-experience-shell{grid-template-columns:1fr}.live-chat-panel{min-height:570px}.live-chat-frame,.live-chat-frame iframe,.live-chat-placeholder{min-height:470px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.portal-reveal{opacity:1;transform:none}}

@@ -227,3 +227,40 @@ CATATAN:
 - Data lama otomatis diberi slug saat migration dijalankan.
 - Bracket draft tidak tampil di halaman publik.
 - V14.7 tetap kompatibel dengan panel Admin dan Media Library V14.6.
+
+
+=========================================================
+DOSMOS VIP V14.7.1 — PORTAL POLISH + LIVE EXPERIENCE PRO
+=========================================================
+
+FITUR BARU:
+- YouTube Live Chat resmi di samping player live.
+- Auto-detect YouTube video ID dari URL watch, live, embed, atau youtu.be.
+- Tombol tampilkan/sembunyikan chat.
+- Fallback khusus jika chat belum aktif atau platform bukan YouTube.
+- Layout desktop dua kolom: video + chat.
+- Layout mobile otomatis bertumpuk.
+- Page loader premium DOSMOS.
+- Transisi perpindahan halaman.
+- Reveal animation saat card masuk viewport.
+- Lazy loading dan fade-in gambar.
+- Focus state keyboard dan aksesibilitas lebih baik.
+- Respect pengaturan reduced motion.
+- Animasi premium ringan tanpa mengganggu performa.
+
+CARA PASANG:
+1. Jalankan `supabase-v14-7-1.sql` di Supabase SQL Editor.
+2. Replace seluruh file V14.7 dengan isi paket V14.7.1.
+3. Commit ke GitHub dan tunggu Cloudflare Pages deploy.
+4. Tekan Ctrl + F5.
+5. Buka Admin > Live Center.
+6. Isi link YouTube Live dan set:
+   - Live Chat: Aktif
+   - Mode Chat: YouTube Official Chat
+7. Pastikan fitur Live Chat juga diaktifkan pada siaran YouTube.
+
+CATATAN YOUTUBE:
+- Chat hanya muncul untuk video/live yang memiliki live chat aktif.
+- Domain website harus sama dengan domain yang membuka halaman.
+- Preview melalui file lokal tidak mendukung YouTube live chat.
+- TikTok Live Chat resmi belum tersedia untuk embed website biasa.
