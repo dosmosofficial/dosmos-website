@@ -347,3 +347,49 @@ PERBAIKAN:
   terus memakai tampilan CSS versi lama.
 
 Tidak ada fitur V14.8.1 yang dihapus.
+
+
+=========================================================
+DOSMOS VIP V15.0 — THEME STUDIO PRO
+=========================================================
+
+FITUR ADMIN:
+- Menu Theme Studio.
+- 6 preset:
+  Luxury Gold, Blue Esports, Red Inferno, Purple Galaxy,
+  Emerald Arena, Cyber Neon.
+- Color picker:
+  Primary, Accent, Background, Surface, Text, Muted.
+- Card style:
+  Luxury, Glass, Solid, Cyber.
+- Button style:
+  Rounded, Square, Pill, Neon.
+- Animation:
+  Fade, Slide, Zoom, None.
+- Effect intensity:
+  Low, Medium, High.
+- Live preview di admin.
+- Apply Theme ke seluruh halaman.
+
+EFFECT MANAGER:
+- Glow.
+- Gold Dust / Particles.
+- Animated Border.
+- Mouse Glow.
+- Parallax Hero.
+- Page Reveal.
+- Performance guard untuk mobile dan reduced motion.
+
+CARA PASANG:
+1. Jalankan `supabase-v15-0.sql` di Supabase SQL Editor.
+2. Replace seluruh file versi lama dengan isi paket V15.0.
+3. Commit ke GitHub.
+4. Tunggu Cloudflare deploy.
+5. Tekan Ctrl + Shift + R.
+6. Login admin > Theme Studio.
+7. Pilih preset atau warna custom, atur efek, lalu klik Apply Theme.
+
+CATATAN:
+- Semua fitur V14.8.2 tetap dipertahankan.
+- Theme diterapkan melalui CSS variables agar seluruh halaman ikut berubah.
+- Efek visual dibuat ringan dan otomatis dikurangi pada mobile.

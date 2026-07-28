@@ -1408,3 +1408,96 @@ adminDonationList?.addEventListener("click",async e=>{
 });
 donationRefreshBtn?.addEventListener("click",loadAdminDonations);
 setTimeout(()=>{loadV148Settings();loadCommunityAdminMessages();loadAdminDonations()},300);
+
+
+/* =========================================================
+   DOSMOS VIP V15.0 — THEME STUDIO PRO
+========================================================= */
+const DOSMOS_THEME_PRESETS={
+  gold:{primary:"#f6c744",accent:"#9b7208",background:"#070707",surface:"#0d0d0d",text:"#ffffff",muted:"#888888"},
+  blue:{primary:"#38a7ff",accent:"#0d4e93",background:"#050914",surface:"#091426",text:"#f4f9ff",muted:"#8294aa"},
+  red:{primary:"#ff4c4c",accent:"#8f1111",background:"#100505",surface:"#190909",text:"#fff5f5",muted:"#aa8585"},
+  purple:{primary:"#b86cff",accent:"#5f2498",background:"#0b0611",surface:"#140a20",text:"#fbf5ff",muted:"#9986aa"},
+  emerald:{primary:"#34d399",accent:"#08785b",background:"#04100d",surface:"#071a15",text:"#effff9",muted:"#7ea398"},
+  cyber:{primary:"#00f0ff",accent:"#7b2cff",background:"#03070b",surface:"#07111a",text:"#effdff",muted:"#7f9aa0"}
+};
+let currentThemeStudioSettings={};
+
+function collectThemeStudio(){
+  return {
+    theme_preset:document.querySelector("[data-theme-preset].active")?.dataset.themePreset||"gold",
+    theme_primary:theme_primary.value,
+    theme_accent:theme_accent.value,
+    theme_background:theme_background.value,
+    theme_surface:theme_surface.value,
+    theme_text:theme_text.value,
+    theme_muted:theme_muted.value,
+    theme_card_style:theme_card_style.value,
+    theme_button_style:theme_button_style.value,
+    theme_animation:theme_animation.value,
+    theme_effect_intensity:theme_effect_intensity.value,
+    effect_glow:effect_glow.checked,
+    effect_particles:effect_particles.checked,
+    effect_animated_border:effect_animated_border.checked,
+    effect_mouse_glow:effect_mouse_glow.checked,
+    effect_parallax:effect_parallax.checked,
+    effect_reveal:effect_reveal.checked
+  };
+}
+function previewThemeStudio(){
+  const s=collectThemeStudio();
+  const box=themeLivePreview;
+  box.style.setProperty("--preview-primary",s.theme_primary);
+  box.style.setProperty("--preview-accent",s.theme_accent);
+  box.style.setProperty("--preview-bg",s.theme_background);
+  box.style.setProperty("--preview-surface",s.theme_surface);
+  box.style.setProperty("--preview-text",s.theme_text);
+  box.style.setProperty("--preview-muted",s.theme_muted);
+  box.dataset.cardStyle=s.theme_card_style;
+  box.dataset.buttonStyle=s.theme_button_style;
+  box.dataset.glow=String(s.effect_glow);
+  box.dataset.border=String(s.effect_animated_border);
+}
+function applyPresetToControls(name){
+  const p=DOSMOS_THEME_PRESETS[name]||DOSMOS_THEME_PRESETS.gold;
+  theme_primary.value=p.primary;
+  theme_accent.value=p.accent;
+  theme_background.value=p.background;
+  theme_surface.value=p.surface;
+  theme_text.value=p.text;
+  theme_muted.value=p.muted;
+  document.querySelectorAll("[data-theme-preset]").forEach(b=>b.classList.toggle("active",b.dataset.themePreset===name));
+  previewThemeStudio();
+}
+async function loadThemeStudio(){
+  const {data}=await sb.from("site_settings").select("*").limit(1).maybeSingle();
+  currentThemeStudioSettings=data||{};
+  const preset=data?.theme_preset||"gold";
+  applyPresetToControls(preset);
+  ["theme_primary","theme_accent","theme_background","theme_surface","theme_text","theme_muted","theme_card_style","theme_button_style","theme_animation","theme_effect_intensity"].forEach(k=>{
+    if(data?.[k]!=null&&document.getElementById(k))document.getElementById(k).value=data[k];
+  });
+  ["effect_glow","effect_particles","effect_animated_border","effect_mouse_glow","effect_parallax","effect_reveal"].forEach(k=>{
+    if(data?.[k]!=null&&document.getElementById(k))document.getElementById(k).checked=!!data[k];
+  });
+  document.querySelectorAll("[data-theme-preset]").forEach(b=>b.classList.toggle("active",b.dataset.themePreset===preset));
+  previewThemeStudio();
+}
+themePresetGrid?.addEventListener("click",e=>{
+  const b=e.target.closest("[data-theme-preset]");
+  if(b)applyPresetToControls(b.dataset.themePreset);
+});
+["theme_primary","theme_accent","theme_background","theme_surface","theme_text","theme_muted","theme_card_style","theme_button_style","theme_animation","theme_effect_intensity","effect_glow","effect_particles","effect_animated_border","effect_mouse_glow","effect_parallax","effect_reveal"].forEach(id=>{
+  document.getElementById(id)?.addEventListener("input",previewThemeStudio);
+  document.getElementById(id)?.addEventListener("change",previewThemeStudio);
+});
+themePreviewBtn?.addEventListener("click",previewThemeStudio);
+themeSaveBtn?.addEventListener("click",async()=>{
+  msg(themeStudioMessage,"Menyimpan theme...");
+  const payload={...collectThemeStudio(),updated_at:new Date().toISOString()};
+  const {data:row}=await sb.from("site_settings").select("id").limit(1).maybeSingle();
+  const q=row?sb.from("site_settings").update(payload).eq("id",row.id):sb.from("site_settings").insert(payload);
+  const {error}=await q;
+  msg(themeStudioMessage,error?error.message:"Theme berhasil diterapkan ke seluruh website.",error?"error":"success");
+});
+setTimeout(loadThemeStudio,400);
