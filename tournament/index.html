@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tournament Detail | DOSMOS</title>
+  <meta id="siteMetaDescription" name="description" content="Tournament DOSMOS">
+  <meta property="og:type" content="website">
+  <meta id="ogTitle" property="og:title" content="Tournament Detail | DOSMOS">
+  <meta id="ogDescription" property="og:description" content="Tournament DOSMOS">
+  <meta id="ogImage" property="og:image" content="">
+  <link id="siteFavicon" rel="icon" href="/dosmos-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/portal.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/assets/js/config.js"></script>
+</head>
+<body data-page="tournaments">
+<div id="announcementTopbarRoot"></div>
+<div id="announcementTickerRoot"></div>
+<header class="topbar portal-topbar">
+  <div class="container nav">
+    <a class="brand" href="/">
+      <img class="logo site-main-logo" src="/dosmos-logo.png" alt="DOSMOS">
+      <span class="logo-fallback">D</span><span data-site-name>DOSMOS</span>
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-label="Buka menu">☰</button>
+    <nav class="navlinks" id="navLinks">
+      <a data-nav="home" href="/">Home</a>
+      <a data-nav="events" href="/events/">Event</a>
+      <a data-nav="tournaments" href="/tournaments/">Tournament</a>
+      <a data-nav="news" href="/news/">News</a>
+      <a data-nav="gallery" href="/gallery/">Gallery</a>
+      <a data-nav="live" href="/live/">Live</a>
+      <a data-nav="hall" href="/hall-of-fame/">Hall of Fame</a>
+      <a data-nav="register" href="/register/">Register</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="portal-detail-hero tournament-detail-hero" id="detailHero"><div class="container">
+  <div class="portal-breadcrumb"><a href="/">Home</a><span>›</span><a href="/tournaments/">Tournament</a><span>›</span><strong id="detailBreadcrumb">Tournament</strong></div>
+  <span class="status" id="detailStatus">TOURNAMENT</span><h1 id="detailTitle">Memuat tournament...</h1><p id="detailSummary"></p>
+</div></section>
+<section class="portal-tabs-wrap"><div class="container portal-tabs">
+  <button data-tournament-tab="overview" class="active">Overview</button><button data-tournament-tab="bracket">Bracket</button><button data-tournament-tab="teams">Teams</button><button data-tournament-tab="rules">Rules</button><button data-tournament-tab="results">Results</button>
+</div></section>
+<section class="section"><div class="container">
+  <div class="tournament-tab-panel active" id="tournament-overview"><div class="portal-detail-layout"><article class="portal-detail-content"><div id="detailBanner" class="portal-detail-banner"></div><h2>Overview</h2><div id="detailContent" class="portal-rich-text"></div></article><aside class="portal-detail-sidebar" id="detailSidebar"></aside></div></div>
+  <div class="tournament-tab-panel" id="tournament-bracket"><div class="bracket-public-head"><select id="publicBracketSelect"><option value="">Memuat bracket...</option></select><div class="bracket-zoom-controls"><button id="bracketZoomOut">−</button><button id="bracketZoomReset">100%</button><button id="bracketZoomIn">+</button></div></div><div class="bracket-viewport" id="bracketViewport"><div class="bracket-stage" id="bracketStage"><svg class="bracket-connectors" id="bracketConnectors"></svg><div class="bracket bracket-tree" id="bracketWrap"><div class="empty">Memuat bracket...</div></div></div></div></div>
+  <div class="tournament-tab-panel" id="tournament-teams"><div id="tournamentTeams" class="portal-team-list"></div></div>
+  <div class="tournament-tab-panel" id="tournament-rules"><div class="portal-rich-text" id="tournamentRules"></div></div>
+  <div class="tournament-tab-panel" id="tournament-results"><div id="tournamentResults"></div></div>
+</div></section>
+</main>
+<footer class="portal-footer">
+  <div class="container portal-footer-inner">
+    <div><strong data-site-name>DOSMOS</strong><p data-site-slogan>Every Gamer Deserves a Chance.</p></div>
+    <div class="portal-footer-links"><a href="/events/">Event</a><a href="/tournaments/">Tournament</a><a href="/news/">News</a><a href="/gallery/">Gallery</a></div>
+  </div>
+</footer>
+<script src="/assets/js/portal.js"></script>
+</body>
+</html>

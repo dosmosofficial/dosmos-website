@@ -186,3 +186,44 @@ CATATAN PENTING:
   URL yang sudah dipilih sampai URL tersebut diganti dari modul terkait.
 - Safe Delete mengecek pemakaian URL pada Branding, Live, Events, Champions,
   News, Gallery, Sponsors, dan Tournament Bracket.
+
+
+=========================================================
+DOSMOS VIP V14.7 — MULTI-PAGE PORTAL
+=========================================================
+
+PERUBAHAN UTAMA:
+- Homepage sekarang menjadi ringkasan portal, bukan halaman scroll panjang.
+- Menu Event, Tournament, News, Gallery, Live, Hall of Fame, dan Register
+  membuka halaman masing-masing.
+- Detail event: /event/?slug=nama-event
+- Detail berita: /article/?slug=judul-berita
+- Detail tournament: /tournament/?slug=nama-tournament
+- Tournament detail memiliki tab Overview, Bracket, Teams, Rules, Results.
+- Search dan filter pada halaman listing.
+- Gallery lightbox.
+- Breadcrumb.
+- SEO title, description, dan Open Graph dinamis.
+- Halaman 404 DOSMOS.
+- Slug otomatis dari admin untuk Event dan News.
+- Homepage hanya menampilkan preview terbaru dan tombol “Lihat Semua”.
+
+CARA PASANG:
+1. Jalankan `supabase-v14-7.sql` di Supabase SQL Editor.
+2. Replace seluruh file repository dengan isi paket ini.
+3. Commit ke GitHub dan tunggu Cloudflare Pages deploy.
+4. Tekan Ctrl + F5.
+5. Buka:
+   /events/
+   /tournaments/
+   /news/
+   /gallery/
+   /live/
+   /hall-of-fame/
+   /register/
+
+CATATAN:
+- Link detail menggunakan URL aman berbasis slug + fallback UUID.
+- Data lama otomatis diberi slug saat migration dijalankan.
+- Bracket draft tidak tampil di halaman publik.
+- V14.7 tetap kompatibel dengan panel Admin dan Media Library V14.6.

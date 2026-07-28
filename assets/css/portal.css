@@ -1,0 +1,26 @@
+
+:root{--portal-max:1220px}
+body{min-height:100vh}
+.portal-topbar .navlinks a.active{color:var(--gold);background:rgba(246,199,68,.08)}
+.portal-home-hero{min-height:720px}
+.portal-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:24px}
+.portal-section-head h2{margin-bottom:0}.portal-section-head>a{color:var(--gold);font-weight:800;font-size:12px}
+.portal-feature-panel{border:1px solid var(--line);border-radius:20px;padding:24px;background:linear-gradient(145deg,rgba(246,199,68,.05),rgba(255,255,255,.015))}
+.portal-page-hero,.portal-detail-hero{position:relative;padding:150px 0 70px;background:radial-gradient(circle at 78% 20%,rgba(246,199,68,.13),transparent 30%),linear-gradient(180deg,#101010,#080808);border-bottom:1px solid var(--line)}
+.portal-page-hero h1,.portal-detail-hero h1{font-size:clamp(38px,7vw,78px);margin:10px 0 14px}.portal-page-hero p,.portal-detail-hero p{max-width:780px;color:#aaa;font-size:16px;line-height:1.8}
+.portal-breadcrumb{display:flex;align-items:center;gap:9px;color:#777;font-size:11px;margin-bottom:18px}.portal-breadcrumb a{color:#aaa}.portal-breadcrumb strong{color:var(--gold)}
+.portal-list-section{min-height:520px}.portal-toolbar{display:flex;gap:10px;margin-bottom:22px}.portal-toolbar input{flex:1}.portal-toolbar select{min-width:190px}
+.portal-card-link{display:block;height:100%}.portal-card-link .card{height:100%}
+.portal-card-cta{display:flex;justify-content:space-between;align-items:center;margin-top:15px;color:var(--gold);font-weight:800;font-size:11px}
+.portal-gallery-masonry{columns:4 240px;column-gap:15px}.portal-gallery-item{break-inside:avoid;margin:0 0 15px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#101010;cursor:pointer}.portal-gallery-item img{width:100%;display:block}.portal-gallery-item div{padding:12px}.portal-gallery-preview .card:nth-child(n+5){display:none}
+.portal-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.94);display:grid;place-items:center;padding:50px}.portal-lightbox[hidden]{display:none}.portal-lightbox img{max-width:92vw;max-height:80vh;border-radius:16px}.portal-lightbox button{position:absolute;top:20px;right:25px;width:44px;height:44px;border-radius:50%;font-size:26px}.portal-lightbox div{position:absolute;bottom:18px;color:#ddd}
+.portal-detail-hero{min-height:470px;display:flex;align-items:flex-end;background-size:cover!important;background-position:center!important}
+.portal-detail-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:30px}.portal-detail-banner{aspect-ratio:16/8;border-radius:20px;background:#111 center/cover no-repeat;border:1px solid var(--line);margin-bottom:28px}
+.portal-detail-content h2{font-size:30px}.portal-rich-text{color:#c4c4c4;line-height:1.9;white-space:pre-wrap}.portal-detail-sidebar{display:grid;gap:12px;align-content:start}.portal-info-card{padding:18px;border:1px solid var(--line);border-radius:14px;background:#101010}.portal-info-card small{display:block;color:#777;text-transform:uppercase;font-size:9px;letter-spacing:.09em;margin-bottom:6px}.portal-info-card strong{font-size:14px}
+.portal-article-wrap{max-width:920px}.portal-article-meta{color:#777;margin-bottom:24px}.portal-news-content{font-size:16px}
+.portal-footer{border-top:1px solid var(--line);padding:38px 0;background:#070707}.portal-footer-inner{display:flex;justify-content:space-between;gap:25px}.portal-footer p{color:#777}.portal-footer-links{display:flex;gap:18px;flex-wrap:wrap}.portal-footer-links a{color:#aaa;font-size:12px}
+.portal-tabs-wrap{position:sticky;top:72px;z-index:20;background:rgba(7,7,7,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.portal-tabs{display:flex;gap:6px;overflow:auto;padding-top:10px;padding-bottom:10px}.portal-tabs button{white-space:nowrap;padding:11px 17px;border-radius:10px;border:1px solid transparent;background:transparent;color:#888;font-weight:800}.portal-tabs button.active{color:var(--gold);border-color:rgba(246,199,68,.22);background:rgba(246,199,68,.07)}
+.tournament-tab-panel{display:none}.tournament-tab-panel.active{display:block}.portal-team-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:13px}.portal-team-card{padding:15px;border:1px solid var(--line);border-radius:13px;display:flex;align-items:center;gap:11px}.portal-team-card img{width:38px;height:38px;object-fit:contain}.portal-team-card span{font-weight:800}
+.portal-result-card{padding:22px;border:1px solid var(--line);border-radius:16px;text-align:center}.portal-result-card strong{display:block;font-size:28px;color:var(--gold);margin-top:8px}
+@media(max-width:900px){.portal-detail-layout{grid-template-columns:1fr}.portal-detail-sidebar{grid-template-columns:repeat(2,minmax(0,1fr))}.portal-home-hero{min-height:620px}.portal-page-hero,.portal-detail-hero{padding-top:125px}.portal-tabs-wrap{top:64px}}
+@media(max-width:650px){.portal-toolbar{flex-direction:column}.portal-toolbar select{width:100%}.portal-section-head{align-items:flex-start;flex-direction:column}.portal-detail-sidebar{grid-template-columns:1fr 1fr}.portal-footer-inner{flex-direction:column}.portal-lightbox{padding:20px}.portal-page-hero h1,.portal-detail-hero h1{font-size:42px}.portal-detail-hero{min-height:400px}}

@@ -131,10 +131,10 @@ async function loadEvents(){
   const data=await rows("events");
   eventRows.innerHTML=data.map(e=>`<tr><td>${esc(e.title)}</td><td>${esc(e.status||"")}</td><td>${esc(e.start_date||"-")}</td><td>${esc(e.prize_pool||"-")}</td><td><button class="btn btn-secondary" onclick='editEvent(${JSON.stringify(e)})'>Edit</button></td><td><button class="btn btn-danger" onclick="deleteRow('events','${e.id}')">Hapus</button></td></tr>`).join("")||'<tr><td colspan="6">Belum ada event.</td></tr>';
 }
-window.editEvent=e=>{editState.events=e.id;["title","description","banner","start_date","end_date","prize_pool","registration_link","status"].forEach(k=>document.getElementById("event_"+k).value=e[k]||"");eventSubmit.textContent="Simpan Perubahan";showTab("eventsTab")};
+window.editEvent=e=>{editState.events=e.id;["title","slug","description","banner","start_date","end_date","prize_pool","registration_link","status","seo_title","seo_description"].forEach(k=>document.getElementById("event_"+k).value=e[k]||"");eventSubmit.textContent="Simpan Perubahan";showTab("eventsTab")};
 makeFormHandler({formId:"eventForm",table:"events",stateKey:"events",messageId:"eventMessage",submitId:"eventSubmit",payloadFn:async()=>{
   let banner=event_banner.value.trim()||null;if(event_file.files[0])banner=await uploadMedia(event_file.files[0],"events");
-  return {title:event_title.value.trim(),description:event_description.value.trim(),banner,start_date:event_start_date.value||null,end_date:event_end_date.value||null,prize_pool:event_prize_pool.value.trim()||null,registration_link:event_registration_link.value.trim()||null,status:event_status.value,updated_at:new Date().toISOString()}
+  return {title:event_title.value.trim(),slug:event_slug.value.trim()||slugify(event_title.value),description:event_description.value.trim(),banner,start_date:event_start_date.value||null,end_date:event_end_date.value||null,prize_pool:event_prize_pool.value.trim()||null,registration_link:event_registration_link.value.trim()||null,status:event_status.value,seo_title:event_seo_title.value.trim()||null,seo_description:event_seo_description.value.trim()||null,updated_at:new Date().toISOString()}
 }});
 
 /* registrations */
@@ -162,10 +162,10 @@ async function loadNews(){
   const data=await rows("news","published_at");
   newsRows.innerHTML=data.map(n=>`<tr><td>${esc(n.title)}</td><td>${esc(n.summary||"-")}</td><td>${esc((n.published_at||"").slice(0,10))}</td><td><button class="btn btn-secondary" onclick='editNews(${JSON.stringify(n)})'>Edit</button></td><td><button class="btn btn-danger" onclick="deleteRow('news','${n.id}')">Hapus</button></td></tr>`).join("")||'<tr><td colspan="5">Belum ada berita.</td></tr>';
 }
-window.editNews=n=>{editState.news=n.id;["title","summary","content","cover"].forEach(k=>document.getElementById("news_"+k).value=n[k]||"");newsSubmit.textContent="Simpan Perubahan";showTab("newsTab")};
+window.editNews=n=>{editState.news=n.id;["title","slug","summary","content","cover","seo_title","seo_description"].forEach(k=>document.getElementById("news_"+k).value=n[k]||"");newsSubmit.textContent="Simpan Perubahan";showTab("newsTab")};
 makeFormHandler({formId:"newsForm",table:"news",stateKey:"news",messageId:"newsMessage",submitId:"newsSubmit",payloadFn:async()=>{
   let cover=news_cover.value.trim()||null;if(news_file.files[0])cover=await uploadMedia(news_file.files[0],"news");
-  return {title:news_title.value.trim(),summary:news_summary.value.trim(),content:news_content.value.trim(),cover,published_at:new Date().toISOString()}
+  return {title:news_title.value.trim(),slug:news_slug.value.trim()||slugify(news_title.value),summary:news_summary.value.trim(),content:news_content.value.trim(),cover,seo_title:news_seo_title.value.trim()||null,seo_description:news_seo_description.value.trim()||null,published_at:new Date().toISOString()}
 }});
 
 /* gallery */
@@ -1345,3 +1345,6 @@ mediaLibraryGrid?.addEventListener("click",async e=>{
     alert(err.message);
   }
 });
+
+event_title?.addEventListener("input",()=>{if(!editState.events||!event_slug.value)event_slug.value=slugify(event_title.value)});
+news_title?.addEventListener("input",()=>{if(!editState.news||!news_slug.value)news_slug.value=slugify(news_title.value)});

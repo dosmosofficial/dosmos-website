@@ -118,9 +118,9 @@
 
     <section class="tab-panel" id="eventsTab"><div class="panel"><h3>Tambah / Edit Event</h3>
       <form id="eventForm" class="form-grid" style="margin-top:18px">
-        <label>Judul<input id="event_title" required></label><label>Status<select id="event_status"><option value="upcoming">Akan Datang</option><option value="active">Sedang Berjalan</option><option value="finished">Selesai</option></select></label>
+        <label>Judul<input id="event_title" required></label><label>Slug URL<input id="event_slug" placeholder="otomatis-dari-judul"></label><label>Status<select id="event_status"><option value="upcoming">Akan Datang</option><option value="active">Sedang Berjalan</option><option value="finished">Selesai</option></select></label>
         <label class="form-full">Deskripsi<textarea id="event_description"></textarea></label><label>Upload Banner<input id="event_file" type="file" accept="image/*"></label><label>Atau URL Banner<input id="event_banner"></label>
-        <label>Mulai<input id="event_start_date" type="date"></label><label>Selesai<input id="event_end_date" type="date"></label><label>Prize Pool<input id="event_prize_pool"></label><label>Link Pendaftaran<input id="event_registration_link"></label>
+        <label>Mulai<input id="event_start_date" type="date"></label><label>Selesai<input id="event_end_date" type="date"></label><label>Prize Pool<input id="event_prize_pool"></label><label>Link Pendaftaran<input id="event_registration_link"></label><label>SEO Title<input id="event_seo_title"></label><label>SEO Description<input id="event_seo_description"></label>
         <div class="form-full"><button class="btn btn-primary" id="eventSubmit">Publish</button><div id="eventMessage" class="message"></div></div>
       </form></div>
       <div class="panel" style="margin-top:20px"><div class="vip-panel-head"><h3>Daftar Event</h3><input class="vip-table-search" data-target="eventRows" placeholder="Cari event..."></div><div class="table-wrap"><table><thead><tr><th>Judul</th><th>Status</th><th>Mulai</th><th>Prize</th><th>Edit</th><th>Hapus</th></tr></thead><tbody id="eventRows"></tbody></table></div></div>
@@ -237,7 +237,7 @@ ONIC"></textarea>
 
     <section class="tab-panel" id="newsTab"><div class="panel"><h3>Tambah / Edit News</h3>
       <form id="newsForm" class="form-grid" style="margin-top:18px">
-        <label class="form-full">Judul<input id="news_title" required></label><label class="form-full">Ringkasan<textarea id="news_summary"></textarea></label><label class="form-full">Isi Berita<textarea id="news_content"></textarea></label>
+        <label>Judul<input id="news_title" required></label><label>Slug URL<input id="news_slug" placeholder="otomatis-dari-judul"></label><label class="form-full">Ringkasan<textarea id="news_summary"></textarea></label><label class="form-full">Isi Berita<textarea id="news_content"></textarea></label><label>SEO Title<input id="news_seo_title"></label><label>SEO Description<input id="news_seo_description"></label>
         <label>Upload Cover<input id="news_file" type="file" accept="image/*"></label><label>Atau URL Cover<input id="news_cover"></label>
         <div class="form-full"><button class="btn btn-primary" id="newsSubmit">Publish</button><div id="newsMessage" class="message"></div></div>
       </form></div>
